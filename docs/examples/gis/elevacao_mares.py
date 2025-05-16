@@ -52,6 +52,7 @@ plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap"
 # Componente de visualização do mapa
 Map(    plot_params=plot_params)
 
+
 ############################
 ### Execução da simulação
 

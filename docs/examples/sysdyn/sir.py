@@ -17,6 +17,7 @@ env = Environment()
 SIR(susceptible=9998, infected=2, recovered=0, duration=2, contacts=6,
           probability=0.25, final_time=30)
 
-Chart()
+Chart(select={"Recovered"})
+Chart(select={"Susceptible"})
 
 env.run(30)  

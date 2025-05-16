@@ -24,8 +24,9 @@ def track_plot(label, color, plot_type="line"):
 
 
 class Chart(Model):
-    def setup(self, pause=True):
+    def setup(self, select= None, pause=True):
         import matplotlib.pyplot as plt
+        self.select = select
         self.interval = 1
         self.time_points = []
         self.fig, self.ax = plt.subplots()
@@ -41,8 +42,9 @@ class Chart(Model):
         # Garante que _plot_metadata exista
         plot_metadata = getattr(self.env, "_plot_metadata", {})
         
-        for label, info in plot_metadata.items():     
-            self.ax.plot(info["data"], label=label, color=info["color"])
+        for label, info in plot_metadata.items():   
+            if self.select == None or label in self.select:
+                self.ax.plot(info["data"], label=label, color=info["color"])
 
         if self.env.now() == 0:
             plt.legend()
