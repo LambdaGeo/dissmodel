@@ -77,7 +77,8 @@ class Elevacao(Model):
 
 
 
-file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
+#file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
+file_name = "../brmangue/data/anil/elevacao_pol.shp"
 gdf = gpd.read_file(filename=file_name)
 
 # Criação do ambiente de simulação, que integra espaço, tempo e agentes
@@ -97,7 +98,7 @@ model = Elevacao(create_neighbohood="Rook", seaLevelRiseRate=1)
 
 # Mapeamento de cores personalizado para os estados das células
 #plot_params={ "column":"Alt2","cmap": "Blues"}
-plot_params={"column":'Alt2', "scheme":'quantiles', "k":3, "legend":True, "cmap":'viridis'}
+plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'viridis'}
 
 # Componente de visualização do mapa
 Map(plot_params=plot_params)
