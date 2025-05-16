@@ -13,6 +13,20 @@ from matplotlib.colors import ListedColormap
 
 import geopandas as gpd
 
+class Elevacao(Model):
+
+    seaLevelRiseRate: float
+
+    def __init__ (self, seaLevelRiseRate=0.011):
+        super().__init__()
+        self.seaLevelRiseRate = seaLevelRiseRate
+
+    def execute(self):
+        print ("time", self.env.now())
+        gdf = self.env.gdf
+        gdf.loc[gdf["Usos"] == 3, "Alt2"] += self.seaLevelRiseRate
+
+
 file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
 gdf = gpd.read_file(filename=file_name)
 
@@ -24,21 +38,22 @@ env = Environment(
 )
 
 
+
+
 ############################
 ### Visualização da simulação
 
-
+model = Elevacao(1)
 
 # Mapeamento de cores personalizado para os estados das células
-plot_params={ "column":"Alt2","cmap": "Blues"}
+#plot_params={ "column":"Alt2","cmap": "Blues"}
+plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'viridis'}
 
 # Componente de visualização do mapa
-Map(
-    plot_params=plot_params
-)
+Map(    plot_params=plot_params)
 
 ############################
 ### Execução da simulação
 
 # Inicia a simulação quando o botão for clicado
-env.run()
+env.run(20)
