@@ -25,25 +25,19 @@ class Elevacao(Model):
         Define a regra do Game of Life para atualizar o estado de uma célula.
         """
         # Estado atual da célula
-        value = self.env.gdf.loc[idx].Alt2 + self.seaLevelRiseRate
+        cell = self.env.gdf.loc[idx]
+
+        neighs = self.neighs(idx).query("Alt2 < @cell.Alt2")
+        n, _ = neighs.shape 
+        n = n + 1
+
+        flow = self.seaLevelRiseRate / n
+        value = cell.Alt2 + flow
+
+        #neighs["Alt2"] += self.seaLevelRiseRate + 2
+
         return value
-        '''
-        # Estados dos vizinhos
-        neighs = self.neighs(idx)
-        count = neighs["state"].sum()
-        
-        # Aplicar as regras do Game of Life
-        if value == 1:  # Célula viva
-            if count < 2 or count > 3:  # Subpopulação ou superpopulação
-                return 0  # Morre
-            else:
-                return 1  # Sobrevive
-        else:  # Célula morta
-            if count == 3:  # Reprodução
-                return 1  # Revive
-            else:
-                return 0  # Continua morta
-        '''
+      
 
     def execute(self):
         # Aplicar a função `rule` a todos os índices e armazenar os novos estados
@@ -52,10 +46,6 @@ class Elevacao(Model):
         gdf.loc[gdf["Usos"] == 3, "Alt2"] = gdf.loc[gdf["Usos"] == 3].index.map(self.rule)
         #print (self.env.now())
 
-    def execute__(self):
-        print ("time", self.env.now())
-        gdf = self.env.gdf
-        gdf.loc[gdf["Usos"] == 3, "Alt2"] += self.seaLevelRiseRate
 
 
 file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
