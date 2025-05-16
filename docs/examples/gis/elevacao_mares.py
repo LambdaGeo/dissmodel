@@ -34,7 +34,7 @@ class Elevacao(Model):
         flow = self.seaLevelRiseRate / n
         value = cell.Alt2 + flow
 
-        #neighs["Alt2"] += self.seaLevelRiseRate + 2
+        #neighs["Alt2"] += self.seaLevelRiseRate + flow
 
         return value
       
