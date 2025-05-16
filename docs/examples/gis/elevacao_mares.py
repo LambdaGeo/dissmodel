@@ -17,11 +17,42 @@ class Elevacao(Model):
 
     seaLevelRiseRate: float
 
-    def __init__ (self, seaLevelRiseRate=0.011):
-        super().__init__()
+    def setup (self, seaLevelRiseRate=0.011):
         self.seaLevelRiseRate = seaLevelRiseRate
 
+    def rule(self, idx):
+        """
+        Define a regra do Game of Life para atualizar o estado de uma célula.
+        """
+        # Estado atual da célula
+        value = self.env.gdf.loc[idx].Alt2 + self.seaLevelRiseRate
+        return value
+        '''
+        # Estados dos vizinhos
+        neighs = self.neighs(idx)
+        count = neighs["state"].sum()
+        
+        # Aplicar as regras do Game of Life
+        if value == 1:  # Célula viva
+            if count < 2 or count > 3:  # Subpopulação ou superpopulação
+                return 0  # Morre
+            else:
+                return 1  # Sobrevive
+        else:  # Célula morta
+            if count == 3:  # Reprodução
+                return 1  # Revive
+            else:
+                return 0  # Continua morta
+        '''
+
     def execute(self):
+        # Aplicar a função `rule` a todos os índices e armazenar os novos estados
+        #self.env.gdf["state"] = self.env.gdf.index.map(self.rule)
+        #gdf_sea = gdf.loc[gdf["Usos"] == 3]
+        gdf.loc[gdf["Usos"] == 3, "Alt2"] = gdf.loc[gdf["Usos"] == 3].index.map(self.rule)
+        #print (self.env.now())
+
+    def execute__(self):
         print ("time", self.env.now())
         gdf = self.env.gdf
         gdf.loc[gdf["Usos"] == 3, "Alt2"] += self.seaLevelRiseRate
@@ -43,18 +74,18 @@ env = Environment(
 ############################
 ### Visualização da simulação
 
-model = Elevacao(1)
+model = Elevacao(create_neighbohood="Rook", seaLevelRiseRate=1)
 
 # Mapeamento de cores personalizado para os estados das células
 #plot_params={ "column":"Alt2","cmap": "Blues"}
-plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'viridis'}
+plot_params={"column":'Alt2', "scheme":'quantiles', "k":3, "legend":True, "cmap":'viridis'}
 
 # Componente de visualização do mapa
-Map(    plot_params=plot_params)
+Map(plot_params=plot_params)
 
 
 ############################
 ### Execução da simulação
 
 # Inicia a simulação quando o botão for clicado
-env.run(20)
+env.run()

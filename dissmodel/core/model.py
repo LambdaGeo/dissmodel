@@ -1,6 +1,8 @@
 import salabim as sim
 from pysal.lib import weights
 
+from libpysal.weights import KNN
+
 class Model (sim.Component):
 
     strategies = {
@@ -14,7 +16,8 @@ class Model (sim.Component):
         self.create_neighbohood = create_neighbohood
         self._hold = hold
         if self.create_neighbohood:
-            self.w_ = Model.strategies[self.create_neighbohood].from_dataframe(self.env.gdf, use_index=True)                   
+            #self.w_ = Model.strategies[self.create_neighbohood].from_dataframe(self.env.gdf, use_index=True)                   
+            self.w_ = KNN.from_dataframe(self.env.gdf, k=8)
 
     def neighs(self, idx):
         """
