@@ -43,16 +43,17 @@ class Elevacao(Model):
         
         affected = [idx]  # começa com a célula atual
         
-
+        count = 1
         for v_idx in viz_idxs:
             if self.env.gdf.loc[v_idx, "Alt2"] < cell["Alt2"]:
                 affected.append(v_idx)
-
+                
         n = len(affected)
         flow = self.seaLevelRiseRate / n
         
         # retorna dicionário de atualizações
         return {i: flow for i in affected}
+        
 
     def execute(self):
         # Inicializa uma série com zeros para acumular alterações
@@ -78,7 +79,8 @@ class Elevacao(Model):
 
 
 #file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
-file_name = "../brmangue/data/anil/elevacao_pol.shp"
+#file_name = "../brmangue/data/anil/elevacao_pol.shp"
+file_name = "../brmangue/data/teste1/Recorte_Teste.shp"
 gdf = gpd.read_file(filename=file_name)
 
 # Criação do ambiente de simulação, que integra espaço, tempo e agentes
@@ -94,11 +96,11 @@ env = Environment(
 ############################
 ### Visualização da simulação
 
-model = Elevacao(create_neighbohood="Rook", seaLevelRiseRate=1)
+model = Elevacao(create_neighbohood="Queen", seaLevelRiseRate=0.5)
 
 # Mapeamento de cores personalizado para os estados das células
 #plot_params={ "column":"Alt2","cmap": "Blues"}
-plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'viridis'}
+plot_params={"column":'Alt2', "scheme":'quantiles', "k":3, "legend":True, "cmap":'viridis'}
 
 # Componente de visualização do mapa
 Map(plot_params=plot_params)
