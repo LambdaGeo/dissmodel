@@ -10,9 +10,42 @@ from dissmodel.visualization.streamlit import StreamlitMap, display_inputs
 import pandas as pd
 
 from matplotlib.colors import ListedColormap
-
+from matplotlib.colors import ListedColormap, BoundaryNorm
 
 SEA_OR_FLOODED = [3, 6, 7, 9, 10]  # Correspondentes às constantes MAR, SOLO_DESCOBERTO_INUNDADO etc.
+
+# Códigos de uso da terra
+uso_classes = {
+    1: "Mangue",
+    2: "Vegetação Terrestre",
+    3: "Mar",
+    4: "Área Antropizada",
+    5: "Solo Descoberto",
+    6: "Solo Descoberto Inundado",
+    7: "Área Antropizada Inundada",
+    8: "Mangue Migrado",
+    9: "Mangue Inundado",
+    10: "Vegetação Terrestre Inundada"
+}
+
+# Cores RGB normalizadas (0-1)
+colors = [
+    (0/255, 100/255, 0/255),       # Mangue
+    (128/255, 128/255, 0/255),     # Vegetação Terrestre
+    (0/255, 0/255, 139/255),       # Mar
+    (255/255, 215/255, 0/255),     # Área Antropizada
+    (255/255, 222/255, 173/255),   # Solo Descoberto
+    (0/255, 0/255, 0/255),         # Solo Descoberto Inundado
+    (0/255, 0/255, 0/255),         # Área Antropizada Inundada
+    (0/255, 255/255, 0/255),       # Mangue Migrado
+    (255/255, 0/255, 0/255),       # Mangue Inundado
+    (0/255, 0/255, 0/255)          # Vegetação Terrestre Inundada
+]
+
+# Mapeia cada código a uma cor
+cmap = ListedColormap(colors)
+norm = BoundaryNorm(boundaries=range(1, 12), ncolors=len(colors))
+
 
 import geopandas as gpd
 
@@ -88,9 +121,9 @@ class Elevacao(Model):
         print (self.celulas_modificadas, self.soma_elevacao, self.soma_elevacao/self.celulas_modificadas)
 
 
-#file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
+file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
 #file_name = "../brmangue/data/anil/elevacao_pol.shp"
-file_name = "../brmangue/data/teste1/Recorte_Teste.shp"
+#file_name = "../brmangue/data/teste1/Recorte_Teste.shp"
 
 gdf = gpd.read_file(filename=file_name)
 gdf.set_index("object_id0", inplace=True)
@@ -130,7 +163,18 @@ model.create_neighbohood = True
 plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'RdYlGn'}
 
 # Componente de visualização do mapa
-#Map(plot_params=plot_params)
+Map(plot_params=plot_params)
+
+plot_params_uso = {
+    "column": "Usos",
+    "cmap": ListedColormap(colors),
+    "norm": BoundaryNorm(boundaries=range(1, 12), ncolors=len(colors)),
+    "legend": False,  # a legenda personalizada será criada manualmente
+    "edgecolor": "black",
+    "linewidth": 0.2
+}
+
+Map(plot_params=plot_params_uso)
 
 Chart(select={"media_mar"})
 Chart(select={"media_geral"})
