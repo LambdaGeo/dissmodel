@@ -48,7 +48,8 @@ class Elevacao(Model):
 
 
 
-file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
+#file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
+file_name = "/home/scosta/dev/recorte_teste_simplificado.shp"
 gdf = gpd.read_file(filename=file_name)
 
 # Criação do ambiente de simulação, que integra espaço, tempo e agentes

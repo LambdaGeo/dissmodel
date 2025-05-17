@@ -15,9 +15,12 @@ class Model (sim.Component):
         self.name = name
         self.create_neighbohood = create_neighbohood
         self._hold = hold
+        print (create_neighbohood)
         if self.create_neighbohood:
             self.w_ = Model.strategies[self.create_neighbohood].from_dataframe(self.env.gdf, use_index=True)                   
+            #print (self.w_.neighbors)
             #self.w_ = KNN.from_dataframe(self.env.gdf, k=8)
+        
 
     def neighs(self, idx):
         """

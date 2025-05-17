@@ -81,14 +81,19 @@ class Elevacao(Model):
 #file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
 #file_name = "../brmangue/data/anil/elevacao_pol.shp"
 file_name = "../brmangue/data/teste1/Recorte_Teste.shp"
-gdf = gpd.read_file(filename=file_name)
 
+gdf = gpd.read_file(filename=file_name)
+gdf.set_index("object_id0", inplace=True)
+
+print (gdf.head())
 # Criação do ambiente de simulação, que integra espaço, tempo e agentes
 env = Environment(
     gdf=gdf,
-    end_time=10,
+    end_time=20,
     start_time=0
 )
+
+
 
 
 
@@ -96,11 +101,23 @@ env = Environment(
 ############################
 ### Visualização da simulação
 
-model = Elevacao(create_neighbohood="Queen", seaLevelRiseRate=0.5)
+#model = Elevacao(create_neighbohood="Queen", seaLevelRiseRate=0.5)
+model = Elevacao( seaLevelRiseRate=1)
+
+import libpysal
+import json
+
+from libpysal.weights import W
+
+with open("/home/scosta/dev/brmangue/neighbors.json") as f:
+    neighbors = json.load(f)
+
+model.w_ = W(neighbors)
+model.create_neighbohood = True
 
 # Mapeamento de cores personalizado para os estados das células
 #plot_params={ "column":"Alt2","cmap": "Blues"}
-plot_params={"column":'Alt2', "scheme":'quantiles', "k":3, "legend":True, "cmap":'viridis'}
+plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'viridis'}
 
 # Componente de visualização do mapa
 Map(plot_params=plot_params)
