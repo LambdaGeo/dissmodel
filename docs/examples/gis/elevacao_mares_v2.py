@@ -12,6 +12,8 @@ import pandas as pd
 from matplotlib.colors import ListedColormap
 
 
+SEA_OR_FLOODED = [3, 6, 7, 9, 10]  # Correspondentes às constantes MAR, SOLO_DESCOBERTO_INUNDADO etc.
+
 import geopandas as gpd
 
 @track_plot("media_geral", "red")
@@ -48,6 +50,11 @@ class Elevacao(Model):
         for v_idx in viz_idxs:
             if self.env.gdf.loc[v_idx, "Alt2"] < cell["Alt2"]:
                 affected.append(v_idx)
+
+        for i in affected:
+            if self.env.gdf.loc[i, "Usos"] not in [3, 6, 7, 9, 10]:  # evitar sobrescrever mar/inundados
+                self.env.gdf.at[i, "Usos"] = 7  # AREA_ANTROPIZADA_INUNDADO
+
                 
         n = len(affected)
         flow = self.seaLevelRiseRate / n
@@ -63,7 +70,7 @@ class Elevacao(Model):
         self.celulas_modificadas = 0
         self.soma_elevacao = 0
         # Itera sobre os índices de interesse
-        target_idxs = self.env.gdf[self.env.gdf["Usos"] == 3].index
+        target_idxs = self.env.gdf[self.env.gdf["Usos"].isin(SEA_OR_FLOODED)].index
         for idx in target_idxs:
             updates = self.update_sea_level(idx)
             for i, flow in updates.items():
@@ -75,7 +82,6 @@ class Elevacao(Model):
         self.env.gdf["Alt2"] += delta
 
         self.media_geral = gdf["Alt2"].mean()
-        SEA_OR_FLOODED = [3, 6, 7, 9, 10]  # Correspondentes às constantes MAR, SOLO_DESCOBERTO_INUNDADO etc.
         filtro_mar_ou_inundado = gdf["Usos"].isin(SEA_OR_FLOODED)
         self.media_mar = gdf.loc[filtro_mar_ou_inundado, "Alt2"].mean()
 
