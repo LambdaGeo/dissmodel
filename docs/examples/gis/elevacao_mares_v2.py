@@ -43,6 +43,7 @@ class Elevacao(Model):
         
         affected = [idx]  # começa com a célula atual
         
+        self.celulas_modificadas += 1
         count = 1
         for v_idx in viz_idxs:
             if self.env.gdf.loc[v_idx, "Alt2"] < cell["Alt2"]:
@@ -59,12 +60,15 @@ class Elevacao(Model):
         # Inicializa uma série com zeros para acumular alterações
         delta = pd.Series(0, index=self.env.gdf.index, dtype=float)
 
+        self.celulas_modificadas = 0
+        self.soma_elevacao = 0
         # Itera sobre os índices de interesse
         target_idxs = self.env.gdf[self.env.gdf["Usos"] == 3].index
         for idx in target_idxs:
             updates = self.update_sea_level(idx)
             for i, flow in updates.items():
                 delta[i] += flow # pode receber agua de mais de uma celula
+                self.soma_elevacao +=  flow
 
         #print (delta)
         # Aplica todas as atualizações de uma vez
@@ -75,7 +79,7 @@ class Elevacao(Model):
         filtro_mar_ou_inundado = gdf["Usos"].isin(SEA_OR_FLOODED)
         self.media_mar = gdf.loc[filtro_mar_ou_inundado, "Alt2"].mean()
 
-
+        print (self.celulas_modificadas, self.soma_elevacao, self.soma_elevacao/self.celulas_modificadas)
 
 
 #file_name = "../brmangue/data/teste_uso/Recorte_Teste.shp"
@@ -90,7 +94,7 @@ print (gdf.head())
 env = Environment(
     gdf=gdf,
     end_time=20,
-    start_time=0
+    start_time=1
 )
 
 
@@ -102,7 +106,7 @@ env = Environment(
 ### Visualização da simulação
 
 #model = Elevacao(create_neighbohood="Queen", seaLevelRiseRate=0.5)
-model = Elevacao( seaLevelRiseRate=1)
+model = Elevacao( seaLevelRiseRate=0.5)
 
 import libpysal
 import json
@@ -117,10 +121,10 @@ model.create_neighbohood = True
 
 # Mapeamento de cores personalizado para os estados das células
 #plot_params={ "column":"Alt2","cmap": "Blues"}
-plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'viridis'}
+plot_params={"column":'Alt2', "scheme":'quantiles', "k":5, "legend":True, "cmap":'RdYlGn'}
 
 # Componente de visualização do mapa
-Map(plot_params=plot_params)
+#Map(plot_params=plot_params)
 
 Chart(select={"media_mar"})
 Chart(select={"media_geral"})
