@@ -1,0 +1,26 @@
+@startuml packages_CAModels
+set namespaceSeparator none
+package "dissmodel.models.ca" as dissmodel.models.ca {
+}
+package "dissmodel.models.ca.anneal" as dissmodel.models.ca.anneal {
+}
+package "dissmodel.models.ca.fire_model" as dissmodel.models.ca.fire_model {
+}
+package "dissmodel.models.ca.fire_model_prob" as dissmodel.models.ca.fire_model_prob {
+}
+package "dissmodel.models.ca.game_of_life" as dissmodel.models.ca.game_of_life {
+}
+package "dissmodel.models.ca.growth" as dissmodel.models.ca.growth {
+}
+package "dissmodel.models.ca.propagation" as dissmodel.models.ca.propagation {
+}
+package "dissmodel.models.ca.snow" as dissmodel.models.ca.snow {
+}
+dissmodel.models.ca --> dissmodel.models.ca.anneal
+dissmodel.models.ca --> dissmodel.models.ca.fire_model
+dissmodel.models.ca --> dissmodel.models.ca.fire_model_prob
+dissmodel.models.ca --> dissmodel.models.ca.game_of_life
+dissmodel.models.ca --> dissmodel.models.ca.growth
+dissmodel.models.ca --> dissmodel.models.ca.propagation
+dissmodel.models.ca --> dissmodel.models.ca.snow
+@enduml

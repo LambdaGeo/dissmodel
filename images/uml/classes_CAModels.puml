@@ -1,0 +1,60 @@
+@startuml classes_CAModels
+set namespaceSeparator none
+class "Anneal" as dissmodel.models.ca.anneal.Anneal {
+  L : int
+  R : int
+  initialize()
+  rule(idx)
+  setup()
+}
+class "FireModel" as dissmodel.models.ca.fire_model.FireModel {
+  BURNED : int
+  BURNING : int
+  FOREST : int
+  initialize()
+  rule(idx)
+  setup()
+}
+class "FireModelProb" as dissmodel.models.ca.fire_model_prob.FireModelProb {
+  BURNED : int
+  BURNING : int
+  FOREST : int
+  prob_combustion : float
+  prob_combustion : float
+  prob_regrowth : float
+  prob_regrowth : float
+  rule(idx)
+  setup(prob_combustion, prob_regrowth)
+}
+class "GameOfLife" as dissmodel.models.ca.game_of_life.GameOfLife {
+  initialize()
+  rule(idx)
+  setup()
+}
+class "Growth" as dissmodel.models.ca.growth.Growth {
+  ALIVE : int
+  EMPTY : int
+  probability : float
+  probability : float
+  initialize()
+  rule(idx)
+  setup(probability)
+}
+class "Propagation" as dissmodel.models.ca.propagation.Propagation {
+  perc_on : float
+  perc_on : float
+  prob : float
+  prob : float
+  initialize()
+  rule(idx)
+  setup(prob, perc_on)
+}
+class "Snow" as dissmodel.models.ca.snow.Snow {
+  EMPTY : int
+  SNOW : int
+  probability : float
+  probability : float
+  rule(idx)
+  setup(probability)
+}
+@enduml

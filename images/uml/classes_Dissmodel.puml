@@ -1,0 +1,205 @@
+@startuml classes_Dissmodel
+set namespaceSeparator none
+class "Anneal" as dissmodel.models.ca.anneal.Anneal {
+  L : int
+  R : int
+  initialize()
+  rule(idx)
+  setup()
+}
+class "CellularAutomaton" as dissmodel.geo.celular_automaton.CellularAutomaton {
+  dim : NoneType
+  gdf
+  state_attr : str
+  create_neighborhood(strategy, neighbors_dict)
+  execute()
+  {abstract}initialize()
+  neighs(idx)
+  neighs_id(idx)
+  {abstract}rule(idx)
+}
+class "Chart" as dissmodel.visualization.chart.Chart {
+  ax
+  fig
+  interval : int
+  pause : bool
+  plot_area : NoneType
+  select : NoneType
+  time_points : list
+  execute()
+  setup(select, pause, plot_area)
+}
+class "Coffee" as dissmodel.models.sysdyn.cofee.Coffee {
+  finalTime : int
+  finalTime : int
+  roomTemperature : float
+  roomTemperature : int
+  temperature : float
+  temperature : int, float
+  execute()
+}
+class "Daisyworld" as dissmodel.models.sysdyn.daisyword.Daisyworld {
+  ave_temp
+  black_albedo : float
+  black_area : float
+  daisy_area : float
+  decay_rate : float
+  empty_area : float
+  planet_albedo
+  planet_area : float
+  soil_albedo : float
+  sun_luminosity : float
+  white_albedo : float
+  white_area : float
+  compute_planet_albedo()
+  execute()
+}
+class "Environment" as dissmodel.core.environment.Environment {
+  end_time : NoneType
+  start_time : int
+  now()
+  reset()
+  run(till)
+}
+class "FillStrategy" as dissmodel.geo.fill.FillStrategy {
+  name
+}
+class "FireModel" as dissmodel.models.ca.fire_model.FireModel {
+  BURNED : int
+  BURNING : int
+  FOREST : int
+  initialize()
+  rule(idx)
+  setup()
+}
+class "FireModelProb" as dissmodel.models.ca.fire_model_prob.FireModelProb {
+  BURNED : int
+  BURNING : int
+  FOREST : int
+  prob_combustion : float
+  prob_combustion : float
+  prob_regrowth : float
+  prob_regrowth : float
+  rule(idx)
+  setup(prob_combustion, prob_regrowth)
+}
+class "GameOfLife" as dissmodel.models.ca.game_of_life.GameOfLife {
+  initialize()
+  rule(idx)
+  setup()
+}
+class "Growth" as dissmodel.models.ca.growth.Growth {
+  ALIVE : int
+  EMPTY : int
+  probability : float
+  probability : float
+  initialize()
+  rule(idx)
+  setup(probability)
+}
+class "Lorenz" as dissmodel.models.sysdyn.lorenz.Lorenz {
+  beta : float
+  beta : float
+  delta : float
+  delta : float
+  rho : float
+  rho : float
+  sigma : float
+  sigma : float
+  x : float
+  x : float
+  y : float
+  y : float
+  z : float
+  z : float
+  execute()
+}
+class "Map" as dissmodel.visualization.map.Map {
+  ax
+  fig
+  gdf
+  pause : bool
+  plot_area : NoneType
+  plot_params
+  execute()
+  setup(gdf, plot_params, pause, plot_area)
+  update(year, gdf)
+}
+class "Model" as dissmodel.core.model.Model {
+  end_time : float
+  start_time : int
+  process()
+}
+class "PopulationGrowth" as dissmodel.models.sysdyn.population_growth.PopulationGrowth {
+  growth : float
+  growth : float
+  growthChange : float
+  growthChange : int
+  population : float
+  population : int, float
+  execute()
+}
+class "PredatorPrey" as dissmodel.models.sysdyn.predatorprey.PredatorPrey {
+  predDeath : float
+  predDeath : float
+  predGrowthKills : float
+  predGrowthKills : float
+  predator : float
+  predator : int, float
+  prey : float
+  prey : int, float
+  preyDeathPred : float
+  preyDeathPred : float
+  preyGrowth : float
+  preyGrowth : float
+  execute()
+}
+class "Propagation" as dissmodel.models.ca.propagation.Propagation {
+  perc_on : float
+  perc_on : float
+  prob : float
+  prob : float
+  initialize()
+  rule(idx)
+  setup(prob, perc_on)
+}
+class "SIR" as dissmodel.models.sysdyn.sir.SIR {
+  contacts : int
+  duration : int
+  duration : int
+  final_time : int
+  infected : int
+  infected : int, float
+  probability : float
+  recovered : int
+  recovered : int, float
+  susceptible : int
+  susceptible : int
+  execute()
+  update()
+}
+class "Snow" as dissmodel.models.ca.snow.Snow {
+  EMPTY : int
+  SNOW : int
+  probability : float
+  probability : float
+  rule(idx)
+  setup(probability)
+}
+dissmodel.geo.celular_automaton.CellularAutomaton --|> dissmodel.core.model.Model
+dissmodel.models.ca.anneal.Anneal --|> dissmodel.geo.celular_automaton.CellularAutomaton
+dissmodel.models.ca.fire_model.FireModel --|> dissmodel.geo.celular_automaton.CellularAutomaton
+dissmodel.models.ca.fire_model_prob.FireModelProb --|> dissmodel.geo.celular_automaton.CellularAutomaton
+dissmodel.models.ca.game_of_life.GameOfLife --|> dissmodel.geo.celular_automaton.CellularAutomaton
+dissmodel.models.ca.growth.Growth --|> dissmodel.geo.celular_automaton.CellularAutomaton
+dissmodel.models.ca.propagation.Propagation --|> dissmodel.geo.celular_automaton.CellularAutomaton
+dissmodel.models.ca.snow.Snow --|> dissmodel.geo.celular_automaton.CellularAutomaton
+dissmodel.models.sysdyn.cofee.Coffee --|> dissmodel.core.model.Model
+dissmodel.models.sysdyn.daisyword.Daisyworld --|> dissmodel.core.model.Model
+dissmodel.models.sysdyn.lorenz.Lorenz --|> dissmodel.core.model.Model
+dissmodel.models.sysdyn.population_growth.PopulationGrowth --|> dissmodel.core.model.Model
+dissmodel.models.sysdyn.predatorprey.PredatorPrey --|> dissmodel.core.model.Model
+dissmodel.models.sysdyn.sir.SIR --|> dissmodel.core.model.Model
+dissmodel.visualization.chart.Chart --|> dissmodel.core.model.Model
+dissmodel.visualization.map.Map --|> dissmodel.core.model.Model
+@enduml

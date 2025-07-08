@@ -1,0 +1,1284 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://lambdageo.github.io/dissmodel/modules/core/">
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../visualization/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Core - DisSModel</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#overview" class="md-skip">
+          Ir para o conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href="../.." title="DisSModel" class="md-header__button md-logo" aria-label="DisSModel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            DisSModel
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Core
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lambdageo/dissmodel" title="Ir ao repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dissmodel
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="DisSModel" class="md-nav__button md-logo" aria-label="DisSModel" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    DisSModel
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lambdageo/dissmodel" title="Ir ao repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    dissmodel
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Início
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Módulos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Módulos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Core
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classe-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classe Environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classe Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classe-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classe Model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classe Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-utilizar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Utilizar
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interpretacao-dos-resultados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interpretação dos Resultados
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modelagem-orientada-a-objetos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modelagem Orientada a Objetos
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visualization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visualization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../geo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Geo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Exemplos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Exemplos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Autômatos Celulares
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Autômatos Celulares
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/ca/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introdução
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/ca/game_of_life/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Game of Life
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/ca/fire_model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Modelo de Queimada
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Systemas Dinâmicos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Systemas Dinâmicos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/sysdyn/run_sir/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SIR
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    UML Diagrams
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            UML Diagrams
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uml/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Overview
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uml/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Core
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uml/geo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Geo
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            Models
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uml/models_ca/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    CA
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uml/models_sysdyn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SysDyn
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../uml/visualization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Visualization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classe-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classe Environment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classe Environment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classe-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Classe Model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classe Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#funcionalidades_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Funcionalidades
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-utilizar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como Utilizar
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exemplo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exemplo
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exemplo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interpretacao-dos-resultados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interpretação dos Resultados
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modelagem-orientada-a-objetos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modelagem Orientada a Objetos
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Core</h1>
+
+<h3 id="overview">Overview</h3>
+<p>O <strong>Módulo Core</strong> se baseia na poderosa biblioteca <strong>Salabim</strong>, que permite a construção de simulações discretas e o controle de eventos no tempo. O módulo é composto por duas classes principais: <strong>Environment</strong> e <strong>Model</strong>. Ambas são extensões das classes fornecidas pelo <strong>Salabim</strong>, mas com melhorias que oferecem um controle mais preciso sobre o tempo de simulação, além de permitir a coleta de dados para visualização durante a execução do modelo.</p>
+<hr />
+<h3 id="classe-environment">Classe <code>Environment</code></h3>
+<p>A classe <strong>Environment</strong> é uma extensão da classe <code>sim.Environment</code> do <strong>Salabim</strong>, que foi customizada para permitir a definição de um <strong>tempo inicial e tempo final</strong> de simulação, oferecendo maior flexibilidade no controle da execução.</p>
+<h4 id="funcionalidades">Funcionalidades</h4>
+<ul>
+<li><strong>Tempo Inicial e Final Personalizados</strong>: A classe permite a definição de um <code>start_time</code> e <code>end_time</code> personalizados para a simulação, proporcionando um controle mais preciso sobre os períodos em que a simulação deve ocorrer.</li>
+<li><strong>Execução da Simulação</strong>: O método <code>run</code> da classe é responsável por rodar a simulação, respeitando os tempos de início e fim definidos. Se um tempo <code>till</code> for fornecido, ele substituirá o <code>end_time</code>, permitindo maior flexibilidade durante a execução.</li>
+<li><strong>Reset de Estatísticas</strong>: O método <code>reset</code> é responsável por limpar os dados de visualização, caso existam, e reiniciar os componentes de estatísticas ou gráficos. Isso é útil quando se deseja reiniciar uma simulação com dados limpos.</li>
+</ul>
+<h3 id="classe-model">Classe <code>Model</code></h3>
+<p>A classe <strong>Model</strong> é uma extensão da classe <code>sim.Component</code> do <strong>Salabim</strong>, com melhorias no controle de tempo de execução e no armazenamento de dados para visualizações gráficas.</p>
+<h4 id="funcionalidades_1">Funcionalidades</h4>
+<ul>
+<li><strong>Controle de Tempo Personalizado</strong>: Assim como na classe <code>Environment</code>, a classe <strong>Model</strong> permite que a simulação seja controlada por <strong>tempo de início</strong> e <strong>tempo de término</strong> definidos pelo usuário.</li>
+<li><strong>Execução do Processo</strong>: O método <code>process</code> controla o ciclo de vida do modelo, aguardando até o <strong>tempo de início</strong> e realizando a execução até o <strong>tempo de término</strong>. O processo pode ser dividido em etapas (passos), com o tempo de espera entre essas etapas configurado pelo usuário.</li>
+<li><strong>Armazenamento de Dados para Visualização</strong>: Ao definir atributos que devem ser plotados, a classe garante que esses dados sejam coletados e armazenados em um dicionário de metadados. Essa funcionalidade facilita a criação de gráficos durante a execução do modelo.</li>
+</ul>
+<h3 id="como-utilizar">Como Utilizar</h3>
+<ul>
+<li>
+<p><strong>Instanciação do Ambiente</strong>: O usuário pode criar uma instância do ambiente com um tempo de início e fim definidos.</p>
+<div class="highlight"><pre><span></span><code><span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</code></pre></div>
+</li>
+<li>
+<p><strong>Criação de Modelos</strong>: Os modelos podem ser instanciados com tempos de início e fim específicos, além de definir o intervalo entre os passos.</p>
+<div class="highlight"><pre><span></span><code><span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Modelo de Transporte&quot;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">process</span><span class="p">()</span>
+</code></pre></div>
+</li>
+<li>
+<p><strong>Execução da Simulação</strong>: Para rodar a simulação com os tempos definidos, o método <code>run</code> do ambiente deve ser chamado.</p>
+<div class="highlight"><pre><span></span><code><span class="n">env</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+</li>
+</ul>
+<hr />
+<p>Essas duas classes proporcionam um controle mais fino sobre os tempos de execução e permitem coletar dados automaticamente para visualização, o que facilita a análise dos resultados. Elas são fundamentais para construir modelos discretos mais dinâmicos e personalizados.</p>
+<h3 id="exemplo">Exemplo</h3>
+<p>O controle de tempo no <strong>Módulo Core</strong> é um dos aspectos mais poderosos da ferramenta. A seguir, apresentamos um exemplo prático que demonstra como diferentes modelos podem ser executados em um ambiente de simulação com tempos de início e fim específicos, permitindo a execução paralela ou sequencial.</p>
+<p>Vamos ilustrar como três modelos (<code>ModeloA</code>, <code>ModeloB</code> e <code>ModeloC</code>) podem ser configurados para executar em diferentes intervalos de tempo dentro de um ambiente de simulação. O exemplo abaixo utiliza as classes <strong>Environment</strong> e <strong>Model</strong> do módulo <strong>Core</strong>.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Environment</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ModeloA</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[A] Tempo: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ModeloB</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[B] Tempo: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ModeloC</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[C] Tempo: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Cria o ambiente com tempo inicial e final definidos</span>
+<span class="n">env_a</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Modelo A&quot;</span><span class="p">,</span>
+                    <span class="n">start_time</span> <span class="o">=</span> <span class="mi">2010</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="mi">2016</span><span class="p">)</span>
+
+<span class="c1"># Instancia os modelos com tempos de início e fim diferentes</span>
+<span class="n">ModeloA</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">2012</span><span class="p">)</span>
+<span class="n">ModeloB</span><span class="p">(</span><span class="n">end_time</span><span class="o">=</span><span class="mi">2013</span><span class="p">)</span>
+<span class="n">ModeloC</span><span class="p">()</span>
+
+<span class="c1"># Roda a simulação</span>
+<span class="n">env_a</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+<p><strong>Saída Esperada</strong></p>
+<div class="highlight"><pre><span></span><code>Running from 2010 to 2016 (duration: 6)
+[B] Tempo: 2010.0
+[C] Tempo: 2010.0
+[B] Tempo: 2011.0
+[C] Tempo: 2011.0
+[A] Tempo: 2012.0
+[B] Tempo: 2012.0
+[C] Tempo: 2012.0
+[A] Tempo: 2013.0
+[C] Tempo: 2013.0
+[A] Tempo: 2014.0
+[C] Tempo: 2014.0
+[A] Tempo: 2015.0
+[C] Tempo: 2015.0
+[A] Tempo: 2016.0
+[C] Tempo: 2016.0
+</code></pre></div>
+<h4 id="interpretacao-dos-resultados">Interpretação dos Resultados</h4>
+<p>Neste exemplo, instanciamos um ambiente de simulação com intervalo temporal entre <strong>2010</strong> e <strong>2016</strong>. Três modelos distintos são inseridos nesse ambiente, cada um com sua configuração temporal específica:</p>
+<ul>
+<li><code>ModeloA</code>: executa a partir de 2012 até o final do ambiente (2016).</li>
+<li><code>ModeloB</code>: inicia em 2010 e termina em 2013.</li>
+<li><code>ModeloC</code>: executa continuamente durante todo o intervalo da simulação, de 2010 a 2016.</li>
+</ul>
+<p>A saída mostra os registros temporais de execução de cada modelo, evidenciando como o mecanismo de controle de tempo personalizado permite a execução simultânea e coordenada dos modelos, de acordo com seus respectivos intervalos de atuação.</p>
+<h3 id="modelagem-orientada-a-objetos">Modelagem Orientada a Objetos</h3>
+<p>A ferramenta é estruturada com base nos princípios de <strong>programação orientada a objetos (POO)</strong>, permitindo encapsular dados e comportamentos em classes reutilizáveis, estendendo modelos e compondo sistemas complexos de forma modular.</p>
+<p>Cada modelo criado herda da classe base <code>Model</code>, que garante a integração com o ambiente de simulação (<code>Environment</code>) e permite que métodos como <code>setup()</code> e <code>execute()</code> sejam chamados automaticamente a cada passo da simulação.</p>
+<p><strong>Exemplo: Modelo SIR</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SIR</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">susceptible</span><span class="o">=</span><span class="mi">9998</span><span class="p">,</span> <span class="n">infected</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">recovered</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">contacts</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">final_time</span><span class="o">=</span><span class="mi">30</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">=</span> <span class="n">susceptible</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">=</span> <span class="n">infected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovered</span> <span class="o">=</span> <span class="n">recovered</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">=</span> <span class="n">contacts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">probability</span> <span class="o">=</span> <span class="n">probability</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">final_time</span> <span class="o">=</span> <span class="n">final_time</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovered</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">/</span> <span class="n">total</span>
+        <span class="n">new_infected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">prop</span>
+        <span class="n">new_recovered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">-=</span> <span class="n">new_infected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">+=</span> <span class="n">new_infected</span> <span class="o">-</span> <span class="n">new_recovered</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recovered</span> <span class="o">+=</span> <span class="n">new_recovered</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</code></pre></div>
+<p>A estrutura orientada a objetos facilita a extensão do modelo, a separação de responsabilidades e a reutilização de lógica entre diferentes simulações.</p>
+<p>🧪 Classe do Modelo: SIR</p>
+<p>Define o modelo SIR como uma subclasse de Model.</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SIR</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+</code></pre></div>
+<p>Esses são atributos do modelo:
+- susceptible: número de pessoas suscetíveis.
+- infected: número de pessoas infectadas.
+- recovered: número de pessoas recuperadas.
+- duration: tempo médio que uma pessoa permanece infectada.</p>
+<p>🔧 Construtor <strong>init</strong></p>
+<p>Define valores padrão para o modelo e armazena os parâmetros:</p>
+<ul>
+<li>contacts: número médio de contatos por infectado por unidade de tempo.</li>
+<li>probability: probabilidade de contágio por contato.</li>
+<li>final_time: tempo final da simulação.</li>
+</ul>
+<p>Os outros parâmetros (susceptible, etc.) são os estados iniciais do modelo.</p>
+<p>Note que super().<strong>init</strong>() é chamado para garantir que a lógica de tempo e ambiente do DisSModel seja inicializada corretamente.</p>
+<p>🔁 Método update
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</code></pre></div>
+Este método atualiza os valores das variáveis do modelo a cada passo de tempo. A lógica segue as equações diferenciais clássicas do modelo SIR, adaptadas para forma discreta:</p>
+<p>Cálculos:
+População total:</p>
+<p><div class="highlight"><pre><span></span><code><span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recovered</span>
+<span class="n">Taxa</span> <span class="n">de</span> <span class="n">infecção</span><span class="p">:</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">contacts</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span>
+<span class="n">Proporção</span> <span class="n">de</span> <span class="n">suscetíveis</span><span class="p">:</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">/</span> <span class="n">total</span>
+<span class="n">Novos</span> <span class="n">infectados</span><span class="p">:</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">new_infected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">prop</span>
+<span class="n">Novos</span> <span class="n">recuperados</span><span class="p">:</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="n">new_recovered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span>
+</code></pre></div>
+<p>Atualização dos estados:
+<div class="highlight"><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">susceptible</span> <span class="o">-=</span> <span class="n">new_infected</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">infected</span> <span class="o">+=</span> <span class="n">new_infected</span> <span class="o">-</span> <span class="n">new_recovered</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">recovered</span> <span class="o">+=</span> <span class="n">new_recovered</span>
+</code></pre></div></p>
+<p>▶️ Método execute
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</code></pre></div>
+Esse método é chamado a cada passo de tempo do ambiente do DisSModel. Aqui, ele apenas chama self.update() — ou seja, aplica a lógica do modelo a cada instante.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "Mais 1 nesta p\u00e1gina", "search.result.more.other": "Mais # nesta p\u00e1gina", "search.result.none": "Nenhum resultado encontrado", "search.result.one": "1 resultado encontrado", "search.result.other": "# resultados encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

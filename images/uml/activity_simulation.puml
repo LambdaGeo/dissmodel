@@ -1,0 +1,16 @@
+@startuml
+start
+:Initialize Environment\n(From core.Environment);
+:Create CellularAutomaton\n(From geo.CellularAutomaton);
+:Set Initial Grid\n(Using geo.fill.FillStrategy);
+:Configure Neighborhood\n(Using libpysal.weights);
+while (Simulation Running?) is (yes)
+  :Update Cell States\n(Apply Rules: GameOfLife, FireModel, etc.);
+  :Record State for Visualization;
+endwhile (no)
+:Generate Map Visualization\n(Using visualization.Map);
+:Generate Chart Visualization\n(Using visualization.Chart);
+:Save Results to File;
+:Upload Results\n(Using publish.dw_query);
+stop
+@enduml

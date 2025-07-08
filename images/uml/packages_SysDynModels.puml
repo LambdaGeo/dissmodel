@@ -1,0 +1,23 @@
+@startuml packages_SysDynModels
+set namespaceSeparator none
+package "dissmodel.models.sysdyn" as dissmodel.models.sysdyn {
+}
+package "dissmodel.models.sysdyn.cofee" as dissmodel.models.sysdyn.cofee {
+}
+package "dissmodel.models.sysdyn.daisyword" as dissmodel.models.sysdyn.daisyword {
+}
+package "dissmodel.models.sysdyn.lorenz" as dissmodel.models.sysdyn.lorenz {
+}
+package "dissmodel.models.sysdyn.population_growth" as dissmodel.models.sysdyn.population_growth {
+}
+package "dissmodel.models.sysdyn.predatorprey" as dissmodel.models.sysdyn.predatorprey {
+}
+package "dissmodel.models.sysdyn.sir" as dissmodel.models.sysdyn.sir {
+}
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.cofee
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.daisyword
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.lorenz
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.population_growth
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.predatorprey
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.sir
+@enduml

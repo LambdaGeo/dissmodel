@@ -1,0 +1,115 @@
+@startuml packages_DissmodelPackages
+set namespaceSeparator none
+package "dissmodel" as dissmodel {
+}
+package "dissmodel.core" as dissmodel.core {
+}
+package "dissmodel.core.environment" as dissmodel.core.environment {
+}
+package "dissmodel.core.model" as dissmodel.core.model {
+}
+package "dissmodel.geo" as dissmodel.geo {
+}
+package "dissmodel.geo.celular_automaton" as dissmodel.geo.celular_automaton {
+}
+package "dissmodel.geo.fill" as dissmodel.geo.fill {
+}
+package "dissmodel.geo.neihborhood" as dissmodel.geo.neihborhood {
+}
+package "dissmodel.geo.regular_grid" as dissmodel.geo.regular_grid {
+}
+package "dissmodel.models" as dissmodel.models {
+}
+package "dissmodel.models.ca" as dissmodel.models.ca {
+}
+package "dissmodel.models.ca.anneal" as dissmodel.models.ca.anneal {
+}
+package "dissmodel.models.ca.fire_model" as dissmodel.models.ca.fire_model {
+}
+package "dissmodel.models.ca.fire_model_prob" as dissmodel.models.ca.fire_model_prob {
+}
+package "dissmodel.models.ca.game_of_life" as dissmodel.models.ca.game_of_life {
+}
+package "dissmodel.models.ca.growth" as dissmodel.models.ca.growth {
+}
+package "dissmodel.models.ca.propagation" as dissmodel.models.ca.propagation {
+}
+package "dissmodel.models.ca.snow" as dissmodel.models.ca.snow {
+}
+package "dissmodel.models.sysdyn" as dissmodel.models.sysdyn {
+}
+package "dissmodel.models.sysdyn.cofee" as dissmodel.models.sysdyn.cofee {
+}
+package "dissmodel.models.sysdyn.daisyword" as dissmodel.models.sysdyn.daisyword {
+}
+package "dissmodel.models.sysdyn.lorenz" as dissmodel.models.sysdyn.lorenz {
+}
+package "dissmodel.models.sysdyn.population_growth" as dissmodel.models.sysdyn.population_growth {
+}
+package "dissmodel.models.sysdyn.predatorprey" as dissmodel.models.sysdyn.predatorprey {
+}
+package "dissmodel.models.sysdyn.sir" as dissmodel.models.sysdyn.sir {
+}
+package "dissmodel.visualization" as dissmodel.visualization {
+}
+package "dissmodel.visualization.chart" as dissmodel.visualization.chart {
+}
+package "dissmodel.visualization.map" as dissmodel.visualization.map {
+}
+package "dissmodel.visualization.streamlit" as dissmodel.visualization.streamlit {
+}
+dissmodel.core --> dissmodel.core.environment
+dissmodel.core --> dissmodel.core.model
+dissmodel.geo --> dissmodel.geo.celular_automaton
+dissmodel.geo --> dissmodel.geo.fill
+dissmodel.geo --> dissmodel.geo.neihborhood
+dissmodel.geo --> dissmodel.geo.regular_grid
+dissmodel.geo.celular_automaton --> dissmodel.core
+dissmodel.geo.celular_automaton --> dissmodel.geo
+dissmodel.models.ca --> dissmodel.models.ca.anneal
+dissmodel.models.ca --> dissmodel.models.ca.fire_model
+dissmodel.models.ca --> dissmodel.models.ca.fire_model_prob
+dissmodel.models.ca --> dissmodel.models.ca.game_of_life
+dissmodel.models.ca --> dissmodel.models.ca.growth
+dissmodel.models.ca --> dissmodel.models.ca.propagation
+dissmodel.models.ca --> dissmodel.models.ca.snow
+dissmodel.models.ca.anneal --> dissmodel.geo
+dissmodel.models.ca.fire_model --> dissmodel.geo
+dissmodel.models.ca.fire_model --> dissmodel.geo.fill
+dissmodel.models.ca.fire_model --> dissmodel.geo.regular_grid
+dissmodel.models.ca.fire_model_prob --> dissmodel.geo.celular_automaton
+dissmodel.models.ca.game_of_life --> dissmodel.geo
+dissmodel.models.ca.game_of_life --> dissmodel.geo.celular_automaton
+dissmodel.models.ca.game_of_life --> dissmodel.geo.fill
+dissmodel.models.ca.game_of_life --> dissmodel.geo.regular_grid
+dissmodel.models.ca.growth --> dissmodel.geo
+dissmodel.models.ca.propagation --> dissmodel.core
+dissmodel.models.ca.propagation --> dissmodel.geo
+dissmodel.models.ca.propagation --> dissmodel.geo.fill
+dissmodel.models.ca.propagation --> dissmodel.geo.regular_grid
+dissmodel.models.ca.snow --> dissmodel.geo
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.cofee
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.daisyword
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.lorenz
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.population_growth
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.predatorprey
+dissmodel.models.sysdyn --> dissmodel.models.sysdyn.sir
+dissmodel.models.sysdyn.cofee --> dissmodel.core
+dissmodel.models.sysdyn.cofee --> dissmodel.visualization
+dissmodel.models.sysdyn.daisyword --> dissmodel.core
+dissmodel.models.sysdyn.daisyword --> dissmodel.visualization
+dissmodel.models.sysdyn.lorenz --> dissmodel.core
+dissmodel.models.sysdyn.lorenz --> dissmodel.visualization
+dissmodel.models.sysdyn.population_growth --> dissmodel.core
+dissmodel.models.sysdyn.population_growth --> dissmodel.visualization
+dissmodel.models.sysdyn.predatorprey --> dissmodel.core
+dissmodel.models.sysdyn.predatorprey --> dissmodel.visualization
+dissmodel.models.sysdyn.sir --> dissmodel.core
+dissmodel.models.sysdyn.sir --> dissmodel.visualization
+dissmodel.visualization --> dissmodel.visualization.chart
+dissmodel.visualization --> dissmodel.visualization.map
+dissmodel.visualization --> dissmodel.visualization.streamlit
+dissmodel.visualization.chart --> dissmodel.core
+dissmodel.visualization.chart --> dissmodel.visualization.streamlit
+dissmodel.visualization.map --> dissmodel.core
+@enduml

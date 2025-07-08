@@ -1,0 +1,11 @@
+@startuml packages_Core
+set namespaceSeparator none
+package "dissmodel.core" as dissmodel.core {
+}
+package "dissmodel.core.environment" as dissmodel.core.environment {
+}
+package "dissmodel.core.model" as dissmodel.core.model {
+}
+dissmodel.core --> dissmodel.core.environment
+dissmodel.core --> dissmodel.core.model
+@enduml

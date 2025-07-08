@@ -1,0 +1,18 @@
+@startuml packages_GeoClasses
+set namespaceSeparator none
+package "dissmodel.geo" as dissmodel.geo {
+}
+package "dissmodel.geo.celular_automaton" as dissmodel.geo.celular_automaton {
+}
+package "dissmodel.geo.fill" as dissmodel.geo.fill {
+}
+package "dissmodel.geo.neihborhood" as dissmodel.geo.neihborhood {
+}
+package "dissmodel.geo.regular_grid" as dissmodel.geo.regular_grid {
+}
+dissmodel.geo --> dissmodel.geo.celular_automaton
+dissmodel.geo --> dissmodel.geo.fill
+dissmodel.geo --> dissmodel.geo.neihborhood
+dissmodel.geo --> dissmodel.geo.regular_grid
+dissmodel.geo.celular_automaton --> dissmodel.geo
+@enduml

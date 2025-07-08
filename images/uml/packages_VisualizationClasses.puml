@@ -1,0 +1,14 @@
+@startuml packages_VisualizationClasses
+set namespaceSeparator none
+package "dissmodel.visualization" as dissmodel.visualization {
+}
+package "dissmodel.visualization.chart" as dissmodel.visualization.chart {
+}
+package "dissmodel.visualization.map" as dissmodel.visualization.map {
+}
+package "dissmodel.visualization.streamlit" as dissmodel.visualization.streamlit {
+}
+dissmodel.visualization --> dissmodel.visualization.chart
+dissmodel.visualization --> dissmodel.visualization.map
+dissmodel.visualization --> dissmodel.visualization.streamlit
+@enduml

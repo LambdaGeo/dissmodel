@@ -1,0 +1,15 @@
+@startuml classes_CoreClasses
+set namespaceSeparator none
+class "Environment" as dissmodel.core.environment.Environment {
+  end_time : NoneType
+  start_time : int
+  now()
+  reset()
+  run(till)
+}
+class "Model" as dissmodel.core.model.Model {
+  end_time : float
+  start_time : int
+  process()
+}
+@enduml

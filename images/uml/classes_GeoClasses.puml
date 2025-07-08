@@ -1,0 +1,17 @@
+@startuml classes_GeoClasses
+set namespaceSeparator none
+class "CellularAutomaton" as dissmodel.geo.celular_automaton.CellularAutomaton {
+  dim : NoneType
+  gdf
+  state_attr : str
+  create_neighborhood(strategy, neighbors_dict)
+  execute()
+  {abstract}initialize()
+  neighs(idx)
+  neighs_id(idx)
+  {abstract}rule(idx)
+}
+class "FillStrategy" as dissmodel.geo.fill.FillStrategy {
+  name
+}
+@enduml

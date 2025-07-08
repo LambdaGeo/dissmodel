@@ -1,0 +1,25 @@
+@startuml classes_VisualizationClasses
+set namespaceSeparator none
+class "Chart" as dissmodel.visualization.chart.Chart {
+  ax
+  fig
+  interval : int
+  pause : bool
+  plot_area : NoneType
+  select : NoneType
+  time_points : list
+  execute()
+  setup(select, pause, plot_area)
+}
+class "Map" as dissmodel.visualization.map.Map {
+  ax
+  fig
+  gdf
+  pause : bool
+  plot_area : NoneType
+  plot_params
+  execute()
+  setup(gdf, plot_params, pause, plot_area)
+  update(year, gdf)
+}
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+actor User
+User --> (Run Simulation)
+User --> (Visualize Results)
+User --> (Publish Data)
+(Run Simulation) .> (Cellular Automata Models) : include
+(Run Simulation) .> (System Dynamics Models) : include
+(Visualize Results) .> (Generate Charts) : include
+(Visualize Results) .> (Generate Maps) : include
+(Publish Data) .> (Upload to datadotworld) : include
+note right of (Run Simulation)
+  Execute models like GameOfLife, FireModel, SIR, or Daisyworld.
+end note
+note right of (Visualize Results)
+  Use Chart for time-series data or Map for spatial data.
+end note
+note right of (Publish Data)
+  Integrate with datadotworld via dw_query.
+end note
+@enduml

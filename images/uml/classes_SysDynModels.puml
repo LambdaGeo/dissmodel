@@ -1,0 +1,84 @@
+@startuml classes_SysDynModels
+set namespaceSeparator none
+class "Coffee" as dissmodel.models.sysdyn.cofee.Coffee {
+  finalTime : int
+  finalTime : int
+  roomTemperature : float
+  roomTemperature : int
+  temperature : float
+  temperature : int, float
+  execute()
+}
+class "Daisyworld" as dissmodel.models.sysdyn.daisyword.Daisyworld {
+  ave_temp
+  black_albedo : float
+  black_area : float
+  daisy_area : float
+  decay_rate : float
+  empty_area : float
+  planet_albedo
+  planet_area : float
+  soil_albedo : float
+  sun_luminosity : float
+  white_albedo : float
+  white_area : float
+  compute_planet_albedo()
+  execute()
+}
+class "Lorenz" as dissmodel.models.sysdyn.lorenz.Lorenz {
+  beta : float
+  beta : float
+  delta : float
+  delta : float
+  rho : float
+  rho : float
+  sigma : float
+  sigma : float
+  x : float
+  x : float
+  y : float
+  y : float
+  z : float
+  z : float
+  execute()
+}
+class "PopulationGrowth" as dissmodel.models.sysdyn.population_growth.PopulationGrowth {
+  growth : float
+  growth : float
+  growthChange : float
+  growthChange : int
+  population : float
+  population : float, int
+  execute()
+}
+class "PredatorPrey" as dissmodel.models.sysdyn.predatorprey.PredatorPrey {
+  predDeath : float
+  predDeath : float
+  predGrowthKills : float
+  predGrowthKills : float
+  predator : float
+  predator : float, int
+  prey : float
+  prey : float, int
+  preyDeathPred : float
+  preyDeathPred : float
+  preyGrowth : float
+  preyGrowth : float
+  execute()
+}
+class "SIR" as dissmodel.models.sysdyn.sir.SIR {
+  contacts : int
+  duration : int
+  duration : int
+  final_time : int
+  infected : float, int
+  infected : int
+  probability : float
+  recovered : int
+  recovered : int, float
+  susceptible : int
+  susceptible : int
+  execute()
+  update()
+}
+@enduml
