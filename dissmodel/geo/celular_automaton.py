@@ -19,6 +19,7 @@ class CellularAutomaton(Model):
         self.gdf = gdf
         self.state_attr = state_attr
         self._neighborhood_created = False
+        self._neighs_cache = {}  # Cache for neighborhood lookups
         self.dim = dim
         super().__init__(step=step, start_time=start_time, end_time=end_time, name=name, *args, **kwargs)
 
@@ -45,16 +46,20 @@ class CellularAutomaton(Model):
             **kwargs
         )
         self._neighborhood_created = True
+        # Create a cache for faster lookup
+        self._neighs_cache = self.gdf["_neighs"].to_dict()
 
     def neighs_id(self, idx):
         """
         Retorna a lista de índices vizinhos da célula `idx`.
         """
+        if self._neighs_cache:
+            return self._neighs_cache.get(idx, [])
         return self.gdf.loc[idx, "_neighs"]
 
     def neighs(self, idx):
         """
-        Retorna as células vizinhas da célula `idx`.
+        Retorna as células vizinhas da célula `idx` como um GeoDataFrame/DataFrame.
 
         Lança erro se a vizinhança ainda não foi criada.
         """
@@ -62,7 +67,17 @@ class CellularAutomaton(Model):
             raise RuntimeError("Vizinhança ainda não foi criada. Use `.create_neighborhood()` primeiro.")
         if "_neighs" not in self.gdf.columns:
             raise ValueError("A coluna '_neighs' não está presente no GeoDataFrame.")
-        return self.gdf.loc[self.neighs_id(idx)]
+
+        ids = self.neighs_id(idx)
+        return self.gdf.loc[ids]
+
+    def neighbor_values(self, idx, col):
+        """
+        Retorna os valores de uma coluna para os vizinhos da célula `idx` como um array numpy.
+        Mais rápido que `neighs(idx)[col]`.
+        """
+        ids = self.neighs_id(idx)
+        return self.gdf.loc[ids, col].values
 
     def rule(self, idx):
         """
@@ -74,8 +89,23 @@ class CellularAutomaton(Model):
         """
         Executa um passo do autômato aplicando a regra a cada célula.
         """
-        #if not self._neighborhood_created:
-        #    raise RuntimeError("Você deve criar a vizinhança antes de executar o modelo. Use `.create_neighborhood()`.")
+        if not self._neighborhood_created:
+            raise RuntimeError("Você deve criar a vizinhança antes de executar o modelo. Use `.create_neighborhood()`.")
+
+        # Optimization:
+        # The main bottleneck is iterating over the GeoDataFrame index and accessing rows individually via .loc within the loop.
+        # We can optimize this by using a temporary dictionary or other structure to speed up neighbor lookups if possible,
+        # or just accepting that the user-defined rule needs to be efficient.
+        # However, the default `self.neighs(idx)` calls `self.gdf.loc[idx, "_neighs"]` and then `self.gdf.loc[ids]`.
+        # These pandas lookups are very slow inside a loop.
+
+        # Ideally, we would vectorize the rule, but since `rule` is an arbitrary python function, we can't easily vectorize it
+        # without changing the API (e.g. asking the user to write a rule that takes the whole dataframe).
+
+        # Strategy:
+        # Since we cannot easily change the user API (rule(idx)), we optimize the internals of `neighs` or pre-fetch data.
+        # But `neighs` is called inside `rule`, which is user code.
+
+        # We can encourage the user to use `apply` but `map` is similar.
         
         self.gdf[self.state_attr] = self.gdf.index.map(self.rule)
-        #print(self.env.now())
