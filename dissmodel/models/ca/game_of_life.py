@@ -8,7 +8,7 @@ from libpysal.weights import Queen
 from dissmodel.geo import regular_grid, fill, FillStrategy
 
 from dissmodel.geo import attach_neighbors
-from dissmodel.geo.celular_automaton import CellularAutomaton
+from dissmodel.geo.celullar_automaton import CellularAutomaton
 
 
 

@@ -10,7 +10,7 @@ package "dissmodel.core.model" as dissmodel.core.model {
 }
 package "dissmodel.geo" as dissmodel.geo {
 }
-package "dissmodel.geo.celular_automaton" as dissmodel.geo.celular_automaton {
+package "dissmodel.geo.celullar_automaton" as dissmodel.geo.celullar_automaton {
 }
 package "dissmodel.geo.fill" as dissmodel.geo.fill {
 }
@@ -60,12 +60,12 @@ package "dissmodel.visualization.streamlit" as dissmodel.visualization.streamlit
 }
 dissmodel.core --> dissmodel.core.environment
 dissmodel.core --> dissmodel.core.model
-dissmodel.geo --> dissmodel.geo.celular_automaton
+dissmodel.geo --> dissmodel.geo.celullar_automaton
 dissmodel.geo --> dissmodel.geo.fill
 dissmodel.geo --> dissmodel.geo.neihborhood
 dissmodel.geo --> dissmodel.geo.regular_grid
-dissmodel.geo.celular_automaton --> dissmodel.core
-dissmodel.geo.celular_automaton --> dissmodel.geo
+dissmodel.geo.celullar_automaton --> dissmodel.core
+dissmodel.geo.celullar_automaton --> dissmodel.geo
 dissmodel.models.ca --> dissmodel.models.ca.anneal
 dissmodel.models.ca --> dissmodel.models.ca.fire_model
 dissmodel.models.ca --> dissmodel.models.ca.fire_model_prob
@@ -77,9 +77,9 @@ dissmodel.models.ca.anneal --> dissmodel.geo
 dissmodel.models.ca.fire_model --> dissmodel.geo
 dissmodel.models.ca.fire_model --> dissmodel.geo.fill
 dissmodel.models.ca.fire_model --> dissmodel.geo.regular_grid
-dissmodel.models.ca.fire_model_prob --> dissmodel.geo.celular_automaton
+dissmodel.models.ca.fire_model_prob --> dissmodel.geo.celullar_automaton
 dissmodel.models.ca.game_of_life --> dissmodel.geo
-dissmodel.models.ca.game_of_life --> dissmodel.geo.celular_automaton
+dissmodel.models.ca.game_of_life --> dissmodel.geo.celullar_automaton
 dissmodel.models.ca.game_of_life --> dissmodel.geo.fill
 dissmodel.models.ca.game_of_life --> dissmodel.geo.regular_grid
 dissmodel.models.ca.growth --> dissmodel.geo

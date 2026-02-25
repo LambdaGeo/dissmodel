@@ -40,7 +40,7 @@ pip install -e .
 A seguir, um exemplo de implementação do clássico **Game of Life**, utilizando o suporte da biblioteca `dissmodel` a autômatos celulares espaciais.
 
 ```sql
-from dissmodel.geo.celular_automaton import CellularAutomaton
+from dissmodel.geo.celullar_automaton import CellularAutomaton
 from dissmodel.geo import fill, FillStrategy
 from libpysal.weights import Queen
 
