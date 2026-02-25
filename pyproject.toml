@@ -14,8 +14,6 @@ authors = [
 license = { text = "MIT" }
 dependencies = [
     "numpy>=1.25.0",
-    "datadotworld==2.0.0",
-    "dotenv==0.9.9",
     "geopandas==1.0.1",
     "pysal==25.1",
     "streamlit==1.45.1",
