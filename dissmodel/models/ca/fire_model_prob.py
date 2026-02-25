@@ -7,7 +7,7 @@ import random
 
 from libpysal.weights import Queen
 
-from dissmodel.geo.celular_automaton import CellularAutomaton
+from dissmodel.geo.celullar_automaton import CellularAutomaton
 
 class FireModelProb(CellularAutomaton):
 
