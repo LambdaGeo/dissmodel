@@ -162,6 +162,13 @@ class Chart(Model):
             display(Image(data=buf.read()))
             plt.close(self.fig)
         elif self.pause:
-            plt.pause(0.1)
-            if self.env.now() == self.env.end_time:
-                plt.show()
+            if is_interactive_backend():
+                plt.pause(0.1)
+                if self.env.now() == self.env.end_time:
+                    plt.show()
+            else:
+                raise RuntimeError(
+                    "No interactive matplotlib backend detected. "
+                    "On Linux, install tkinter:\n\n"
+                    "    sudo apt install python3-tk\n"
+                )

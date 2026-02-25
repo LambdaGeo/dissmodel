@@ -10,6 +10,8 @@ from dissmodel.visualization import Chart
 import sys
 from pathlib import Path
 
+
+
 # Permite importar módulos do diretório pai
 sys.path.append(str(Path(__file__).resolve().parent.parent.parent))
 
