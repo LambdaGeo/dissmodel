@@ -5,6 +5,8 @@ import streamlit as st
 from IPython.display import display, Image
 import io
 
+from dissmodel.visualization._utils import is_interactive_backend
+
 # Função auxiliar para detectar se está rodando em notebook
 def is_notebook():
     try:
@@ -96,6 +98,14 @@ class Chart(Model):
             display(Image(data=buf.read()))
             plt.close(self.fig)
         elif self.pause:
-            plt.pause(0.1)
-            if self.env.now() == self.env.end_time:
-                plt.show()
+            if is_interactive_backend():
+                plt.pause(0.1)
+                if self.env.now() == self.env.end_time:
+                    plt.show()
+            else:
+                raise RuntimeError(
+                    "No interactive matplotlib backend detected. "
+                    "Add this to the top of your script:\n\n"
+                    "    import matplotlib\n"
+                    "    matplotlib.use('TkAgg')  # or 'Qt5Agg'\n"
+                )

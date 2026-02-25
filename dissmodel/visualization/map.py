@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from dissmodel.core import Model
+from dissmodel.visualization._utils import is_interactive_backend
 
 # Função auxiliar para detectar se está rodando em notebook
 def is_notebook():
@@ -51,10 +52,17 @@ class Map(Model):
             display(self.fig)    
             plt.close(self.fig)
         elif self.pause:
-            # Modo terminal interativo
-            plt.pause(0.01)
-            if self.env.now() == self.env.end_time:
-                plt.show()
+            if is_interactive_backend():
+                plt.pause(0.1)
+                if self.env.now() == self.env.end_time:
+                    plt.show()
+            else:
+                raise RuntimeError(
+                    "No interactive matplotlib backend detected. "
+                    "Add this to the top of your script:\n\n"
+                    "    import matplotlib\n"
+                    "    matplotlib.use('TkAgg')  # or 'Qt5Agg'\n"
+                )
 
 
     def execute(self):
