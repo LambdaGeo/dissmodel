@@ -20,21 +20,10 @@ def track_plot(
     color: str,
     plot_type: str = "line",
 ) -> Any:
-    """
-    Class decorator that registers an attribute for live plotting.
-
-    Args:
-        label:     Display label and key used to look up the attribute.
-        color:     Matplotlib-compatible color string.
-        plot_type: Plot style (currently only ``"line"`` is used).
-
-    Returns:
-        The decorated class with ``_plot_info`` populated.
-    """
     def decorator(cls: type) -> type:
         if not hasattr(cls, "_plot_info"):
-            cls._plot_info: dict[str, Any] = {}
-        cls._plot_info[label.lower()] = {
+            cls._plot_info = {}  # type: ignore[attr-defined]
+        cls._plot_info[label.lower()] = {  # type: ignore[attr-defined]
             "plot_type": plot_type,
             "label": label,
             "color": color,
