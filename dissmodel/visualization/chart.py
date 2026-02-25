@@ -8,19 +8,7 @@ import matplotlib.figure
 import matplotlib.axes
 
 from dissmodel.core import Model
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-def is_notebook() -> bool:
-    """Return True if the code is running inside a Jupyter notebook."""
-    try:
-        from IPython import get_ipython
-        return get_ipython().__class__.__name__ == "ZMQInteractiveShell"
-    except Exception:
-        return False
+from dissmodel.visualization._utils import is_interactive_backend, is_notebook
 
 
 # ---------------------------------------------------------------------------
@@ -32,21 +20,10 @@ def track_plot(
     color: str,
     plot_type: str = "line",
 ) -> Any:
-    """
-    Class decorator that registers an attribute for live plotting.
-
-    Args:
-        label:     Display label and key used to look up the attribute.
-        color:     Matplotlib-compatible color string.
-        plot_type: Plot style (currently only ``"line"`` is used).
-
-    Returns:
-        The decorated class with ``_plot_info`` populated.
-    """
     def decorator(cls: type) -> type:
         if not hasattr(cls, "_plot_info"):
-            cls._plot_info: dict[str, Any] = {}
-        cls._plot_info[label.lower()] = {
+            cls._plot_info = {}  # type: ignore[attr-defined]
+        cls._plot_info[label.lower()] = {  # type: ignore[attr-defined]
             "plot_type": plot_type,
             "label": label,
             "color": color,
@@ -70,14 +47,13 @@ class Chart(Model):
     - **Matplotlib window**: used as fallback in plain Python scripts.
     """
 
-    # Declared here so mypy knows these exist after setup()
     fig: matplotlib.figure.Figure
     ax: matplotlib.axes.Axes
     select: Optional[list[str]]
     interval: int
     time_points: list[float]
     pause: bool
-    plot_area: Any  # streamlit DeltaGenerator or None
+    plot_area: Any
     show_legend: bool
     show_grid: bool
     title: str

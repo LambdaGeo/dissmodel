@@ -1,111 +1,61 @@
-from __future__ import annotations
-
-from typing import Any, Optional
-
 import matplotlib.pyplot as plt
-import matplotlib.figure
-import matplotlib.axes
-import geopandas as gpd
-
 from dissmodel.core import Model
+from dissmodel.visualization._utils import is_interactive_backend, is_notebook
 
-
-# ---------------------------------------------------------------------------```
-
-Commit message:
-```
-
-# Helper — shared with chart.py; consider moving to dissmodel.visualization._utils
-# ---------------------------------------------------------------------------
-
-def is_notebook() -> bool:
-    """Return True if the code is running inside a Jupyter notebook."""
-    try:
-        from IPython import get_ipython
-        return get_ipython().__class__.__name__ == "ZMQInteractiveShell"
-    except Exception:
-        return False
-
-
-# ---------------------------------------------------------------------------
-# Map model
-# ---------------------------------------------------------------------------
 
 class Map(Model):
-    """
-    A :class:`~dissmodel.core.Model` that renders a live choropleth map.
-
-    Supports the same three rendering targets as :class:`~dissmodel.visualization.Chart`:
-    Streamlit, Jupyter, and a plain Matplotlib window.
-    """
-
-    fig: matplotlib.figure.Figure
-    ax: matplotlib.axes.Axes
-    gdf: gpd.GeoDataFrame
-    plot_params: dict[str, Any]
-    pause: bool
-    plot_area: Any  # streamlit DeltaGenerator or None
-
-    def setup(
-        self,
-        gdf: gpd.GeoDataFrame,
-        plot_params: dict[str, Any],
-        pause: bool = True,
-        plot_area: Any = None,
-    ) -> None:
-        """
-        Configure the map.
-
-        Args:
-            gdf:         GeoDataFrame to render.
-            plot_params: Keyword arguments forwarded to
-                         :meth:`GeoDataFrame.plot` (e.g. ``column``, ``cmap``,
-                         ``legend``).
-            pause:       If ``True``, call ``plt.pause()`` after each update
-                         (required for live updates outside notebooks).
-            plot_area:   Streamlit ``st.empty()`` placeholder. If provided,
-                         the map is rendered via Streamlit.
-        """
-        self.gdf = gdf
-        self.plot_params = plot_params
-        self.pause = pause
-        self.plot_area = plot_area
-
+    def setup(self, gdf, plot_params, pause=True, plot_area=None):
+        
         if not is_notebook():
             self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 6))
 
-    def update(self, year: float, gdf: gpd.GeoDataFrame) -> None:
-        """
-        Redraw the map for a given simulation time.
+        self.plot_params = plot_params
+        self.pause = pause
+        self.gdf = gdf
+        self.plot_area = plot_area
 
-        Args:
-            year: Current simulation time, shown in the map title.
-            gdf:  GeoDataFrame snapshot to render.
-        """
-        if is_notebook():
+    def update(self, year, gdf):
+
+        
+
+        if is_notebook():        
             from IPython.display import clear_output
-            clear_output(wait=True)
+            clear_output(wait=True)  # Limpa a saída do notebook para exibir apenas o gráfico atualizado
             self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 6))
 
+        
+
+        # evitar de ficar duplicando legenda
         self.fig.clf()
         self.ax = self.fig.add_subplot(1, 1, 1)
-
-        gdf.plot(ax=self.ax, **self.plot_params)
-        self.ax.set_title(f"Map — Year {year}")
+        
+        self.gdf.plot(ax=self.ax, **self.plot_params)
+        self.ax.set_title(f'Mapa - Ano {year}')
         plt.tight_layout()
         plt.draw()
 
-        if self.plot_area is not None:
+        if self.plot_area:
+            # Modo Streamlit
             self.plot_area.pyplot(self.fig)
         elif is_notebook():
+            # Modo Jupyter Notebook
             from IPython.display import display
-            display(self.fig)
+            display(self.fig)    
             plt.close(self.fig)
         elif self.pause:
-            plt.pause(0.01)
-            if self.env.now() == self.env.end_time:
-                plt.show()
+            if is_interactive_backend():
+                plt.pause(0.1)
+                if self.env.now() == self.env.end_time:
+                    plt.show()
+            else:
+                raise RuntimeError(
+                    "No interactive matplotlib backend detected. "
+                    "Add this to the top of your script:\n\n"
+                    "    import matplotlib\n"
+                    "    matplotlib.use('TkAgg')  # or 'Qt5Agg'\n"
+                )
 
-    def execute(self) -> None:
-        """Redraw the map for the current simulation time step."""
-        self.update(year=self.env.now(), gdf=self.gdf)
+
+    def execute(self):
+        year = self.env.now()
+        self.update(year, self.gdf)

@@ -1,72 +1,43 @@
-from __future__ import annotations
-
-from typing import Any, Optional
-
 import salabim as sim
-
 
 class Environment(sim.Environment):
     """
-    Extended simulation environment with support for a custom start time.
-
-    Works as a standard salabim environment, but accepts ``start_time`` and
-    ``end_time`` to define the simulation window explicitly.
-
-    Args:
-        start_time: Simulation start time (default: 0).
-        end_time:   Simulation end time. Can also be set via ``till`` in
-                    :meth:`run`.
-        *args:      Extra positional arguments forwarded to
-                    :class:`sim.Environment`.
-        **kwargs:   Extra keyword arguments forwarded to
-                    :class:`sim.Environment`.
+    Ambiente de simulação estendido com suporte a tempo inicial customizado
+ 
+    Funciona como um ambiente salabim padrão, mas com start_time e end_time.
     """
 
-    def __init__(
-        self,
-        start_time: float = 0,
-        end_time: Optional[float] = None,
-        *args: Any,
-        **kwargs: Any,
-    ) -> None:
+    def __init__(self, start_time=0, end_time=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.start_time = start_time
         self.end_time = end_time
 
-    def run(self, till: Optional[float] = None) -> None:
+    def run(self, till=None):
         """
-        Run the simulation using the configured time window.
-
-        Args:
-            till: Duration to run from ``start_time``. If provided, overrides
-                  ``end_time``. If omitted, ``end_time`` must be set.
-
-        Raises:
-            ValueError: If neither ``till`` nor ``end_time`` is defined.
+        Executa a simulação, usando start_time e end_time personalizados.
+        Se till for informado, substitui end_time.
         """
-        self.reset()
+        self.reset()  # Para reiniciar estatísticas, gráficos etc.
 
         if till is not None:
             self.end_time = self.start_time + till
         elif self.end_time is not None:
             till = self.end_time - self.start_time
         else:
-            raise ValueError("Provide 'till' or set 'end_time' before calling run().")
+            raise ValueError("Você deve informar 'till' ou definir 'end_time'.")
 
         print(f"Running from {self.start_time} to {self.end_time} (duration: {till})")
         super().run(till=till)
 
-    def reset(self) -> None:
-        """Clear accumulated plot data, if any."""
+        
+    def reset(self):
         if hasattr(self, "_plot_metadata"):
             for item in self._plot_metadata.values():
                 item["data"].clear()
 
-    def now(self) -> float:
+    def now(self):
         """
-        Return the current simulation time adjusted by ``start_time``.
-
-        Returns:
-            Current time as ``salabim.now() + start_time``.
+        Retorna o tempo atual da simulação ajustado pelo tempo inicial.
         """
         return super().now() + self.start_time
+
