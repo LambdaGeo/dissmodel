@@ -9,7 +9,7 @@ import importlib
 from dissmodel.core import Environment
 from dissmodel.geo import regular_grid, fill, FillStrategy
 from libpysal.weights import Queen
-from dissmodel.geo.celular_automaton import CellularAutomaton
+from dissmodel.geo.celullar_automaton import CellularAutomaton
 
 try:
     from dissmodel.models.ca import GameOfLife

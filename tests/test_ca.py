@@ -1,7 +1,7 @@
 
 import pytest
 from dissmodel.geo import regular_grid
-from dissmodel.geo.celular_automaton import CellularAutomaton
+from dissmodel.geo.celullar_automaton import CellularAutomaton
 from dissmodel.core import Environment
 from libpysal.weights import Queen
 
