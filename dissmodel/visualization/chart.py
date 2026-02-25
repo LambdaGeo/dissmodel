@@ -1,26 +1,39 @@
-from dissmodel.core import Model
-import matplotlib.pyplot as plt
-import inspect
-import streamlit as st
-from IPython.display import display, Image
+from __future__ import annotations
+
 import io
+from typing import Any, Optional
 
-from dissmodel.visualization._utils import is_interactive_backend
+import matplotlib.pyplot as plt
+import matplotlib.figure
+import matplotlib.axes
 
-# Função auxiliar para detectar se está rodando em notebook
-def is_notebook():
-    try:
-        from IPython import get_ipython
-        shell = get_ipython().__class__.__name__
-        return shell == "ZMQInteractiveShell"
-    except Exception:
-        return False
+from dissmodel.core import Model
+from dissmodel.visualization._utils import is_interactive_backend, is_notebook
 
-# Decorador para registrar variáveis a serem plotadas
-def track_plot(label, color, plot_type="line"):
-    def decorator(cls):
+
+# ---------------------------------------------------------------------------
+# Decorator
+# ---------------------------------------------------------------------------
+
+def track_plot(
+    label: str,
+    color: str,
+    plot_type: str = "line",
+) -> Any:
+    """
+    Class decorator that registers an attribute for live plotting.
+
+    Args:
+        label:     Display label and key used to look up the attribute.
+        color:     Matplotlib-compatible color string.
+        plot_type: Plot style (currently only ``"line"`` is used).
+
+    Returns:
+        The decorated class with ``_plot_info`` populated.
+    """
+    def decorator(cls: type) -> type:
         if not hasattr(cls, "_plot_info"):
-            cls._plot_info = {}
+            cls._plot_info: dict[str, Any] = {}
         cls._plot_info[label.lower()] = {
             "plot_type": plot_type,
             "label": label,
@@ -30,16 +43,55 @@ def track_plot(label, color, plot_type="line"):
         return cls
     return decorator
 
+
+# ---------------------------------------------------------------------------
+# Chart model
+# ---------------------------------------------------------------------------
+
 class Chart(Model):
+    """
+    A :class:`~dissmodel.core.Model` that renders a live time-series chart.
+
+    Supports three rendering targets:
+    - **Streamlit**: pass a ``plot_area`` (``st.empty()``).
+    - **Jupyter**: detected automatically via :func:`is_notebook`.
+    - **Matplotlib window**: used as fallback in plain Python scripts.
+    """
+
+    fig: matplotlib.figure.Figure
+    ax: matplotlib.axes.Axes
+    select: Optional[list[str]]
+    interval: int
+    time_points: list[float]
+    pause: bool
+    plot_area: Any
+    show_legend: bool
+    show_grid: bool
+    title: str
+
     def setup(
         self,
-        select=None,
-        pause=True,
-        plot_area=None,
-        show_legend=True,       
-        show_grid=False,        
-        title="Histórico das Variáveis"  # Permite customizar o título
-    ):
+        select: Optional[list[str]] = None,
+        pause: bool = True,
+        plot_area: Any = None,
+        show_legend: bool = True,
+        show_grid: bool = False,
+        title: str = "Variable History",
+    ) -> None:
+        """
+        Configure the chart.
+
+        Args:
+            select:      Subset of labels to plot. If ``None``, all tracked
+                         variables are shown.
+            pause:       If ``True``, call ``plt.pause()`` after each update
+                         (required for live updates outside notebooks).
+            plot_area:   Streamlit ``st.empty()`` placeholder. If provided,
+                         the chart is rendered via Streamlit.
+            show_legend: Whether to display the plot legend.
+            show_grid:   Whether to display the plot grid.
+            title:       Chart title.
+        """
         self.select = select
         self.interval = 1
         self.time_points = []
@@ -51,35 +103,34 @@ class Chart(Model):
 
         if not is_notebook():
             self.fig, self.ax = plt.subplots()
-            self.ax.set_xlabel("Tempo")
+            self.ax.set_xlabel("Time")
             self.ax.set_title(self.title)
 
-    def execute(self):
+    def execute(self) -> None:
+        """Redraw the chart for the current simulation time step."""
         if is_notebook():
             from IPython.display import clear_output
             clear_output(wait=True)
             self.fig, self.ax = plt.subplots()
-            self.ax.set_xlabel("Tempo")
+            self.ax.set_xlabel("Time")
             self.ax.set_title(self.title)
 
         plt.sca(self.ax)
         self.time_points.append(self.env.now())
 
-        plot_metadata = getattr(self.env, "_plot_metadata", {})
+        plot_metadata: dict[str, Any] = getattr(self.env, "_plot_metadata", {})
 
         self.ax.clear()
-        self.ax.set_xlabel("Tempo")
+        self.ax.set_xlabel("Time")
         self.ax.set_title(self.title)
 
         for label, info in plot_metadata.items():
             if self.select is None or label in self.select:
                 self.ax.plot(info["data"], label=label, color=info["color"])
 
-        # Mostrar grade se habilitado
         if self.show_grid:
             self.ax.grid(True)
 
-        # Mostrar legenda se habilitado
         if self.show_legend:
             self.ax.legend()
 
@@ -88,12 +139,12 @@ class Chart(Model):
         plt.tight_layout()
         plt.draw()
 
-        if self.plot_area:
-            # Modo Streamlit
+        if self.plot_area is not None:
             self.plot_area.pyplot(self.fig)
         elif is_notebook():
+            from IPython.display import display, Image
             buf = io.BytesIO()
-            self.fig.savefig(buf, format='png')
+            self.fig.savefig(buf, format="png")
             buf.seek(0)
             display(Image(data=buf.read()))
             plt.close(self.fig)
@@ -105,7 +156,6 @@ class Chart(Model):
             else:
                 raise RuntimeError(
                     "No interactive matplotlib backend detected. "
-                    "Add this to the top of your script:\n\n"
-                    "    import matplotlib\n"
-                    "    matplotlib.use('TkAgg')  # or 'Qt5Agg'\n"
+                    "On Linux, install tkinter:\n\n"
+                    "    sudo apt install python3-tk\n"
                 )

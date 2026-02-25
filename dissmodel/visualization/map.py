@@ -1,15 +1,6 @@
 import matplotlib.pyplot as plt
 from dissmodel.core import Model
-from dissmodel.visualization._utils import is_interactive_backend
-
-# Função auxiliar para detectar se está rodando em notebook
-def is_notebook():
-    try:
-        from IPython import get_ipython
-        shell = get_ipython().__class__.__name__
-        return shell == "ZMQInteractiveShell"
-    except Exception:
-        return False
+from dissmodel.visualization._utils import is_interactive_backend, is_notebook
 
 
 class Map(Model):
