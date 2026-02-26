@@ -149,18 +149,25 @@ def _fill_pattern(
         Name of the attribute column to fill.
     pattern : list of list
         2-D matrix representing the pattern to apply.
+        ``pattern[row][col]`` maps to cell ``'row-col'`` in the grid.
     start_x : int, optional
-        Initial offset in the x direction, by default 0.
+        Column offset (x direction), by default 0.
     start_y : int, optional
-        Initial offset in the y direction, by default 0.
-    """
-    w = len(pattern)
-    h = len(pattern[0])
-    for i in range(w):
-        for j in range(h):
-            idx = f"{start_x + i}-{start_y + j}"
-            gdf.loc[idx, attr] = pattern[w - i - 1][j]
+        Row offset (y direction), by default 0.
 
+    Notes
+    -----
+    Cell IDs follow the ``'row-col'`` (``y-x``) convention used by
+    :func:`~dissmodel.geo.regular_grid.regular_grid` and
+    :func:`~dissmodel.geo.regular_grid.parse_idx`.
+    """
+    n_rows = len(pattern)
+    n_cols = len(pattern[0]) if n_rows > 0 else 0
+    for row in range(n_rows):
+        for col in range(n_cols):
+            idx = f"{start_y + row}-{start_x + col}"  
+            if idx in gdf.index:
+                gdf.loc[idx, attr] = pattern[n_rows - row - 1][col]
 
 @register_strategy(FillStrategy.RANDOM_SAMPLE)
 def _fill_random_sample(
