@@ -105,8 +105,9 @@ class Growth(CellularAutomaton):
         if state == GrowthState.ALIVE:
             return GrowthState.ALIVE
 
-        neighbors = self.neighs(idx)
-        alive_neighbors = (neighbors[self.state_attr] == GrowthState.ALIVE).sum()
+        
+        alive_neighbors = (self.neighbor_values(idx, self.state_attr) == GrowthState.ALIVE).sum()
+
 
         if alive_neighbors > 0 and random.random() < self.probability:
             return GrowthState.ALIVE

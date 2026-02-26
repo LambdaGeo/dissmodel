@@ -88,10 +88,9 @@ class Anneal(CellularAutomaton):
             New state for the cell (``L`` or ``R``).
         """
         state = self.gdf.loc[idx, self.state_attr]
-        neighbors = self.neighs(idx)
 
         # Count neighbors in state L, including the cell itself
-        count = (neighbors[self.state_attr] == AnnealState.L).sum()
+        count = (self.neighbor_values(idx, self.state_attr) == AnnealState.L).sum()
         if state == AnnealState.L:
             count += 1
 
