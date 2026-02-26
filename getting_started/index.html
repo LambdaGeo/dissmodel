@@ -8,19 +8,23 @@
       
       
       
+        <link rel="canonical" href="https://lambdageo.github.io/dissmodel/getting_started/">
       
       
       
-      <link rel="icon" href="/dissmodel/assets/images/favicon.png">
+        <link rel="next" href="../models/ca/game_of_life/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
-        <title>DisSModel</title>
+        <title>Getting Started - DisSModel</title>
       
     
     
-      <link rel="stylesheet" href="/dissmodel/assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
       
 
@@ -39,9 +43,9 @@
       
     
     
-      <link rel="stylesheet" href="/dissmodel/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/dissmodel/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -59,6 +63,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#getting-started" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -71,7 +80,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/dissmodel/." title="DisSModel" class="md-header__button md-logo" aria-label="DisSModel" data-md-component="logo">
+    <a href=".." title="DisSModel" class="md-header__button md-logo" aria-label="DisSModel" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -91,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Getting Started
             
           </span>
         </div>
@@ -181,7 +190,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/dissmodel/." title="DisSModel" class="md-nav__button md-logo" aria-label="DisSModel" data-md-component="logo">
+    <a href=".." title="DisSModel" class="md-nav__button md-logo" aria-label="DisSModel" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -211,7 +220,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/index.md" class="md-nav__link">
+      <a href="../index.md" class="md-nav__link">
         
   
   
@@ -230,10 +239,32 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/dissmodel/getting_started/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -244,6 +275,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instantiation-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instantiation order
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimal-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Minimal example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -331,7 +409,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/ca/game_of_life/" class="md-nav__link">
+      <a href="../models/ca/game_of_life/" class="md-nav__link">
         
   
   
@@ -354,7 +432,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/ca/fire_model/" class="md-nav__link">
+      <a href="../models/ca/fire_model/" class="md-nav__link">
         
   
   
@@ -377,7 +455,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/ca/fire_model_prob/" class="md-nav__link">
+      <a href="../models/ca/fire_model_prob/" class="md-nav__link">
         
   
   
@@ -400,7 +478,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/ca/snow/" class="md-nav__link">
+      <a href="../models/ca/snow/" class="md-nav__link">
         
   
   
@@ -423,7 +501,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/ca/growth/" class="md-nav__link">
+      <a href="../models/ca/growth/" class="md-nav__link">
         
   
   
@@ -446,7 +524,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/ca/propagation/" class="md-nav__link">
+      <a href="../models/ca/propagation/" class="md-nav__link">
         
   
   
@@ -469,7 +547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/ca/anneal/" class="md-nav__link">
+      <a href="../models/ca/anneal/" class="md-nav__link">
         
   
   
@@ -538,7 +616,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/sysdyn/sir/" class="md-nav__link">
+      <a href="../models/sysdyn/sir/" class="md-nav__link">
         
   
   
@@ -561,7 +639,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/sysdyn/predator_prey/" class="md-nav__link">
+      <a href="../models/sysdyn/predator_prey/" class="md-nav__link">
         
   
   
@@ -584,7 +662,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/sysdyn/population_growth/" class="md-nav__link">
+      <a href="../models/sysdyn/population_growth/" class="md-nav__link">
         
   
   
@@ -607,7 +685,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/sysdyn/lorenz/" class="md-nav__link">
+      <a href="../models/sysdyn/lorenz/" class="md-nav__link">
         
   
   
@@ -630,7 +708,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/models/sysdyn/coffee/" class="md-nav__link">
+      <a href="../models/sysdyn/coffee/" class="md-nav__link">
         
   
   
@@ -706,7 +784,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/examples/cli/" class="md-nav__link">
+      <a href="../examples/cli/" class="md-nav__link">
         
   
   
@@ -729,7 +807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/examples/streamlit/" class="md-nav__link">
+      <a href="../examples/streamlit/" class="md-nav__link">
         
   
   
@@ -790,7 +868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/examples/notebooks/ca_game_of_life/" class="md-nav__link">
+      <a href="../examples/notebooks/ca_game_of_life/" class="md-nav__link">
         
   
   
@@ -813,7 +891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/examples/notebooks/sysdyn_sir/" class="md-nav__link">
+      <a href="../examples/notebooks/sysdyn_sir/" class="md-nav__link">
         
   
   
@@ -889,7 +967,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/api/core/" class="md-nav__link">
+      <a href="../api/core/" class="md-nav__link">
         
   
   
@@ -912,7 +990,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/api/geo/" class="md-nav__link">
+      <a href="../api/geo/" class="md-nav__link">
         
   
   
@@ -935,7 +1013,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/dissmodel/api/visualization/" class="md-nav__link">
+      <a href="../api/visualization/" class="md-nav__link">
         
   
   
@@ -975,6 +1053,43 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instantiation-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instantiation order
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#minimal-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Minimal example
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -986,8 +1101,52 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  
+  
+
+
+<h1 id="getting-started">Getting Started</h1>
+<h2 id="installation">Installation</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>dissmodel
+</code></pre></div>
+<p>Or in editable mode for development:</p>
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/lambdageo/dissmodel
+<span class="nb">cd</span><span class="w"> </span>dissmodel
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</code></pre></div>
+<h2 id="instantiation-order">Instantiation order</h2>
+<p>The <code>Environment</code> must always be created <strong>before</strong> any model.
+Models connect to the active environment automatically when instantiated.</p>
+<div class="highlight"><pre><span></span><code>Environment  →  Model  →  Visualization
+     ↑             ↑            ↑
+  first         second        third
+</code></pre></div>
+<h2 id="minimal-example">Minimal example</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.models.sysdyn</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chart</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">()</span>
+<span class="n">SIR</span><span class="p">()</span>
+<span class="n">Chart</span><span class="p">(</span><span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1023,10 +1182,10 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "/dissmodel/", "features": [], "search": "/dissmodel/assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/dissmodel/assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
