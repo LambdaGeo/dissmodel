@@ -1,4 +1,4 @@
-```python
+
 from __future__ import annotations
 
 from dissmodel.core import Model
