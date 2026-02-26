@@ -1,159 +1,255 @@
+from __future__ import annotations
+
 import json
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any, Optional, Protocol, Union
 
 import geopandas as gpd
 from libpysal.weights import W
 
 
+# ---------------------------------------------------------------------------
+# Protocol
+# ---------------------------------------------------------------------------
+
 class WeightStrategy(Protocol):
     """
-    Protocolo que define o contrato esperado de uma estratégia de vizinhança da libpysal.
+    Protocol defining the expected contract for a libpysal neighborhood strategy.
 
-    Qualquer classe que implemente `from_dataframe` satisfaz este protocolo
-    estruturalmente, sem necessidade de herança explícita.
+    Any class that implements ``from_dataframe`` satisfies this protocol
+    structurally, without requiring explicit inheritance.
 
-    Examples:
-        >>> from libpysal.weights import Queen, Rook
-        >>> # Queen e Rook satisfazem WeightStrategy automaticamente
+    Examples
+    --------
+    >>> from libpysal.weights import Queen, Rook
+    >>> # Queen and Rook satisfy WeightStrategy automatically
     """
 
     @classmethod
-    def from_dataframe(cls, gdf: gpd.GeoDataFrame, *args: Any, **kwargs: Any) -> W:
+    def from_dataframe(cls, gdf: gpd.GeoDataFrame, **kwargs: Any) -> W:
         ...
 
 
-def attach_neighbors(
-    gdf: gpd.GeoDataFrame,
-    strategy: WeightStrategy | None = None,
-    neighbors_dict: dict | str | None = None,
-    *args: Any,
-    **kwargs: Any,
-) -> gpd.GeoDataFrame:
+# Reusable type alias — import this in other modules instead of redefining it
+StrategyType = Optional[WeightStrategy]
+
+
+# ---------------------------------------------------------------------------
+# Private helpers
+# ---------------------------------------------------------------------------
+
+def _resolve_neighbors_dict(
+    neighbors_dict: Optional[Union[dict[Any, list[Any]], str]],
+) -> Optional[dict[Any, list[Any]]]:
     """
-    Anexa os vizinhos a um GeoDataFrame, usando uma estratégia de vizinhança
-    ou um dicionário/arquivo JSON pré-computado.
+    Resolve ``neighbors_dict`` to a plain dict, loading from JSON if needed.
 
-    Adiciona a coluna '_neighs' ao GeoDataFrame com os índices dos vizinhos
-    de cada célula, e retorna o próprio GeoDataFrame modificado in-place.
+    Parameters
+    ----------
+    neighbors_dict : dict, str, or None
+        A precomputed mapping, a path to a JSON file, or ``None``.
 
-    Parameters:
-        gdf (GeoDataFrame): GeoDataFrame cujas células receberão a coluna de vizinhança.
-        strategy (WeightStrategy | None): Classe de vizinhança da libpysal, ex: Queen, Rook.
-            Deve implementar o método `from_dataframe`. Ignorado se `neighbors_dict`
-            for fornecido.
-        neighbors_dict (dict | str | None): Vizinhanças pré-computadas. Pode ser:
-            - dict: mapeamento {índice: [vizinhos]}.
-            - str: caminho para um arquivo JSON com o mesmo formato.
-            - None: a vizinhança será calculada via `strategy`.
-        *args: Argumentos posicionais extras passados a `strategy.from_dataframe`.
-        **kwargs: Argumentos nomeados extras passados a `strategy.from_dataframe`.
+    Returns
+    -------
+    dict or None
+        Resolved dict, or ``None`` if the input was ``None``.
 
-    Returns:
-        GeoDataFrame: O mesmo `gdf` recebido, com a coluna '_neighs' adicionada.
-
-    Raises:
-        ValueError: Se `neighbors_dict` não for dict nem caminho para JSON válido.
-        ValueError: Se nem `strategy` nem `neighbors_dict` forem fornecidos.
-        FileNotFoundError: Se o caminho fornecido em `neighbors_dict` não existir.
-
-    Examples:
-        >>> from libpysal.weights import Queen
-        >>> gdf = attach_neighbors(gdf, strategy=Queen)
-        >>> gdf = attach_neighbors(gdf, neighbors_dict="vizinhanca.json")
-        >>> gdf = attach_neighbors(gdf, strategy=Rook, ids="cell_id")
+    Raises
+    ------
+    FileNotFoundError
+        If a string path is provided but the file does not exist.
+    ValueError
+        If the value is not a dict, ``None``, or a valid JSON file path.
     """
+    if neighbors_dict is None:
+        return None
+    if isinstance(neighbors_dict, dict):
+        return neighbors_dict
     if isinstance(neighbors_dict, str):
         path = Path(neighbors_dict)
         if not path.is_file():
-            raise FileNotFoundError(f"Arquivo de vizinhança não encontrado: {neighbors_dict}")
+            raise FileNotFoundError(
+                f"Neighborhood file not found: {neighbors_dict}"
+            )
         with open(path) as f:
-            neighbors_dict = json.load(f)
-    elif neighbors_dict is not None and not isinstance(neighbors_dict, dict):
-        raise ValueError("`neighbors_dict` deve ser um dicionário ou caminho para arquivo JSON.")
+            return json.load(f)
+    raise ValueError(
+        "`neighbors_dict` must be a dictionary or a path to a JSON file."
+    )
 
-    if neighbors_dict:
-        w = W(neighbors_dict)
+
+# ---------------------------------------------------------------------------
+# Public interface
+# ---------------------------------------------------------------------------
+
+def attach_neighbors(
+    gdf: gpd.GeoDataFrame,
+    strategy: StrategyType = None,
+    neighbors_dict: Optional[dict[Any, list[Any]] | str] = None,
+    **kwargs: Any,
+) -> gpd.GeoDataFrame:
+    """
+    Attach a neighborhood structure to a GeoDataFrame.
+
+    Adds a ``'_neighs'`` column containing the list of neighbor indices for
+    each cell. Mutates and returns the same GeoDataFrame.
+
+    Parameters
+    ----------
+    gdf : geopandas.GeoDataFrame
+        GeoDataFrame whose cells will receive the neighborhood column.
+    strategy : WeightStrategy, optional
+        Libpysal weight class (e.g. ``Queen``, ``Rook``) whose
+        ``from_dataframe`` classmethod will be called. Ignored if
+        ``neighbors_dict`` is provided.
+    neighbors_dict : dict or str, optional
+        Precomputed neighborhood. Accepted formats:
+
+        - ``dict`` — ``{index: [neighbor_indices]}`` mapping.
+        - ``str`` — path to a JSON file with the same structure.
+        - ``None`` — neighborhood will be computed via ``strategy``.
+    **kwargs :
+        Extra keyword arguments forwarded to ``strategy.from_dataframe``.
+
+    Returns
+    -------
+    geopandas.GeoDataFrame
+        The same ``gdf`` with the ``'_neighs'`` column added.
+
+    Raises
+    ------
+    FileNotFoundError
+        If a string path is provided in ``neighbors_dict`` but does not exist.
+    ValueError
+        If ``neighbors_dict`` is not a dict, ``None``, or a valid JSON path.
+    ValueError
+        If neither ``strategy`` nor ``neighbors_dict`` is provided.
+
+    Examples
+    --------
+    >>> from libpysal.weights import Queen
+    >>> gdf = attach_neighbors(gdf, strategy=Queen)
+    >>> gdf = attach_neighbors(gdf, neighbors_dict="neighborhood.json")
+    >>> gdf = attach_neighbors(gdf, strategy=Queen, ids="cell_id")
+    """
+    resolved = _resolve_neighbors_dict(neighbors_dict)
+
+    w: W
+    if resolved is not None:
+        w = W(resolved)
+    elif strategy is not None:
+        w = strategy.from_dataframe(gdf, **kwargs)
     else:
-        if strategy is None:
-            raise ValueError("Informe uma `strategy` ou `neighbors_dict`.")
-        w = strategy.from_dataframe(gdf, *args, **kwargs)
+        raise ValueError("Provide either `strategy` or `neighbors_dict`.")
 
     gdf["_neighs"] = gdf.index.map(lambda idx: w.neighbors.get(idx, []))
     return gdf
 
 
-def get_neighbors(gdf: gpd.GeoDataFrame, idx: Any) -> list:
+def get_neighbors(gdf: gpd.GeoDataFrame, idx: Any) -> list[Any]:
     """
-    Retorna os índices dos vizinhos de uma célula específica.
+    Return the neighbor indices for a specific cell.
 
-    Parameters:
-        gdf (GeoDataFrame): GeoDataFrame com a coluna '_neighs' já populada.
-        idx: Índice da célula de interesse.
+    Parameters
+    ----------
+    gdf : geopandas.GeoDataFrame
+        GeoDataFrame with the ``'_neighs'`` column already populated.
+    idx : any
+        Index of the cell of interest.
 
-    Returns:
-        list: Lista de índices dos vizinhos. Retorna lista vazia se não houver vizinhos.
+    Returns
+    -------
+    list
+        List of neighbor indices. Returns an empty list if no neighbors exist.
 
-    Raises:
-        KeyError: Se `idx` não existir no GeoDataFrame.
-        ValueError: Se a coluna '_neighs' ainda não tiver sido gerada via `attach_neighbors`.
+    Raises
+    ------
+    ValueError
+        If the ``'_neighs'`` column is not present.
+    KeyError
+        If ``idx`` does not exist in the GeoDataFrame.
 
-    Examples:
-        >>> get_neighbors(gdf, "10-5")
-        ['9-5', '11-5', '10-4', '10-6']
+    Examples
+    --------
+    >>> get_neighbors(gdf, "10-5")
+    ['9-5', '11-5', '10-4', '10-6']
     """
     if "_neighs" not in gdf.columns:
-        raise ValueError("Coluna '_neighs' não encontrada. Execute `attach_neighbors` primeiro.")
+        raise ValueError(
+            "Column '_neighs' not found. Run `attach_neighbors` first."
+        )
     if idx not in gdf.index:
-        raise KeyError(f"Índice '{idx}' não encontrado no GeoDataFrame.")
+        raise KeyError(f"Index '{idx}' not found in the GeoDataFrame.")
     return gdf.at[idx, "_neighs"]
 
 
-def get_neighbor_values(gdf: gpd.GeoDataFrame, idx: Any, attr: str) -> list:
+def get_neighbor_values(
+    gdf: gpd.GeoDataFrame,
+    idx: Any,
+    attr: str,
+) -> list[Any]:
     """
-    Retorna os valores de um atributo para todos os vizinhos de uma célula.
+    Return the values of an attribute for all neighbors of a cell.
 
-    Parameters:
-        gdf (GeoDataFrame): GeoDataFrame com a coluna '_neighs' já populada.
-        idx: Índice da célula de interesse.
-        attr (str): Nome do atributo cujos valores serão coletados.
+    Parameters
+    ----------
+    gdf : geopandas.GeoDataFrame
+        GeoDataFrame with the ``'_neighs'`` column already populated.
+    idx : any
+        Index of the cell of interest.
+    attr : str
+        Name of the attribute column to retrieve.
 
-    Returns:
-        list: Valores do atributo nos vizinhos, na mesma ordem de '_neighs'.
+    Returns
+    -------
+    list
+        Attribute values for the neighbors, in the same order as ``'_neighs'``.
 
-    Raises:
-        ValueError: Se '_neighs' não existir.
-        KeyError: Se `idx` ou `attr` não existirem no GeoDataFrame.
+    Raises
+    ------
+    ValueError
+        If the ``'_neighs'`` column is not present.
+    KeyError
+        If ``idx`` or ``attr`` does not exist in the GeoDataFrame.
 
-    Examples:
-        >>> get_neighbor_values(gdf, "10-5", "land_use")
-        [1, 1, 2, 1]
+    Examples
+    --------
+    >>> get_neighbor_values(gdf, "10-5", "land_use")
+    [1, 1, 2, 1]
     """
     neighbors = get_neighbors(gdf, idx)
     if attr not in gdf.columns:
-        raise KeyError(f"Atributo '{attr}' não encontrado no GeoDataFrame.")
+        raise KeyError(f"Attribute '{attr}' not found in the GeoDataFrame.")
     return gdf.loc[neighbors, attr].tolist()
 
 
 def export_neighbors(gdf: gpd.GeoDataFrame, path: str) -> None:
     """
-    Exporta a vizinhança do GeoDataFrame para um arquivo JSON.
+    Export the neighborhood structure of a GeoDataFrame to a JSON file.
 
-    Útil para persistir vizinhanças computadas e reutilizá-las via
-    `attach_neighbors(gdf, neighbors_dict='vizinhanca.json')`.
+    Useful for persisting computed neighborhoods and reusing them via
+    ``attach_neighbors(gdf, neighbors_dict='neighborhood.json')``.
 
-    Parameters:
-        gdf (GeoDataFrame): GeoDataFrame com a coluna '_neighs' já populada.
-        path (str): Caminho do arquivo JSON de destino.
+    Parameters
+    ----------
+    gdf : geopandas.GeoDataFrame
+        GeoDataFrame with the ``'_neighs'`` column already populated.
+    path : str
+        Destination JSON file path.
 
-    Raises:
-        ValueError: Se a coluna '_neighs' não estiver presente.
+    Raises
+    ------
+    ValueError
+        If the ``'_neighs'`` column is not present.
 
-    Examples:
-        >>> export_neighbors(gdf, "vizinhanca.json")
+    Examples
+    --------
+    >>> export_neighbors(gdf, "neighborhood.json")
     """
     if "_neighs" not in gdf.columns:
-        raise ValueError("Coluna '_neighs' não encontrada. Execute `attach_neighbors` primeiro.")
+        raise ValueError(
+            "Column '_neighs' not found. Run `attach_neighbors` first."
+        )
     neighbors_dict = gdf["_neighs"].to_dict()
     with open(path, "w") as f:
         json.dump(neighbors_dict, f, indent=2)
@@ -161,6 +257,7 @@ def export_neighbors(gdf: gpd.GeoDataFrame, path: str) -> None:
 
 __all__ = [
     "WeightStrategy",
+    "StrategyType",
     "attach_neighbors",
     "get_neighbors",
     "get_neighbor_values",
