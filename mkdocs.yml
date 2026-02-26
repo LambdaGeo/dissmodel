@@ -3,46 +3,61 @@ site_url: https://lambdageo.github.io/dissmodel/
 repo_url: https://github.com/lambdageo/dissmodel
 repo_name: dissmodel
 
-
-
 plugins:
-    - mkdocs-jupyter:
-          include: ["*.ipynb"] # Default: ["*.py", "*.ipynb"]
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+  - mkdocs-jupyter:
+      include: ["*.ipynb"]
+
+theme:
+  name: material
+  language: en
 
 markdown_extensions:
+  - codehilite
+  - pymdownx.highlight
+  - pymdownx.superfences
   - pymdownx.arithmatex:
       generic: true
 
 extra_javascript:
   - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
-theme:
-  name: material
-  language: pt
-
-markdown_extensions:
-  - codehilite
-  - pymdownx.highlight
-  - pymdownx.superfences
-
 nav:
-  - Início: index.md
-  - Módulos:
-    - Core: modules/core.md
-    - Visualization: modules/visualization.md
-    - Geo: modules/geo.md
-  - Exemplos:
-      - Autômatos Celulares:
-          - Introdução: examples/ca/index.md
-          - Game of Life: examples/ca/game_of_life.ipynb
-          - Modelo de Queimada: examples/ca/fire_model.md
-      - Systemas Dinâmicos:
-          - SIR: examples/sysdyn/run_sir.ipynb
-  - UML Diagrams:
-      - Overview: uml/overview.md
-      - Core: uml/core.md
-      - Geo: uml/geo.md
-      - Models:
-          - CA: uml/models_ca.md
-          - SysDyn: uml/models_sysdyn.md
-      - Visualization: uml/visualization.md
+  - Home: index.md
+  - Getting Started: getting_started.md
+
+  - Models:
+    - Cellular Automata:
+      - Game of Life: models/ca/game_of_life.md
+      - Fire Model: models/ca/fire_model.md
+      - Fire Model Prob: models/ca/fire_model_prob.md
+      - Snow: models/ca/snow.md
+      - Growth: models/ca/growth.md
+      - Propagation: models/ca/propagation.md
+      - Anneal: models/ca/anneal.md
+    - System Dynamics:
+      - SIR: models/sysdyn/sir.md
+      - Predator Prey: models/sysdyn/predator_prey.md
+      - Population Growth: models/sysdyn/population_growth.md
+      - Lorenz: models/sysdyn/lorenz.md
+      - Coffee: models/sysdyn/coffee.md
+
+  - Examples:
+    - CLI: examples/cli.md
+    - Streamlit: examples/streamlit.md
+    - Notebooks:
+      - Game of Life: examples/notebooks/ca_game_of_life.ipynb
+      - SIR: examples/notebooks/sysdyn_sir.ipynb
+
+  - API Reference:
+    - Core: api/core.md
+    - Geo: api/geo.md
+    - Visualization: api/visualization.md
+
