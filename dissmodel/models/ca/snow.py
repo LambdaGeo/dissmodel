@@ -49,12 +49,19 @@ class Snow(CellularAutomaton):
     Therefore, :meth:`execute` is overridden to skip the neighborhood
     check that the base class enforces.
 
+    The number of simulation steps must be greater than the grid size
+    for snow to have enough time to fall and accumulate. Snow stops
+    falling ``dim`` steps before ``end_time`` to allow flakes already
+    in motion to reach the ground.
+
+    A good rule of thumb: ``end_time > 2 * dim``.
+
     Examples
     --------
     >>> from dissmodel.geo import regular_grid
     >>> from dissmodel.core import Environment
     >>> gdf = regular_grid(dimension=(20, 20), resolution=1, attrs={"state": 0})
-    >>> env = Environment(end_time=30)
+    >>> env = Environment(end_time=50)  # steps must be greater than grid_size
     >>> snow = Snow(gdf=gdf, dim=20)
     """
 
@@ -70,6 +77,11 @@ class Snow(CellularAutomaton):
         probability : float, optional
             Probability of a new snowflake appearing at the top row
             each step, by default 0.02.
+
+        Notes
+        -----
+        For visible accumulation, use ``end_time > 2 * dim`` when
+        creating the :class:`~dissmodel.core.Environment`.
         """
         self.probability = probability
 
@@ -107,6 +119,12 @@ class Snow(CellularAutomaton):
             - Empty cell with snowy cell above → becomes ``SNOW``
               (snow arrives).
             - Otherwise → ``EMPTY``.
+
+        Notes
+        -----
+        Snow stops falling ``dim`` steps before ``end_time`` to allow
+        flakes already in motion to reach the ground before the
+        simulation ends.
         """
         cell = self.gdf.loc[idx]
         x, y = parse_idx(idx)
