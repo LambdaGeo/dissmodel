@@ -101,7 +101,7 @@ class Model(sim.Component):
             plot_info["data"].append(value)
 
             if not hasattr(self.env, "_plot_metadata"):
-                self.env._plot_metadata: dict[str, Any] = {}
+                self.env._plot_metadata = {}
 
             if plot_info["label"] not in self.env._plot_metadata:
                 self.env._plot_metadata[plot_info["label"]] = plot_info
