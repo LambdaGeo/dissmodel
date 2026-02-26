@@ -100,15 +100,15 @@ class Map(Model):
             not running in a notebook or Streamlit context.
         """
         if is_notebook():
-            from IPython.display import clear_output
+            from IPython.display import clear_output, display
             clear_output(wait=True)
             self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 6))
-
-        self.fig.clf()
-        self.ax = self.fig.add_subplot(1, 1, 1)
+        else:
+            self.fig.clf()
+            self.ax = self.fig.add_subplot(1, 1, 1)
 
         gdf.plot(ax=self.ax, **self.plot_params)
-        self.ax.set_title(f"Map — Year {year}")
+        self.ax.set_title(f"Map — Step {year}")
         plt.tight_layout()
         plt.draw()
 
@@ -129,6 +129,7 @@ class Map(Model):
                     "On Linux, install tkinter:\n\n"
                     "    sudo apt install python3-tk\n"
                 )
+
 
     def execute(self) -> None:
         """Redraw the map for the current simulation time step."""

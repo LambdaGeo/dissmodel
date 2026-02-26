@@ -13,7 +13,10 @@ from dissmodel.geo import attach_neighbors
 
 from dissmodel.geo.neighborhood import StrategyType
 
-class CellularAutomaton(Model):
+from abc import ABC, abstractmethod
+
+
+class CellularAutomaton(Model, ABC):
     """
     Base class for spatial cellular automata backed by a GeoDataFrame.
 
@@ -175,7 +178,8 @@ class CellularAutomaton(Model):
             Array of neighbor values.
         """
         return self.gdf.loc[self.neighs_id(idx), col].values
-
+    
+    @abstractmethod
     def rule(self, idx: Any) -> Any:
         """
         Transition rule applied to each cell.

@@ -1,1 +1,0 @@
-Coloque aqui os dados de entrada (ex: grid.geojson, neighbors.json).
