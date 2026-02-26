@@ -1,46 +1,135 @@
-from dissmodel.core import Model
-
-from libpysal.weights import KNN
-import numpy as np
+from __future__ import annotations
 
 import random
-from dissmodel.geo import regular_grid, fill, FillStrategy
+from enum import IntEnum
+from typing import Any
 
-from dissmodel.geo import CellularAutomaton
+import numpy as np
+from libpysal.weights import KNN
+
+from dissmodel.geo import CellularAutomaton, FillStrategy, fill
+
+
+class PropagationState(IntEnum):
+    """
+    Possible states for a cell in :class:`Propagation`.
+
+    Attributes
+    ----------
+    OFF : int
+        Inactive cell, can be activated by neighbors.
+    ON : int
+        Active cell, spreads to neighbors.
+    """
+    OFF = 0
+    ON  = 1
+
 
 class Propagation(CellularAutomaton):
+    """
+    Stochastic spatial propagation cellular automaton.
 
+    Active cells (``ON``) spread to inactive neighbors with probability
+    :attr:`prob`. Once a cell becomes active, it stays active permanently.
+    The neighborhood is based on K-nearest neighbors (KNN, k=4).
 
+    Parameters
+    ----------
+    gdf : geopandas.GeoDataFrame
+        GeoDataFrame with geometries and a ``state`` attribute.
+    **kwargs :
+        Extra keyword arguments forwarded to
+        :class:`~dissmodel.geo.CellularAutomaton`.
+
+    Examples
+    --------
+    >>> from dissmodel.geo import regular_grid
+    >>> from dissmodel.core import Environment
+    >>> gdf = regular_grid(dimension=(20, 20), resolution=1, attrs={"state": 0})
+    >>> env = Environment(end_time=15)
+    >>> prop = Propagation(gdf=gdf)
+    >>> prop.initialize()
+    """
+
+    #: Probability of an inactive cell becoming active per step
+    #: if it has at least one active neighbor.
     prob: float
-    perc_on: float
 
-    def initialize(self):
+    #: Initial proportion of active cells (0.0 – 1.0).
+    initial_density: float
+
+    def setup(
+        self,
+        prob: float = 0.1,
+        initial_density: float = 0.4,
+    ) -> None:
+        """
+        Configure the model and build the neighborhood.
+
+        Parameters
+        ----------
+        prob : float, optional
+            Probability of activation per step for inactive cells adjacent
+            to at least one active cell, by default 0.1.
+        initial_density : float, optional
+            Initial proportion of active cells, by default 0.4.
+        """
+        self.prob = prob
+        self.initial_density = initial_density
+        self.create_neighborhood(strategy=KNN, k=4, use_index=True)
+
+    def initialize(self) -> None:
+        """
+        Fill the grid with a random initial state.
+
+        Uses :attr:`initial_density` to determine the proportion of
+        cells that start as active. The remaining cells start as inactive.
+        """
         fill(
             strategy=FillStrategy.RANDOM_SAMPLE,
             gdf=self.gdf,
             attr="state",
-            data={0: (1-self.perc_on), 1: self.perc_on}, 
-            #data={0: 1, 1: 0}, 
-            seed=42
+            data={
+                PropagationState.OFF: 1 - self.initial_density,
+                PropagationState.ON:  self.initial_density,
+            },
+            seed=42,
         )
 
-    def setup(self, prob=0.1, perc_on=0.4):
-        self.prob = prob
-        self.perc_on = perc_on
+    def rule(self, idx: Any) -> int:
+        """
+        Apply the stochastic propagation rule to cell ``idx``.
 
-        self.create_neighborhood(strategy=KNN,k=4, use_index=True)
-        self.initialize()
+        Parameters
+        ----------
+        idx : any
+            Index of the cell being evaluated.
 
-    def rule(self, idx):
-        estado_atual = self.gdf.loc[idx, self.state_attr]
+        Returns
+        -------
+        int
+            New state for the cell:
 
-        if estado_atual == 1:
-            return 1
+            - ``ON`` if already active (cells never deactivate).
+            - ``ON`` with probability :attr:`prob` if inactive and has
+              at least one active neighbor.
+            - ``OFF`` otherwise.
+        """
+        state = self.gdf.loc[idx, self.state_attr]
 
-        vizinhos = self.neighs_id(idx)
-        if any(self.gdf.loc[v, self.state_attr] == 1 for v in vizinhos):
-            if np.random.rand() < self.prob:
-                return 1
-        return estado_atual
+        if state == PropagationState.ON:
+            return PropagationState.ON
+
+        neighbor_ids = self.neighs_id(idx)
+        has_active_neighbor = any(
+            self.gdf.loc[v, self.state_attr] == PropagationState.ON
+            for v in neighbor_ids
+        )
+
+        if has_active_neighbor and np.random.rand() < self.prob:
+            return PropagationState.ON
+
+        return PropagationState.OFF
 
 
+__all__ = ["Propagation", "PropagationState"]
