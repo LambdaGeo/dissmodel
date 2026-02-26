@@ -9,6 +9,77 @@ from dissmodel.geo import FillStrategy, fill
 from dissmodel.geo.celullar_automaton import CellularAutomaton
 
 
+# ---------------------------------------------------------------------------
+# Built-in patterns
+# ---------------------------------------------------------------------------
+
+#: Classic Game of Life patterns organized by category.
+#: Can be imported and used independently of :class:`GameOfLife`.
+PATTERNS: dict[str, list[list[int]]] = {
+    # --- Oscillators ---
+    "blinker": [                        # period 2
+        [1, 1, 1],
+    ],
+    "toad": [                           # period 2
+        [0, 1, 1, 1],
+        [1, 1, 1, 0],
+    ],
+    "beacon": [                         # period 2
+        [1, 1, 0, 0],
+        [1, 1, 0, 0],
+        [0, 0, 1, 1],
+        [0, 0, 1, 1],
+    ],
+    "pulsar": [                         # period 3 — requires grid >= 15x15
+        [0,0,1,1,1,0,0,0,1,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1],
+        [0,0,1,1,1,0,0,0,1,1,1,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,1,1,0,0,0,1,1,1,0,0],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1],
+        [1,0,0,0,0,1,0,1,0,0,0,0,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,1,1,1,0,0,0,1,1,1,0,0],
+    ],
+    # --- Spaceships ---
+    "glider": [                         # moves diagonally
+        [0, 1, 0],
+        [0, 0, 1],
+        [1, 1, 1],
+    ],
+    "lwss": [                           # lightweight spaceship
+        [0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0],
+        [1, 0, 0, 0, 1],
+        [1, 1, 1, 1, 0],
+    ],
+    # --- Still lifes ---
+    "block": [                          # never changes
+        [1, 1],
+        [1, 1],
+    ],
+    "beehive": [                        # never changes
+        [0, 1, 1, 0],
+        [1, 0, 0, 1],
+        [0, 1, 1, 0],
+    ],
+    "loaf": [                           # never changes
+        [0, 1, 1, 0],
+        [1, 0, 0, 1],
+        [0, 1, 0, 1],
+        [0, 0, 1, 0],
+    ],
+}
+
+
+# ---------------------------------------------------------------------------
+# Model
+# ---------------------------------------------------------------------------
+
 class GameOfLife(CellularAutomaton):
     """
     Spatial cellular automaton implementation of Conway's Game of Life.
@@ -67,34 +138,20 @@ class GameOfLife(CellularAutomaton):
         Parameters
         ----------
         patterns : list of str, optional
-            Pattern names to place. If ``None``, all available patterns are
-            used. Available patterns: ``"glider"``, ``"toad"``,
-            ``"blinker"``.
+            Pattern names to place. If ``None``, all patterns in
+            :data:`PATTERNS` are used. Available keys: ``"blinker"``,
+            ``"toad"``, ``"beacon"``, ``"pulsar"``, ``"glider"``,
+            ``"lwss"``, ``"block"``, ``"beehive"``, ``"loaf"``.
 
         Notes
         -----
-        Assumes a square grid. Patterns are placed at random positions
-        bounded to avoid out-of-range indices.
+        Assumes a square grid. The ``"pulsar"`` pattern requires a grid
+        of at least 15x15 to avoid out-of-range placement.
         """
-        available: dict[str, list[list[int]]] = {
-            "glider": [
-                [0, 1, 0],
-                [0, 0, 1],
-                [1, 1, 1],
-            ],
-            "toad": [
-                [0, 1, 1, 1],
-                [1, 1, 1, 0],
-            ],
-            "blinker": [
-                [1, 1, 1],
-            ],
-        }
-
         selected = (
-            {k: available[k] for k in patterns if k in available}
+            {k: PATTERNS[k] for k in patterns if k in PATTERNS}
             if patterns
-            else available
+            else PATTERNS
         )
 
         grid_dim = int(len(self.gdf) ** 0.5)
@@ -131,3 +188,6 @@ class GameOfLife(CellularAutomaton):
         if state == 1:
             return 1 if 2 <= live_neighbors <= 3 else 0
         return 1 if live_neighbors == 3 else 0
+
+
+__all__ = ["GameOfLife", "PATTERNS"]
