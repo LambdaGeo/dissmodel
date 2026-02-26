@@ -44,7 +44,7 @@ if init_mode == "Patterns":
     selected_patterns = st.sidebar.multiselect(
         "Select patterns",
         options=list(PATTERNS.keys()),
-        default=["glider", "blinker", "toad", "beacon"],
+        default=["glider", "blinker", "toad", "beacon", "lwss", "block"],
     )
 
 run = st.button("Run Simulation")
