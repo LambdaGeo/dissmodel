@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from dissmodel.core import Environment
 from dissmodel.visualization.map import Map
-from dissmodel.visualization.streamlit import display_inputs
+from dissmodel.visualization.widgets import display_inputs
 from dissmodel.geo import regular_grid
 from matplotlib.colors import ListedColormap
 

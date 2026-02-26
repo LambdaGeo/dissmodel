@@ -20,6 +20,29 @@ def track_plot(
     color: str,
     plot_type: str = "line",
 ) -> Any:
+    """
+    Class decorator that registers an attribute for live plotting.
+
+    Parameters
+    ----------
+    label : str
+        Display label and lookup key for the tracked attribute.
+    color : str
+        Matplotlib-compatible color string (e.g. ``"red"``, ``"#ff0000"``).
+    plot_type : str, optional
+        Plot style, by default ``"line"``.
+
+    Returns
+    -------
+    type
+        The decorated class with ``_plot_info`` populated.
+
+    Examples
+    --------
+    >>> @track_plot(label="Infected", color="red")
+    ... class SIR(Model):
+    ...     infected: int = 0
+    """
     def decorator(cls: type) -> type:
         if not hasattr(cls, "_plot_info"):
             cls._plot_info = {}  # type: ignore[attr-defined]
@@ -39,12 +62,36 @@ def track_plot(
 
 class Chart(Model):
     """
-    A :class:`~dissmodel.core.Model` that renders a live time-series chart.
+    Simulation model that renders a live time-series chart.
 
-    Supports three rendering targets:
-    - **Streamlit**: pass a ``plot_area`` (``st.empty()``).
-    - **Jupyter**: detected automatically via :func:`is_notebook`.
-    - **Matplotlib window**: used as fallback in plain Python scripts.
+    Extends :class:`~dissmodel.core.Model` and redraws the chart at every
+    time step. Supports three rendering targets:
+
+    - **Streamlit** — pass a ``plot_area`` (``st.empty()``).
+    - **Jupyter** — detected automatically via :func:`is_notebook`.
+    - **Matplotlib window** — fallback for plain Python scripts.
+
+    Parameters
+    ----------
+    select : list of str, optional
+        Subset of labels to plot. If ``None``, all tracked variables are shown.
+    pause : bool, optional
+        If ``True``, call ``plt.pause()`` after each update, by default ``True``.
+        Required for live updates outside notebooks.
+    plot_area : any, optional
+        Streamlit ``st.empty()`` placeholder, by default ``None``.
+    show_legend : bool, optional
+        Whether to display the plot legend, by default ``True``.
+    show_grid : bool, optional
+        Whether to display the plot grid, by default ``False``.
+    title : str, optional
+        Chart title, by default ``"Variable History"``.
+
+    Examples
+    --------
+    >>> env = Environment(end_time=30)
+    >>> Chart(show_legend=True, show_grid=True, title="SIR Model")
+    >>> env.run()
     """
 
     fig: matplotlib.figure.Figure
@@ -70,16 +117,24 @@ class Chart(Model):
         """
         Configure the chart.
 
-        Args:
-            select:      Subset of labels to plot. If ``None``, all tracked
-                         variables are shown.
-            pause:       If ``True``, call ``plt.pause()`` after each update
-                         (required for live updates outside notebooks).
-            plot_area:   Streamlit ``st.empty()`` placeholder. If provided,
-                         the chart is rendered via Streamlit.
-            show_legend: Whether to display the plot legend.
-            show_grid:   Whether to display the plot grid.
-            title:       Chart title.
+        Called automatically by salabim during component initialisation.
+
+        Parameters
+        ----------
+        select : list of str, optional
+            Subset of labels to plot. If ``None``, all tracked variables
+            are shown.
+        pause : bool, optional
+            If ``True``, call ``plt.pause()`` after each update,
+            by default ``True``.
+        plot_area : any, optional
+            Streamlit ``st.empty()`` placeholder, by default ``None``.
+        show_legend : bool, optional
+            Whether to display the plot legend, by default ``True``.
+        show_grid : bool, optional
+            Whether to display the plot grid, by default ``False``.
+        title : str, optional
+            Chart title, by default ``"Variable History"``.
         """
         self.select = select
         self.interval = 1
@@ -96,7 +151,15 @@ class Chart(Model):
             self.ax.set_title(self.title)
 
     def execute(self) -> None:
-        """Redraw the chart for the current simulation time step."""
+        """
+        Redraw the chart for the current simulation time step.
+
+        Raises
+        ------
+        RuntimeError
+            If no interactive matplotlib backend is detected and the code is
+            not running in a notebook or Streamlit context.
+        """
         if is_notebook():
             from IPython.display import clear_output
             clear_output(wait=True)
@@ -148,3 +211,4 @@ class Chart(Model):
                     "On Linux, install tkinter:\n\n"
                     "    sudo apt install python3-tk\n"
                 )
+
