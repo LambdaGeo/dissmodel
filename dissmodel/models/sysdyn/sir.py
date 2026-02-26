@@ -59,13 +59,13 @@ class SIR(Model):
     """
 
     #: Number of susceptible individuals.
-    susceptible: int
+    susceptible: float
 
     #: Number of infected individuals.
-    infected: int
+    infected: float
 
     #: Number of recovered individuals.
-    recovered: int
+    recovered: float
 
     #: Average number of steps an individual remains infectious.
     duration: int

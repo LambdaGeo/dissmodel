@@ -57,7 +57,7 @@ class CellularAutomaton(Model, ABC):
         start_time: float = 0,
         end_time: float = math.inf,
         name: str = "",
-        dim: Optional[tuple[int, int]] = None,
+        dim: Optional[int] = None,
         **kwargs: Any,
     ) -> None:
         self.gdf = gdf

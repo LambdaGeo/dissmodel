@@ -74,6 +74,7 @@ class Growth(CellularAutomaton):
 
         All other cells start as empty.
         """
+        assert self.dim is not None, "dim must be set — pass dim=N when instantiating"
         center = self.dim // 2
         center_idx = f"{center}-{center}"
         self.gdf.loc[:, "state"] = GrowthState.EMPTY
@@ -98,6 +99,7 @@ class Growth(CellularAutomaton):
               and has at least one live neighbor.
             - ``EMPTY`` otherwise.
         """
+        assert self.dim is not None, "dim must be set — pass dim=N when instantiating"
         state = self.gdf.loc[idx, self.state_attr]
 
         if state == GrowthState.ALIVE:

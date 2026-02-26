@@ -126,6 +126,8 @@ class Snow(CellularAutomaton):
         flakes already in motion to reach the ground before the
         simulation ends.
         """
+        assert self.dim is not None, "dim must be set — pass dim=N when instantiating"
+        
         cell = self.gdf.loc[idx]
         x, y = parse_idx(idx)
         t = self.env.now()
