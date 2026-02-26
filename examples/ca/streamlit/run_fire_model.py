@@ -1,80 +1,88 @@
+"""
+Fire Model — Streamlit
+======================
+Spatial cellular automaton simulating forest fire spread.
 
-import streamlit as st
+States
+------
+- Forest (0)  — healthy tree, can catch fire.
+- Burning (1) — actively burning, spreads to neighbors.
+- Burned (2)  — already burned, no longer spreads.
+
+Usage
+-----
+    streamlit run examples/streamlit/ca_fire_model.py
+"""
+from __future__ import annotations
+
 from matplotlib.colors import ListedColormap
-from dissmodel.geo import regular_grid
+import streamlit as st
+
 from dissmodel.core import Environment
+from dissmodel.geo import regular_grid
+from dissmodel.models.ca import FireModel
+from dissmodel.models.ca.fire_model import FireState
+from dissmodel.visualization import display_inputs
 from dissmodel.visualization.map import Map
 
-from dissmodel.visualization import display_inputs
-
-from dissmodel.geo import regular_grid, fill, FillStrategy
-
-
-from dissmodel.models.ca import FireModel  # ou FireModelProb, conforme sua variação
-
-
-# ---------------------------
-# Configuração da interface
-# ---------------------------
-
+# ---------------------------------------------------------------------------
+# Page config
+# ---------------------------------------------------------------------------
 st.set_page_config(page_title="Fire Model", layout="centered")
-st.title("Modelo de Propagação de Fogo (DisSModel)")
+st.title("Forest Fire Model (dissmodel)")
 
-# Parâmetros ajustáveis pelo usuário
-st.sidebar.title("Parâmetros do Modelo")
-steps = st.sidebar.slider("Número de passos da simulação", min_value=1, max_value=50, value=10)
-grid_dim = st.sidebar.slider("Tamanho da grade", min_value=5, max_value=100, value=20)
-executar = st.button("Executar Simulação")
+# ---------------------------------------------------------------------------
+# Sidebar
+# ---------------------------------------------------------------------------
+st.sidebar.title("Parameters")
+steps     = st.sidebar.slider("Simulation steps", min_value=1, max_value=50, value=10)
+grid_size = st.sidebar.slider("Grid size", min_value=5, max_value=100, value=20)
+run       = st.button("Run Simulation")
 
-# ---------------------------
-# Geração da grade espacial
-# ---------------------------
+# ---------------------------------------------------------------------------
+# Setup
+#
+# Instantiation order matters:
+#   1. Environment  — must exist before any model connects to it
+#   2. Grid         — spatial structure shared between model and map
+#   3. Model        — connects to the active environment on creation
+#   4. display_inputs — reads annotated attributes and renders sidebar widgets,
+#                       updating model parameters before initialization
+#   5. initialize() — uses the parameters set by display_inputs to fill the grid
+#   6. Map          — connects to the active environment and redraws each step
+# ---------------------------------------------------------------------------
 
-gdf = regular_grid(
-    dimension=(grid_dim, grid_dim),
-    resolution=1,
-    attrs={'state': 0}
-)
-gdf.loc["10-10","state"] = FireModel.BURNING
-
-fill(
-    strategy=FillStrategy.RANDOM_SAMPLE,
-    gdf=gdf,
-    attr="state",
-    data={FireModel.FOREST: 0.95, FireModel.BURNING: 0.05},  # 70% de células com 0, 30% com 1
-    seed=42
-)
-
-
-# ---------------------------
-# Criação do ambiente e modelo
-# ---------------------------
-
+# 1. Environment
 env = Environment(start_time=0, end_time=steps)
-fire = FireModel(gdf=gdf)  # ou FireModelProb se estiver usando versão probabilística
 
-# Exibir parâmetros ajustáveis do modelo (se houver)
+# 2. Grid
+gdf = regular_grid(
+    dimension=(grid_size, grid_size),
+    resolution=1,
+    attrs={"state": FireState.FOREST},
+)
+
+# 3. Model
+fire = FireModel(gdf=gdf)
+
+# 4. Sidebar widgets — must come before initialize()
+#    so parameters are set before the grid is filled
 display_inputs(fire, st.sidebar)
 
-# ---------------------------
-# Visualização inicial
-# ---------------------------
+# 5. Initialize — uses parameters updated by display_inputs
+fire.initialize()
 
-plot_area = st.empty()
-
-# Mapa de cores para os estados
-custom_cmap = ListedColormap(['green', 'red', 'brown'])  # Floresta, queimando, queimado
-plot_params = {"column": "state", "cmap": custom_cmap, "ec": "black"}
-
+# 6. Map
+cmap = ListedColormap(["green", "red", "brown"])  # Forest, Burning, Burned
 Map(
     gdf=gdf,
-    plot_area=plot_area,
-    plot_params=plot_params
+    plot_params={"column": "state", "cmap": cmap, "ec": "black"},
+    plot_area=st.empty(),
 )
 
-# ---------------------------
-# Execução da simulação
-# ---------------------------
-
-if executar:
+# ---------------------------------------------------------------------------
+# Run
+# ---------------------------------------------------------------------------
+if run:
+    env.reset()
     env.run()
