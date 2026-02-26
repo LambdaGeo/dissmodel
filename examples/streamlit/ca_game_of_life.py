@@ -21,6 +21,7 @@ import streamlit as st
 from dissmodel.core import Environment
 from dissmodel.geo import regular_grid
 from dissmodel.models.ca import GameOfLife
+from dissmodel.models.ca.game_of_life import PATTERNS
 from dissmodel.visualization.map import Map
 
 # ---------------------------------------------------------------------------
@@ -33,23 +34,32 @@ st.title("Game of Life (dissmodel)")
 # Sidebar
 # ---------------------------------------------------------------------------
 st.sidebar.title("Parameters")
+
 steps     = st.sidebar.slider("Simulation steps", min_value=1, max_value=50, value=10)
 grid_size = st.sidebar.slider("Grid size", min_value=5, max_value=50, value=20)
 init_mode = st.sidebar.radio("Initialization", ["Random", "Patterns"])
-run       = st.button("Run Simulation")
+
+selected_patterns = []
+if init_mode == "Patterns":
+    selected_patterns = st.sidebar.multiselect(
+        "Select patterns",
+        options=list(PATTERNS.keys()),
+        default=["glider", "blinker", "toad", "beacon"],
+    )
+
+run = st.button("Run Simulation")
 
 # ---------------------------------------------------------------------------
 # Setup
 # ---------------------------------------------------------------------------
 gdf = regular_grid(dimension=(grid_size, grid_size), resolution=1, attrs={"state": 0})
-
 env = Environment(start_time=0, end_time=steps)
 
 gol = GameOfLife(gdf=gdf)
 if init_mode == "Random":
     gol.initialize()
 else:
-    gol.initialize_patterns()
+    gol.initialize_patterns(patterns=selected_patterns or None)
 
 cmap = ListedColormap(["white", "black"])
 plot_area = st.empty()
