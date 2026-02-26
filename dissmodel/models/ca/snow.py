@@ -1,45 +1,145 @@
+from __future__ import annotations
+
 import random
+from enum import IntEnum
+from typing import Any
+
 from dissmodel.geo import CellularAutomaton, parse_idx
-from libpysal.weights import lat2W  # Von Neumann neighborhood
+
+
+class SnowState(IntEnum):
+    """
+    Possible states for a cell in :class:`Snow`.
+
+    Attributes
+    ----------
+    EMPTY : int
+        Empty cell, no snow.
+    SNOW : int
+        Cell occupied by snow.
+    """
+    EMPTY = 0
+    SNOW  = 1
+
 
 class Snow(CellularAutomaton):
-    EMPTY = 0
-    SNOW = 1
+    """
+    Cellular automaton simulating snowfall and accumulation.
 
+    Snow falls from the top row and moves downward one cell per step.
+    When a snowflake reaches the bottom or lands on top of another
+    snowflake, it accumulates. New snowflakes appear at the top row
+    with probability :attr:`probability`.
+
+    Parameters
+    ----------
+    gdf : geopandas.GeoDataFrame
+        GeoDataFrame with geometries and a ``state`` attribute.
+        Must be created with ``dim=(n, n)`` so row/column indices
+        are available via :func:`~dissmodel.geo.parse_idx`.
+    **kwargs :
+        Extra keyword arguments forwarded to
+        :class:`~dissmodel.geo.CellularAutomaton`.
+
+    Notes
+    -----
+    This model does not use a spatial neighborhood strategy — cell
+    relationships are computed directly from the grid index format
+    ``'row-col'`` via :func:`~dissmodel.geo.parse_idx`.
+    Therefore, :meth:`execute` is overridden to skip the neighborhood
+    check that the base class enforces.
+
+    Examples
+    --------
+    >>> from dissmodel.geo import regular_grid
+    >>> from dissmodel.core import Environment
+    >>> gdf = regular_grid(dimension=(20, 20), resolution=1, attrs={"state": 0})
+    >>> env = Environment(end_time=30)
+    >>> snow = Snow(gdf=gdf, dim=20)
+    """
+
+    #: Probability of a new snowflake appearing at the top row each step.
     probability: float
 
+    def setup(self, probability: float = 0.02) -> None:
+        """
+        Configure the model.
 
-    def setup(self,  probability=0.02):   
-
+        Parameters
+        ----------
+        probability : float, optional
+            Probability of a new snowflake appearing at the top row
+            each step, by default 0.02.
+        """
         self.probability = probability
-    
-    def rule(self, idx):
+
+    def execute(self) -> None:
+        """
+        Execute one simulation step by applying :meth:`rule` to every cell.
+
+        Overrides the base class implementation to skip the neighborhood
+        check — this model computes cell relationships directly from
+        grid indices via :func:`~dissmodel.geo.parse_idx`.
+        """
+        self.gdf[self.state_attr] = self.gdf.index.map(self.rule)
+
+    def rule(self, idx: Any) -> int:
+        """
+        Apply the snow fall and accumulation rule to cell ``idx``.
+
+        Parameters
+        ----------
+        idx : any
+            Index of the cell being evaluated.
+
+        Returns
+        -------
+        int
+            New state for the cell:
+
+            - Top row → ``SNOW`` with probability :attr:`probability`
+              if empty and within the active snowfall window.
+            - Snowy cell at bottom row → stays ``SNOW`` (accumulates).
+            - Snowy cell with empty cell below → becomes ``EMPTY``
+              (snow moves down).
+            - Snowy cell with occupied cell below → stays ``SNOW``
+              (accumulates).
+            - Empty cell with snowy cell above → becomes ``SNOW``
+              (snow arrives).
+            - Otherwise → ``EMPTY``.
+        """
         cell = self.gdf.loc[idx]
         x, y = parse_idx(idx)
         t = self.env.now()
 
-        # Célula no TOPO: início da queda
+        # Top row — snowflakes appear here
         if y == self.dim - 1:
-            if cell.state == self.EMPTY and t < (self.end_time - self.dim) and random.random() < self.probability:
-                return self.SNOW
-            return self.EMPTY
+            if (
+                cell.state == SnowState.EMPTY
+                and t < (self.end_time - self.dim)
+                and random.random() < self.probability
+            ):
+                return SnowState.SNOW
+            return SnowState.EMPTY
 
-        # Célula abaixo (para verificar se a neve pode descer)
+        # Snow movement — check cell below
         below_idx = f"{y - 1}-{x}" if y - 1 >= 0 else None
-        if cell.state == self.SNOW and y == 0:
-            return self.SNOW 
-        elif cell.state == self.SNOW and below_idx:
-            below_state = self.gdf.loc[below_idx, "state"]
-            if below_state == self.EMPTY:
-                return self.EMPTY  # A neve "desce", célula atual fica vazia
-            else:
-                return self.SNOW  # Há neve abaixo, então acumula
 
-        # Célula acima (a neve pode chegar nela)
+        if cell.state == SnowState.SNOW:
+            if y == 0:
+                return SnowState.SNOW  # bottom row — accumulates
+            if below_idx:
+                below_state = self.gdf.loc[below_idx, "state"]
+                if below_state == SnowState.EMPTY:
+                    return SnowState.EMPTY  # snow moves down
+                return SnowState.SNOW      # blocked — accumulates
+
+        # Snow arrival — check cell above
         above_idx = f"{y + 1}-{x}" if y + 1 < self.dim else None
-        if above_idx and self.gdf.loc[above_idx, "state"] == self.SNOW:
-            return self.SNOW
+        if above_idx and self.gdf.loc[above_idx, "state"] == SnowState.SNOW:
+            return SnowState.SNOW
 
-        return self.EMPTY
+        return SnowState.EMPTY
 
 
+__all__ = ["Snow", "SnowState"]
