@@ -157,7 +157,7 @@ class GameOfLife(CellularAutomaton):
         grid_dim = int(len(self.gdf) ** 0.5)
 
         for pattern in selected.values():
-            start_x = random.randint(0, grid_dim - len(pattern[0]))  # col offset bounded by n_cols
+            start_x = random.randint(0, grid_dim - len(pattern[0]))   # col _ offset bounded by n_cols
             start_y = random.randint(0, grid_dim - len(pattern))     # row offset bounded by n_rows
 
             fill(
