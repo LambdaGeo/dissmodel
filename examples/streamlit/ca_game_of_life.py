@@ -66,10 +66,3 @@ Map(
 if run:
     env.reset()
     env.run()
-```
-
----
-
-Commit message:
-```
-docs(examples): refactor Game of Life Streamlit example — English, cleanup and init mode selector
