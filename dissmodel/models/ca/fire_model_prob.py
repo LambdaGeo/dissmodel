@@ -90,8 +90,7 @@ class FireModelProb(CellularAutomaton):
         state = self.gdf.loc[idx, self.state_attr]
 
         if state == FireState.FOREST:
-            neighs = self.neighs(idx)
-            if (neighs[self.state_attr] == FireState.BURNING).any():
+            if (self.neighbor_values(idx, self.state_attr) == FireState.BURNING).any():
                 return FireState.BURNING
             return (
                 FireState.BURNING

@@ -117,8 +117,7 @@ class FireModel(CellularAutomaton):
             return FireState.BURNED
 
         if state == FireState.FOREST:
-            neighs = self.neighs(idx)
-            if (neighs[self.state_attr] == FireState.BURNING).any():
+            if (self.neighbor_values(idx, self.state_attr) == FireState.BURNING).any():
                 return FireState.BURNING
 
         return state
