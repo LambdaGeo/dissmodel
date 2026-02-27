@@ -90,7 +90,7 @@ Environment  →  Model  →  Visualization
 
 DisSModel is organized into four modules:
 
-![alt text](docs/images/arquitetura2.jpeg)
+![alt text](docs/images/arquitetura_dissmodel.png)
 
 | Module | Description |
 |:---|:---|
