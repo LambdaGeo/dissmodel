@@ -39,7 +39,9 @@ class Environment(sim.Environment):
         *args: Any,
         **kwargs: Any,
     ) -> None:
-        super().__init__(*args, **kwargs)
+        kwargs.pop("animation", None)
+        kwargs.pop("trace", False)
+        super().__init__(*args, trace=False, **kwargs)
         self.start_time = start_time
         self.end_time = end_time
 

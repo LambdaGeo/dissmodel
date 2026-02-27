@@ -1,117 +1,211 @@
-# 👋 DissModel (Discrete Spatial Modelling)
+# DisSModel
 
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+**Discrete Spatial Modeling framework for Python**
 
-📚 **Documentação online:** https://lambdageo.github.io/dissmodel/
 
-## 🎯 Visão Geral
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 
-O **DissModel** é uma biblioteca Python voltada para modelagem espacial baseada em zonas, com suporte à integração de dados geográficos e estatísticas espaciais. Seu objetivo é facilitar o desenvolvimento de modelos espaciais dinâmicos, especialmente úteis em aplicações como planejamento territorial, análise ambiental, simulações espaciais e estudos socioeconômicos.
+DisSModel is a modular, open-source Python framework for spatially explicit dynamic modeling. Developed by the [LambdaGeo](https://github.com/LambdaGeo) group at the Federal University of Maranhão (UFMA), it provides a unified environment for building **Cellular Automata (CA)** and **System Dynamics (SysDyn)** models on top of the Python geospatial ecosystem.
 
-> ⚠️ Aviso: Esta biblioteca ainda está em fase de testes e não está publicada no repositório oficial do PyPI. Interessados em testar podem instalá-la via TestPyPI (veja abaixo).
-> 
+> DisSModel is designed as a modern, Pythonic alternative to the TerraME framework, replacing the TerraLib/Lua stack with GeoPandas, PySAL, and Salabim.
 
-## 🚀 Funcionalidades Principais
+---
 
-- **Algoritmos de Integração Espacial**: integração entre dados vetoriais e matriciais por meio de estatísticas zonais, distância mínima, e interseções geométricas.
-- **Suporte a Dados Geográficos**: leitura e manipulação de shapefiles, GeoJSON, raster e integração com bibliotecas como `geopandas`, `shapely`, `rasterio` e `pyproj`.
-- **Estrutura Modular para Modelagem**: componentes reutilizáveis para construir modelos espaciais dinâmicos, flexíveis e extensíveis.
-- **Ferramentas de Visualização**: mapas, histogramas, gráficos e exportações para softwares de SIG como QGIS.
-- **Autômatos Celulares Espaciais**: suporte à definição de regras baseadas em vizinhança e evolução temporal.
+## Features
 
-## 💻 Instalação
+- **Cellular Automata** — spatial grid models with configurable neighborhood strategies (Queen, Rook, KNN)
+- **System Dynamics** — compartmental models with automatic live plotting via `@track_plot`
+- **Flexible grid generation** — from dimensions, bounds, or an existing GeoDataFrame
+- **Fill strategies** — random sampling, zonal statistics, minimum distance, and pattern-based initialization
+- **Three execution modes** — CLI scripts, Jupyter notebooks, and Streamlit web apps
+- **Reactive UI** — `display_inputs` reads annotated model attributes and generates sidebar widgets automatically
+- **Built on standard tools** — GeoPandas, libpysal, Salabim, Matplotlib, Streamlit
 
-Instalação via **TestPyPI**:
+---
 
-```sql
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ dissmodel
+## Installation
+
+```bash
+pip install dissmodel
 ```
 
-Ou diretamente a partir do código-fonte:
+Requires Python 3.10+.
 
-```sql
-git clone https://github.com/LambdaGeo/dissmodel.git
+---
+
+## Quickstart
+
+### System Dynamics — SIR Model
+
+```python
+from dissmodel.core import Environment
+from dissmodel.models.sysdyn import SIR
+from dissmodel.visualization import Chart
+
+env = Environment()
+SIR(susceptible=9998, infected=2, recovered=0, duration=2, contacts=6, probability=0.25)
+Chart(show_legend=True)
+env.run(30)
+```
+
+### Cellular Automaton — Forest Fire
+
+```python
+from dissmodel.core import Environment
+from dissmodel.geo import regular_grid
+from dissmodel.models.ca import FireModel
+from dissmodel.models.ca.fire_model import FireState
+
+gdf = regular_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
+env = Environment(end_time=20)
+fire = FireModel(gdf=gdf)
+fire.initialize()
+env.run()
+```
+
+### Streamlit App
+
+```bash
+streamlit run examples/streamlit/ca_all.py
+```
+
+---
+
+## Instantiation order
+
+The `Environment` must always be created **before** any model.
+Models connect to the active environment automatically on creation.
+
+```
+Environment  →  Model  →  Visualization
+     ↑             ↑            ↑
+  first         second        third
+```
+
+---
+
+## Architecture
+
+DisSModel is organized into four modules:
+
+| Module | Description |
+|:---|:---|
+| `dissmodel.core` | Simulation clock and execution lifecycle (`Environment`, `Model`) |
+| `dissmodel.geo` | Spatial data structures — grid generation, fill strategies, neighborhood |
+| `dissmodel.models` | Ready-to-use CA and SysDyn reference implementations |
+| `dissmodel.visualization` | Observer-based visualization — `Chart`, `Map`, `display_inputs`, `@track_plot` |
+
+---
+
+## Included Models
+
+### Cellular Automata (`dissmodel.models.ca`)
+
+| Model | Description |
+|:---|:---|
+| `GameOfLife` | Conway's Game of Life with classic built-in patterns |
+| `FireModel` | Forest fire spread with Rook neighborhood |
+| `FireModelProb` | Probabilistic fire with spontaneous combustion and regrowth |
+| `Snow` | Snowfall and accumulation from top row |
+| `Growth` | Stochastic radial growth from a center seed |
+| `Propagation` | Active state transmission with KNN neighborhood |
+| `Anneal` | Binary system relaxation via majority-vote rule |
+
+### System Dynamics (`dissmodel.models.sysdyn`)
+
+| Model | Description |
+|:---|:---|
+| `SIR` | Susceptible–Infected–Recovered epidemiological model |
+| `PredatorPrey` | Lotka–Volterra ecological dynamics |
+| `PopulationGrowth` | Exponential growth with variable rate |
+| `Lorenz` | Deterministic chaos — Lorenz attractor |
+| `Coffee` | Newton's Law of Cooling |
+
+---
+
+## Execution Modes
+
+All models can be run in three modes:
+
+**CLI**
+```bash
+python examples/cli/sysdyn_sir.py
+python examples/cli/ca_game_of_life.py
+```
+
+**Streamlit**
+```bash
+streamlit run examples/streamlit/sysdyn_all.py   # all SysDyn models
+streamlit run examples/streamlit/ca_all.py        # all CA models
+```
+
+**Jupyter Notebook**
+
+See [`examples/notebooks/`](examples/notebooks/) for interactive notebooks with step-by-step explanations.
+
+---
+
+## Reactive Streamlit Interface
+
+`display_inputs` reads annotated model attributes and generates sidebar widgets automatically — no extra configuration needed:
+
+```python
+env = Environment(start_time=0, end_time=steps)
+gdf = regular_grid(dimension=(grid_size, grid_size), resolution=1, attrs={"state": 0})
+model = FireModel(gdf=gdf)
+display_inputs(model, st.sidebar)  # generates sliders from type annotations
+model.initialize()                 # uses parameters set by display_inputs
+```
+
+---
+
+## Grid and Neighborhood
+
+```python
+from dissmodel.geo import regular_grid, fill, FillStrategy
+
+# Create a 20x20 grid
+gdf = regular_grid(dimension=(20, 20), resolution=1.0, attrs={"state": 0})
+
+# Fill with random values
+fill(FillStrategy.RANDOM_SAMPLE, gdf=gdf, attr="state", data={0: 0.7, 1: 0.3}, seed=42)
+```
+
+Supported neighborhood strategies: `Queen`, `Rook`, `KNN` (via libpysal).
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/LambdaGeo/dissmodel
 cd dissmodel
 pip install -e .
+pip install -r requirements.txt  # dev dependencies
+pytest tests/
 ```
 
-## 🧩 Exemplo com Autômato Celular Espacial: Game of Life
+---
 
-A seguir, um exemplo de implementação do clássico **Game of Life**, utilizando o suporte da biblioteca `dissmodel` a autômatos celulares espaciais.
+## Documentation
 
-```sql
-from dissmodel.geo.celullar_automaton import CellularAutomaton
-from dissmodel.geo import fill, FillStrategy
-from libpysal.weights import Queen
+Full documentation available at: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github.io/dissmodel/)
 
-class GameOfLife(CellularAutomaton):
-    def initialize(self):
-        fill(
-            strategy=FillStrategy.RANDOM_SAMPLE,
-            gdf=self.gdf,
-            attr="state",
-            data={1: 0.6, 0: 0.4},
-            seed=42
-        )
+---
 
-    def setup(self):
-        self.create_neighborhood(strategy=Queen, use_index=True)
+## Citation
 
-    def rule(self, idx):
-        value = self.gdf.loc[idx, self.state_attr]
-        neighs = self.neighs(idx)
-        count = neighs[self.state_attr].fillna(0).sum()
-
-        if value == 1:
-            return 1 if 2 <= count <= 3 else 0
-        else:
-            return 1 if count == 3 else 0
+If you use DisSModel in your research, please cite:
 
 ```
-
-Execução e Visualização
-
-```sql
-from dissmodel.geo import regular_grid
-from dissmodel.core import Environment
-from dissmodel.visualization.map import Map
-from dissmodel.models.ca import GameOfLife
-from matplotlib.colors import ListedColormap
-
-# Geração de uma grade espacial
-gdf = regular_grid(dimension=(20, 20), resolution=1, attrs={'state': 0})
-
-# Instanciação do modelo e do ambiente
-gol = GameOfLife(gdf=gdf)
-env = Environment(start_time=0, end_time=10)
-
-# Inicialização e visualização do estado inicial
-gol.initialize()
-Map(gdf=gdf, plot_params={"column": "state", "cmap": ListedColormap(['green', 'red']), "ec": 'black'})
-
-# Execução do modelo
-env.run()
-
+Costa, S. & Santos Junior, N. (2025). DisSModel: A Discrete Spatial Modeling
+Framework for Python. LambdaGeo, Federal University of Maranhão (UFMA).
+https://github.com/LambdaGeo/dissmodel
 ```
 
-🔁 O modelo aplica as regras do Game of Life em uma vizinhança do tipo *Queen*, evoluindo o estado espacial ao longo do tempo.
+---
 
-## 📘 Documentação
+## License
 
-Documentação completa disponível em:
-
-👉 https://lambdageo.github.io/dissmodel/
-
-## 🤝 Contribuições
-
-Contribuições são bem-vindas! Você pode:
-
-1. Fazer um fork do repositório
-2. Criar uma branch com sua contribuição (`feature/minha_funcionalidade`)
-3. Enviar um pull request com uma breve descrição
-
-## 📄 Licença
-
-Este projeto está licenciado sob a Licença MIT.
-
-Consulte o arquivo LICENSE para mais detalhes.
+MIT © [LambdaGeo — UFMA](https://github.com/LambdaGeo)
