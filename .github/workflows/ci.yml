@@ -1,12 +1,14 @@
-name: Type Check
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
+  workflow_dispatch:  # permite rodar manualmente para testar
 
 jobs:
-  mypy:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,7 +16,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          python-version: "3.12"
 
       - name: Install system dependencies
         run: |
@@ -25,7 +27,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
-          pip install mypy
+
+      - name: Run tests
+        run: pytest tests/
 
       - name: Run mypy
         run: mypy dissmodel --ignore-missing-imports
