@@ -90,6 +90,8 @@ Environment  →  Model  →  Visualization
 
 DisSModel is organized into four modules:
 
+![alt text](docs/images/arquitetura2.jpeg)
+
 | Module | Description |
 |:---|:---|
 | `dissmodel.core` | Simulation clock and execution lifecycle (`Environment`, `Model`) |
@@ -140,6 +142,10 @@ python examples/cli/ca_game_of_life.py
 streamlit run examples/streamlit/sysdyn_all.py   # all SysDyn models
 streamlit run examples/streamlit/ca_all.py        # all CA models
 ```
+
+Running examples/streamlit/ca_all.py  ...
+
+![alt text](docs/images/streamlit_ca_all.png)
 
 **Jupyter Notebook**
 
