@@ -3,7 +3,7 @@ name: Publish to PyPI
 on:
   release:
     types: [published]
-  workflow_dispatch:  # para testar sem criar Release
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -49,4 +49,3 @@ jobs:
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
           packages-dir: dist/
-
