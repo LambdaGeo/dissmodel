@@ -120,11 +120,9 @@ class Propagation(CellularAutomaton):
         if state == PropagationState.ON:
             return PropagationState.ON
 
-        neighbor_ids = self.neighs_id(idx)
-        has_active_neighbor = any(
-            self.gdf.loc[v, self.state_attr] == PropagationState.ON
-            for v in neighbor_ids
-        )
+        has_active_neighbor = (
+            self.neighbor_values(idx, self.state_attr) == PropagationState.ON
+        ).any()
 
         if has_active_neighbor and np.random.rand() < self.prob:
             return PropagationState.ON

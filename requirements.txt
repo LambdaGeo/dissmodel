@@ -1,11 +1,12 @@
-salabim==25.0.9
-greenlet==3.1.1
-pysal==25.1
-streamlit==1.45.0
-datadotworld==2.0.0
-pytest==8.3.5
-python-dotenv==1.0.1
-mkdocs==1.6.1
+# Development and documentation dependencies
+# Runtime dependencies are declared in pyproject.toml
+#
+# Install runtime:   pip install -e .
+# Install dev tools: pip install -r requirements.txt
+
+mypy
+pytest
+mkdocs
 mkdocstrings[python]
-mkdocs-jupyter==0.25.1
-mkdocs-material==9.6.14
+mkdocs-jupyter
+mkdocs-material

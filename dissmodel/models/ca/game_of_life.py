@@ -157,8 +157,9 @@ class GameOfLife(CellularAutomaton):
         grid_dim = int(len(self.gdf) ** 0.5)
 
         for pattern in selected.values():
-            start_x = random.randint(0, grid_dim - len(pattern))
-            start_y = random.randint(0, grid_dim - len(pattern[0]))
+            start_x = random.randint(0, grid_dim - len(pattern[0]))   # col _ offset bounded by n_cols
+            start_y = random.randint(0, grid_dim - len(pattern))     # row offset bounded by n_rows
+
             fill(
                 strategy=FillStrategy.PATTERN,
                 gdf=self.gdf,
@@ -183,7 +184,7 @@ class GameOfLife(CellularAutomaton):
             ``1`` if the cell is alive after the transition, ``0`` if dead.
         """
         state = self.gdf.loc[idx, self.state_attr]
-        live_neighbors = self.neighs(idx)[self.state_attr].fillna(0).sum()
+        live_neighbors = (self.neighbor_values(idx, self.state_attr)).sum()
 
         if state == 1:
             return 1 if 2 <= live_neighbors <= 3 else 0
