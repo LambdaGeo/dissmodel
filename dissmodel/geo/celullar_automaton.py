@@ -148,6 +148,13 @@ class CellularAutomaton(Model, ABC):
             If the neighborhood has not been created yet.
         ValueError
             If the ``_neighs`` column is missing from the GeoDataFrame.
+
+        Notes
+        -----
+        Returns a GeoDataFrame slice, which involves Pandas overhead.
+        For performance-critical rule evaluation inside simulation loops,
+        prefer :meth:`neighbor_values` which returns a NumPy array directly.
+ 
         """
         if not self._neighborhood_created:
             raise RuntimeError(
