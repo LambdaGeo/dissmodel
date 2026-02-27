@@ -222,7 +222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../index.md" class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -1341,7 +1341,10 @@ located by index.</p>
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Growth</span><span class="p">(</span><span class="n">CellularAutomaton</span><span class="p">):</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Growth</span><span class="p">(</span><span class="n">CellularAutomaton</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stochastic cellular automaton simulating spatial growth from a seed.</span>
 
@@ -1391,6 +1394,7 @@ located by index.</p>
 
 <span class="sd">        All other cells start as empty.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;dim must be set — pass dim=N when instantiating&quot;</span>
         <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="mi">2</span>
         <span class="n">center_idx</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">EMPTY</span>
@@ -1415,13 +1419,15 @@ located by index.</p>
 <span class="sd">              and has at least one live neighbor.</span>
 <span class="sd">            - ``EMPTY`` otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;dim must be set — pass dim=N when instantiating&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span>
 
-        <span class="n">neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighs</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-        <span class="n">alive_neighbors</span> <span class="o">=</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span> <span class="o">==</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="n">alive_neighbors</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_values</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">)</span> <span class="o">==</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
 
         <span class="k">if</span> <span class="n">alive_neighbors</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span>
@@ -1469,12 +1475,14 @@ located by index.</p>
 <span class="normal">77</span>
 <span class="normal">78</span>
 <span class="normal">79</span>
-<span class="normal">80</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">80</span>
+<span class="normal">81</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Place a single live cell at the center of the grid.</span>
 
 <span class="sd">    All other cells start as empty.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;dim must be set — pass dim=N when instantiating&quot;</span>
     <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="n">center_idx</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">center</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">EMPTY</span>
@@ -1561,8 +1569,7 @@ located by index.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/models/ca/growth.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 82</span>
-<span class="normal"> 83</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 83</span>
 <span class="normal"> 84</span>
 <span class="normal"> 85</span>
 <span class="normal"> 86</span>
@@ -1591,7 +1598,10 @@ located by index.</p>
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply the stochastic growth rule to cell ``idx``.</span>
 
@@ -1610,13 +1620,15 @@ located by index.</p>
 <span class="sd">          and has at least one live neighbor.</span>
 <span class="sd">        - ``EMPTY`` otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;dim must be set — pass dim=N when instantiating&quot;</span>
     <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span>
 
-    <span class="n">neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighs</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-    <span class="n">alive_neighbors</span> <span class="o">=</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span> <span class="o">==</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="n">alive_neighbors</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_values</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">)</span> <span class="o">==</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
 
     <span class="k">if</span> <span class="n">alive_neighbors</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">probability</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">GrowthState</span><span class="o">.</span><span class="n">ALIVE</span>

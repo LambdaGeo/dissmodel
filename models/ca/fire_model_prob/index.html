@@ -222,7 +222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../index.md" class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -1319,8 +1319,7 @@ producing complex spatial patterns over time.</p>
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">FireModelProb</span><span class="p">(</span><span class="n">CellularAutomaton</span><span class="p">):</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">FireModelProb</span><span class="p">(</span><span class="n">CellularAutomaton</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Probabilistic forest fire cellular automaton.</span>
 
@@ -1401,8 +1400,7 @@ producing complex spatial patterns over time.</p>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">FireState</span><span class="o">.</span><span class="n">FOREST</span><span class="p">:</span>
-            <span class="n">neighs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighs</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">neighs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span> <span class="o">==</span> <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_values</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">)</span> <span class="o">==</span> <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span>
@@ -1553,8 +1551,7 @@ producing complex spatial patterns over time.</p>
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply the probabilistic fire transition rule to cell ``idx``.</span>
 
@@ -1578,8 +1575,7 @@ producing complex spatial patterns over time.</p>
     <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">FireState</span><span class="o">.</span><span class="n">FOREST</span><span class="p">:</span>
-        <span class="n">neighs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighs</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">neighs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span> <span class="o">==</span> <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_values</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">)</span> <span class="o">==</span> <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="n">FireState</span><span class="o">.</span><span class="n">BURNING</span>

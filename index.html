@@ -8,25 +8,23 @@
       
       
       
-        <link rel="canonical" href="https://lambdageo.github.io/dissmodel/getting_started/">
+        <link rel="canonical" href="https://lambdageo.github.io/dissmodel/">
       
       
-        <link rel="prev" href="..">
+      
+        <link rel="next" href="getting_started/">
       
       
-        <link rel="next" href="../models/ca/game_of_life/">
-      
-      
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
-        <title>Getting Started - DisSModel</title>
+        <title>DisSModel</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.342714a4.min.css">
       
       
 
@@ -45,9 +43,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#getting-started" class="md-skip">
+        <a href="#dissmodel" class="md-skip">
           Skip to content
         </a>
       
@@ -82,7 +80,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="DisSModel" class="md-header__button md-logo" aria-label="DisSModel" data-md-component="logo">
+    <a href="." title="DisSModel" class="md-header__button md-logo" aria-label="DisSModel" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -102,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              Home
             
           </span>
         </div>
@@ -192,7 +190,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="DisSModel" class="md-nav__button md-logo" aria-label="DisSModel" data-md-component="logo">
+    <a href="." title="DisSModel" class="md-nav__button md-logo" aria-label="DisSModel" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -219,28 +217,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Home
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -258,7 +234,7 @@
   
   
   <span class="md-ellipsis">
-    Getting Started
+    Home
     
   </span>
   
@@ -266,12 +242,12 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <a href="./" class="md-nav__link md-nav__link--active">
+      <a href="." class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
-    Getting Started
+    Home
     
   </span>
   
@@ -294,11 +270,62 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
+  <a href="#why-dissmodel" class="md-nav__link">
     <span class="md-ellipsis">
-      Installation
+      Why DisSModel?
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quickstart
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quickstart">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Dynamics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cellular-automaton" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cellular Automaton
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streamlit
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -312,9 +339,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#minimal-example" class="md-nav__link">
+  <a href="#included-models" class="md-nav__link">
     <span class="md-ellipsis">
-      Minimal example
+      Included Models
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Included Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cellular-automata" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cellular Automata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-dynamics_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Dynamics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-ecosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Ecosystem
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
     </span>
   </a>
   
@@ -324,6 +402,28 @@
   
 </nav>
       
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="getting_started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -411,7 +511,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/ca/game_of_life/" class="md-nav__link">
+      <a href="models/ca/game_of_life/" class="md-nav__link">
         
   
   
@@ -434,7 +534,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/ca/fire_model/" class="md-nav__link">
+      <a href="models/ca/fire_model/" class="md-nav__link">
         
   
   
@@ -457,7 +557,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/ca/fire_model_prob/" class="md-nav__link">
+      <a href="models/ca/fire_model_prob/" class="md-nav__link">
         
   
   
@@ -480,7 +580,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/ca/snow/" class="md-nav__link">
+      <a href="models/ca/snow/" class="md-nav__link">
         
   
   
@@ -503,7 +603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/ca/growth/" class="md-nav__link">
+      <a href="models/ca/growth/" class="md-nav__link">
         
   
   
@@ -526,7 +626,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/ca/propagation/" class="md-nav__link">
+      <a href="models/ca/propagation/" class="md-nav__link">
         
   
   
@@ -549,7 +649,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/ca/anneal/" class="md-nav__link">
+      <a href="models/ca/anneal/" class="md-nav__link">
         
   
   
@@ -618,7 +718,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/sysdyn/sir/" class="md-nav__link">
+      <a href="models/sysdyn/sir/" class="md-nav__link">
         
   
   
@@ -641,7 +741,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/sysdyn/predator_prey/" class="md-nav__link">
+      <a href="models/sysdyn/predator_prey/" class="md-nav__link">
         
   
   
@@ -664,7 +764,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/sysdyn/population_growth/" class="md-nav__link">
+      <a href="models/sysdyn/population_growth/" class="md-nav__link">
         
   
   
@@ -687,7 +787,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/sysdyn/lorenz/" class="md-nav__link">
+      <a href="models/sysdyn/lorenz/" class="md-nav__link">
         
   
   
@@ -710,7 +810,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../models/sysdyn/coffee/" class="md-nav__link">
+      <a href="models/sysdyn/coffee/" class="md-nav__link">
         
   
   
@@ -786,7 +886,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/cli/" class="md-nav__link">
+      <a href="examples/cli/" class="md-nav__link">
         
   
   
@@ -809,7 +909,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/streamlit/" class="md-nav__link">
+      <a href="examples/streamlit/" class="md-nav__link">
         
   
   
@@ -870,7 +970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/notebooks/ca_game_of_life/" class="md-nav__link">
+      <a href="examples/notebooks/ca_game_of_life/" class="md-nav__link">
         
   
   
@@ -893,7 +993,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/notebooks/sysdyn_sir/" class="md-nav__link">
+      <a href="examples/notebooks/sysdyn_sir/" class="md-nav__link">
         
   
   
@@ -969,7 +1069,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/core/" class="md-nav__link">
+      <a href="api/core/" class="md-nav__link">
         
   
   
@@ -992,7 +1092,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/geo/" class="md-nav__link">
+      <a href="api/geo/" class="md-nav__link">
         
   
   
@@ -1015,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/visualization/" class="md-nav__link">
+      <a href="api/visualization/" class="md-nav__link">
         
   
   
@@ -1065,11 +1165,62 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
+  <a href="#why-dissmodel" class="md-nav__link">
     <span class="md-ellipsis">
-      Installation
+      Why DisSModel?
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quickstart
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quickstart">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Dynamics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cellular-automaton" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cellular Automaton
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streamlit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Streamlit
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1083,9 +1234,60 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#minimal-example" class="md-nav__link">
+  <a href="#included-models" class="md-nav__link">
     <span class="md-ellipsis">
-      Minimal example
+      Included Models
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Included Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cellular-automata" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cellular Automata
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system-dynamics_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      System Dynamics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#python-ecosystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Python Ecosystem
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      License
     </span>
   </a>
   
@@ -1110,32 +1312,215 @@
   
 
 
-<h1 id="getting-started">Getting Started</h1>
-<h2 id="installation">Installation</h2>
+<h1 id="dissmodel">DisSModel</h1>
+<p><strong>Discrete Spatial Modeling framework for Python</strong></p>
+<p>DisSModel is a modular, open-source Python framework for spatially explicit dynamic modeling.
+Developed by the <a href="https://github.com/LambdaGeo">LambdaGeo</a> group at the Federal University of Maranhão (UFMA),
+it provides a unified environment for building <strong>Cellular Automata (CA)</strong> and <strong>System Dynamics (SysDyn)</strong> models
+on top of the Python geospatial ecosystem.</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>dissmodel
 </code></pre></div>
-<p>Or in editable mode for development:</p>
-<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/lambdageo/dissmodel
-<span class="nb">cd</span><span class="w"> </span>dissmodel
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-</code></pre></div>
-<h2 id="instantiation-order">Instantiation order</h2>
-<p>The <code>Environment</code> must always be created <strong>before</strong> any model.
-Models connect to the active environment automatically when instantiated.</p>
-<div class="highlight"><pre><span></span><code>Environment  →  Model  →  Visualization
-     ↑             ↑            ↑
-  first         second        third
-</code></pre></div>
-<h2 id="minimal-example">Minimal example</h2>
+<hr />
+<h2 id="why-dissmodel">Why DisSModel?</h2>
+<p>DisSModel was designed as a modern, Pythonic alternative to the <a href="http://www.terrame.org/">TerraME</a> framework,
+replacing the TerraLib/Lua stack with the standardized GeoPandas/Python stack.
+This transition gives researchers direct access to the full Python data science ecosystem
+while maintaining the modeling expressiveness required for Land Use and Cover Change (LUCC) applications.</p>
+<p><strong>Core objectives:</strong></p>
+<ul>
+<li><strong>Multi-paradigm support</strong> — Cellular Automata, System Dynamics, and Agent-Based Models in a unified environment</li>
+<li><strong>Geospatial ecosystem integration</strong> — GeoPandas, libpysal, and rasterstats for advanced spatial operations</li>
+<li><strong>Open science and reproducibility</strong> — open-source, installable via PyPI, examples included</li>
+<li><strong>Standardized implementation</strong> — pure Python lowers the barrier for interdisciplinary collaboration</li>
+</ul>
+<hr />
+<h2 id="architecture">Architecture</h2>
+<p>DisSModel is organized into four modules:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>dissmodel.core</code></td>
+<td style="text-align: left;">Simulation clock and execution lifecycle powered by <a href="https://www.salabim.org/">Salabim</a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dissmodel.geo</code></td>
+<td style="text-align: left;">Spatial data structures — grid generation, fill strategies, neighborhood</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dissmodel.models</code></td>
+<td style="text-align: left;">Ready-to-use CA and SysDyn reference implementations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dissmodel.visualization</code></td>
+<td style="text-align: left;">Observer-based visualization — <code>Chart</code>, <code>Map</code>, <code>display_inputs</code>, <code>@track_plot</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="quickstart">Quickstart</h2>
+<h3 id="system-dynamics">System Dynamics</h3>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.models.sysdyn</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIR</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chart</span>
 
 <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">()</span>
-<span class="n">SIR</span><span class="p">()</span>
+<span class="n">SIR</span><span class="p">(</span><span class="n">susceptible</span><span class="o">=</span><span class="mi">9998</span><span class="p">,</span> <span class="n">infected</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">recovered</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">contacts</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
 <span class="n">Chart</span><span class="p">(</span><span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
 </code></pre></div>
+<h3 id="cellular-automaton">Cellular Automaton</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Environment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.geo</span><span class="w"> </span><span class="kn">import</span> <span class="n">regular_grid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.models.ca</span><span class="w"> </span><span class="kn">import</span> <span class="n">FireModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dissmodel.models.ca.fire_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">FireState</span>
+
+<span class="n">gdf</span> <span class="o">=</span> <span class="n">regular_grid</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="n">resolution</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">FireState</span><span class="o">.</span><span class="n">FOREST</span><span class="p">})</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">end_time</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">fire</span> <span class="o">=</span> <span class="n">FireModel</span><span class="p">(</span><span class="n">gdf</span><span class="o">=</span><span class="n">gdf</span><span class="p">)</span>
+<span class="n">fire</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+<span class="n">env</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="streamlit">Streamlit</h3>
+<div class="highlight"><pre><span></span><code>streamlit<span class="w"> </span>run<span class="w"> </span>examples/streamlit/ca_all.py
+streamlit<span class="w"> </span>run<span class="w"> </span>examples/streamlit/sysdyn_all.py
+</code></pre></div>
+<hr />
+<h2 id="instantiation-order">Instantiation order</h2>
+<p><code>Environment</code> must always be created <strong>before</strong> any model.
+Models connect to the active environment automatically on creation.</p>
+<div class="highlight"><pre><span></span><code>Environment  →  Model  →  display_inputs  →  initialize()  →  Visualization
+     ↑             ↑            ↑                  ↑               ↑
+  first         second        third              fourth           fifth
+</code></pre></div>
+<hr />
+<h2 id="included-models">Included Models</h2>
+<h3 id="cellular-automata">Cellular Automata</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>GameOfLife</code></td>
+<td style="text-align: left;">Conway's Game of Life with built-in classic patterns</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>FireModel</code></td>
+<td style="text-align: left;">Forest fire spread</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>FireModelProb</code></td>
+<td style="text-align: left;">Probabilistic fire with spontaneous combustion and regrowth</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Snow</code></td>
+<td style="text-align: left;">Snowfall and accumulation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Growth</code></td>
+<td style="text-align: left;">Stochastic radial growth from a center seed</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Propagation</code></td>
+<td style="text-align: left;">Active state transmission with KNN neighborhood</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Anneal</code></td>
+<td style="text-align: left;">Binary system relaxation via majority-vote rule</td>
+</tr>
+</tbody>
+</table>
+<h3 id="system-dynamics_1">System Dynamics</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>SIR</code></td>
+<td style="text-align: left;">Susceptible–Infected–Recovered epidemiological model</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PredatorPrey</code></td>
+<td style="text-align: left;">Lotka–Volterra ecological dynamics</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>PopulationGrowth</code></td>
+<td style="text-align: left;">Exponential growth with variable rate</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Lorenz</code></td>
+<td style="text-align: left;">Deterministic chaos — Lorenz attractor</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>Coffee</code></td>
+<td style="text-align: left;">Newton's Law of Cooling</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="python-ecosystem">Python Ecosystem</h2>
+<p>DisSModel builds on well-established, industry-standard libraries:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Library</th>
+<th style="text-align: left;">Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a href="https://geopandas.org/">GeoPandas</a></td>
+<td style="text-align: left;">Vector data and GeoDataFrame operations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://www.salabim.org/">Salabim</a></td>
+<td style="text-align: left;">Discrete event simulation engine</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://pysal.org/libpysal/">libpysal</a></td>
+<td style="text-align: left;">Spatial weights and neighborhood analysis</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://pythonhosted.org/rasterstats/">rasterstats</a></td>
+<td style="text-align: left;">Raster/vector zonal statistics</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://shapely.readthedocs.io/">Shapely</a></td>
+<td style="text-align: left;">Geometric operations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://matplotlib.org/">Matplotlib</a></td>
+<td style="text-align: left;">Time-series and spatial visualization</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="https://streamlit.io/">Streamlit</a></td>
+<td style="text-align: left;">Reactive web application UI</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="links">Links</h2>
+<ul>
+<li><strong>Source code:</strong> <a href="https://github.com/LambdaGeo/dissmodel">github.com/LambdaGeo/dissmodel</a></li>
+<li><strong>PyPI:</strong> <a href="https://pypi.org/project/dissmodel/">pypi.org/project/dissmodel</a></li>
+<li><strong>LambdaGeo:</strong> <a href="https://github.com/LambdaGeo">github.com/LambdaGeo</a></li>
+</ul>
+<hr />
+<h2 id="license">License</h2>
+<p>MIT © 2026 Sérgio Costa &amp; Nerval Santos Junior — <a href="https://github.com/LambdaGeo">LambdaGeo/UFMA</a></p>
 
 
 
@@ -1184,10 +1569,10 @@ Models connect to the active environment automatically when instantiated.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      <script src="assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       

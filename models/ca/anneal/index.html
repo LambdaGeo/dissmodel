@@ -222,7 +222,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../index.md" class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -1336,8 +1336,7 @@ neighbors (including itself) in state <code>L</code>:</p>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Anneal</span><span class="p">(</span><span class="n">CellularAutomaton</span><span class="p">):</span>
+<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Anneal</span><span class="p">(</span><span class="n">CellularAutomaton</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cellular automaton implementing the Anneal rule.</span>
 
@@ -1401,10 +1400,9 @@ neighbors (including itself) in state <code>L</code>:</p>
 <span class="sd">            New state for the cell (``L`` or ``R``).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span>
-        <span class="n">neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighs</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
         <span class="c1"># Count neighbors in state L, including the cell itself</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span> <span class="o">==</span> <span class="n">AnnealState</span><span class="o">.</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_values</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">)</span> <span class="o">==</span> <span class="n">AnnealState</span><span class="o">.</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">AnnealState</span><span class="o">.</span><span class="n">L</span><span class="p">:</span>
             <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -1575,8 +1573,7 @@ neighbors plus the cell itself, then applies the threshold rule.</p>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply the Anneal transition rule to cell ``idx``.</span>
 
@@ -1594,10 +1591,9 @@ neighbors plus the cell itself, then applies the threshold rule.</p>
 <span class="sd">        New state for the cell (``L`` or ``R``).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span>
-    <span class="n">neighbors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neighs</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
     <span class="c1"># Count neighbors in state L, including the cell itself</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="p">(</span><span class="n">neighbors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">]</span> <span class="o">==</span> <span class="n">AnnealState</span><span class="o">.</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neighbor_values</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_attr</span><span class="p">)</span> <span class="o">==</span> <span class="n">AnnealState</span><span class="o">.</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="n">AnnealState</span><span class="o">.</span><span class="n">L</span><span class="p">:</span>
         <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
 
