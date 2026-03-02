@@ -10,16 +10,17 @@ tags:
 authors:
   - name: Sérgio Souza Costa
     orcid: 0000-0002-0232-4549
-    affiliation: 1
+    affiliation: "1"
   - name: Nerval de Jesus Santos Junior
     orcid: 0000-0000-0000-0000
-    affiliation: 1
+    affiliation: "1"
 affiliations:
-  - name: Federal University of Maranhão (UFMA)
+  - name: Universidade Federal do Maranhão (UFMA)
+    index: "1"
     city: São Luís
     state: MA
     country: Brazil
-date: 26 July 2025
+date: 2 March 2026
 bibliography: paper.bib
 ---
 
