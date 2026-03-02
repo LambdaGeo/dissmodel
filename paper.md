@@ -12,7 +12,6 @@ authors:
     orcid: 0000-0002-0232-4549
     affiliation: "1"
   - name: Nerval de Jesus Santos Junior
-    orcid: 0000-0000-0000-0000
     affiliation: "1"
 affiliations:
   - name: Universidade Federal do Maranhão (UFMA)
