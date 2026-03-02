@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/dissmodel.svg)](https://pypi.org/project/dissmodel/)
+[![status](https://joss.theoj.org/papers/46522bc30d2dbec6b509d2dc487170ec/status.svg)](https://joss.theoj.org/papers/46522bc30d2dbec6b509d2dc487170ec)
 
 DisSModel is a modular, open-source Python framework for spatially explicit dynamic modeling. Developed by the [LambdaGeo](https://github.com/LambdaGeo) group at the Federal University of Maranhão (UFMA), it provides a unified environment for building **Cellular Automata (CA)** and **System Dynamics (SysDyn)** models on top of the Python geospatial ecosystem.
 
