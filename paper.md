@@ -13,6 +13,10 @@ authors:
     affiliation: "1"
   - name: Nerval de Jesus Santos Junior
     affiliation: "1"
+    orcid: 0009-0000-2339-3191
+  - name: Felipe Martins Sousa
+    affiliation: "1"
+    orcid: 0009-0009-0505-4845
 affiliations:
   - name: Universidade Federal do Maranhão (UFMA)
     index: "1"
