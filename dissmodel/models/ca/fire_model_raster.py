@@ -31,7 +31,7 @@ Comparison
 Usage
 -----
     from dissmodel.core import Environment
-    from dissmodel.geo.raster_backend import RasterBackend
+    from dissmodel.geo.raster.backend import RasterBackend
     from dissmodel.examples.fire_model_raster import FireModel
     import numpy as np
 
@@ -50,7 +50,7 @@ from enum import IntEnum
 
 import numpy as np
 
-from dissmodel.geo.raster_backend import RasterBackend, DIRS_VON_NEUMANN
+from dissmodel.geo.raster.backend import RasterBackend, DIRS_VON_NEUMANN
 from dissmodel.geo.raster_cellular_automaton import RasterCellularAutomaton
 
 
@@ -98,7 +98,7 @@ class FireModel(RasterCellularAutomaton):
     Examples
     --------
     >>> from dissmodel.core import Environment
-    >>> from dissmodel.geo.raster_backend import RasterBackend
+    >>> from dissmodel.geo.raster.backend import RasterBackend
     >>> import numpy as np
     >>> b = RasterBackend(shape=(20, 20))
     >>> rng = np.random.default_rng(42)

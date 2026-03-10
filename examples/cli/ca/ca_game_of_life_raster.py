@@ -13,7 +13,7 @@ Usage
 from __future__ import annotations
 
 from dissmodel.core import Environment
-from dissmodel.geo.raster_grid import make_raster_grid
+from dissmodel.geo.raster.regular_grid import make_raster_grid
 from dissmodel.models.ca.game_of_life_raster import GameOfLife
 from dissmodel.visualization.raster_map import RasterMap
 

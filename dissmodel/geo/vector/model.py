@@ -53,7 +53,7 @@ from libpysal.weights import Queen
 
 from dissmodel.core import Model
 from dissmodel.geo import attach_neighbors
-from dissmodel.geo.neighborhood import StrategyType
+from dissmodel.geo.vector.neighborhood import StrategyType
 
 
 class SpatialModel(Model):

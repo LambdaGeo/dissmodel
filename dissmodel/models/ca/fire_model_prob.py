@@ -5,7 +5,7 @@ from typing import Any
 
 from libpysal.weights import Queen
 
-from dissmodel.geo import CellularAutomaton, FillStrategy, fill
+from dissmodel.geo import CellularAutomaton
 from dissmodel.models.ca.fire_model import FireState
 
 

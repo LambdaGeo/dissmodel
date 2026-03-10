@@ -21,7 +21,7 @@ Destinos de renderização suportados
 
 Uso mínimo (headless / sem cores)
 ----------------------------------
-    from dissmodel.geo.raster_backend import RasterBackend
+    from dissmodel.geo.raster.backend import RasterBackend
     from dissmodel.visualization.raster_map import RasterMap
     from dissmodel.core import Environment
 

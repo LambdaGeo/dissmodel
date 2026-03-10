@@ -50,9 +50,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from dissmodel.geo.raster_backend import RasterBackend
-from dissmodel.geo.raster_grid import make_raster_grid
-from dissmodel.geo.raster_cellular_automaton import RasterCellularAutomaton
+from dissmodel.geo.raster.backend import RasterBackend
+from dissmodel.geo.raster.cellular_automaton import RasterCellularAutomaton
 
 
 class GameOfLife(RasterCellularAutomaton):

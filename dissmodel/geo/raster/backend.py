@@ -14,7 +14,7 @@ RasterBackend e operam sobre arrays nomeados armazenados em self.arrays.
 
 Exemplo mínimo
 --------------
-    from dissmodel.geo.raster_backend import RasterBackend, DIRS_MOORE
+    from dissmodel.geo.raster.backend import RasterBackend, DIRS_MOORE
 
     b = RasterBackend(shape=(100, 100))
     b.set("estado", np.zeros((100, 100), dtype=np.int8))
@@ -28,7 +28,6 @@ Exemplo mínimo
 """
 from __future__ import annotations
 
-from typing import Any
 import numpy as np
 from scipy.ndimage import binary_dilation
 
