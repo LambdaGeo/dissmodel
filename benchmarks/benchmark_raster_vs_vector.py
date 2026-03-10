@@ -26,8 +26,8 @@ from shapely.geometry import box
 from libpysal.weights import Queen
 
 from dissmodel.core import Environment
-from dissmodel.geo.raster_backend import RasterBackend, DIRS_MOORE
-from dissmodel.geo.raster_model import RasterModel
+from dissmodel.geo.raster.backend import RasterBackend
+from dissmodel.geo.raster.model import RasterModel
 from dissmodel.geo.vector.model import SpatialModel
 
 
@@ -220,7 +220,7 @@ def benchmark(sizes: list[int], steps: int, validate: bool) -> None:
         cells = n * n
         print(f"\n── {n}×{n} ({cells:,} células, {steps} passos) ──")
 
-        print(f"  raster ... ", end="", flush=True)
+        print("  raster ... ", end="", flush=True)
         r = run_raster(n, steps)
         print(f"{r.total_s:.3f}s  ({r.ms_per_step:.1f} ms/passo)")
 
@@ -234,7 +234,7 @@ def benchmark(sizes: list[int], steps: int, validate: bool) -> None:
         }
 
         if cells <= VECTOR_MAX_CELLS:
-            print(f"  vector ... ", end="", flush=True)
+            print("  vector ... ", end="", flush=True)
             v = run_vector(n, steps)
             print(f"{v.total_s:.3f}s  ({v.ms_per_step:.1f} ms/passo)")
 

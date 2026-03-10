@@ -111,7 +111,7 @@ if __name__ == "__main__":
     t_orig = run_benchmark(GameOfLifeOriginal, dim=(50, 50), steps=5, name="Original")
     t_opt  = run_benchmark(GameOfLifeOptimized, dim=(50, 50), steps=5, name="Optimized")
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Original:  {t_orig:.4f}s")
     print(f"  Optimized: {t_opt:.4f}s")
     print(f"  Speedup:   {t_orig / t_opt:.2f}x")

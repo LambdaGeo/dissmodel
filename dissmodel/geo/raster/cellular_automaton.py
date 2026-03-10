@@ -44,7 +44,7 @@ Comparison
 Usage
 -----
     from dissmodel.geo.raster_cellular_automaton import RasterCellularAutomaton
-    from dissmodel.geo.raster_backend import RasterBackend
+    from dissmodel.geo.raster.backend import RasterBackend
     from dissmodel.core import Environment
     import numpy as np
 
@@ -78,7 +78,7 @@ class RasterCellularAutomaton(RasterModel, ABC):
     """
     Base class for NumPy-based cellular automata.
 
-    Extends :class:`~dissmodel.geo.raster_model.RasterModel` with a
+    Extends :class:`~dissmodel.geo.raster.model.RasterModel` with a
     vectorized transition rule — ``rule()`` receives all arrays as a
     snapshot and returns a dict of updated arrays.
 

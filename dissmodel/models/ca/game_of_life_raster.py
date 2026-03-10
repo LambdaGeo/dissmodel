@@ -51,7 +51,6 @@ from __future__ import annotations
 import numpy as np
 
 from dissmodel.geo.raster.backend import RasterBackend
-from dissmodel.geo.raster.regular_grid import make_raster_grid
 from dissmodel.geo.raster.cellular_automaton import RasterCellularAutomaton
 
 

@@ -17,10 +17,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional
 
 import geopandas as gpd
-from libpysal.weights import Queen
 
 from dissmodel.geo.vector.model import SpatialModel
-from dissmodel.geo.vector.neighborhood import StrategyType
 
 
 class CellularAutomaton(SpatialModel, ABC):

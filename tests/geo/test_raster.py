@@ -12,9 +12,8 @@ Execução
 from __future__ import annotations
 
 import numpy as np
-import pytest
 
-from dissmodel.geo.raster_backend import RasterBackend, DIRS_MOORE, DIRS_VON_NEUMANN
+from dissmodel.geo.raster.backend import RasterBackend, DIRS_MOORE, DIRS_VON_NEUMANN
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -153,7 +152,7 @@ class TestRasterBackend:
 class TestRasterModel:
 
     def test_setup_populates_attrs(self):
-        from dissmodel.geo.raster_model import RasterModel
+        from dissmodel.geo.raster.model import RasterModel
         from dissmodel.core import Environment
 
         class DummyModel(RasterModel):
@@ -172,7 +171,7 @@ class TestRasterModel:
         assert m.dirs is DIRS_MOORE
 
     def test_execute_called_by_environment(self):
-        from dissmodel.geo.raster_model import RasterModel
+        from dissmodel.geo.raster.model import RasterModel
         from dissmodel.core import Environment
 
         calls = []
@@ -191,7 +190,7 @@ class TestRasterModel:
         assert calls == [1, 2, 3]
 
     def test_subclass_can_modify_backend(self):
-        from dissmodel.geo.raster_model import RasterModel
+        from dissmodel.geo.raster.model import RasterModel
         from dissmodel.core import Environment
 
         class IncrementModel(RasterModel):
@@ -218,7 +217,6 @@ class TestRasterMap:
 
     def test_headless_saves_png(self, tmp_path, monkeypatch):
         """RasterMap deve salvar PNG em headless sem levantar exceção."""
-        import os
         from dissmodel.visualization.raster_map import RasterMap
         from dissmodel.core import Environment
 
@@ -237,7 +235,6 @@ class TestRasterMap:
 
     def test_headless_categorical(self, tmp_path, monkeypatch):
         """Modo categórico (color_map) não deve levantar exceção."""
-        import os
         from dissmodel.visualization.raster_map import RasterMap
         from dissmodel.core import Environment
 

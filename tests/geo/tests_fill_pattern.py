@@ -1,5 +1,4 @@
 # tests/test_fill_pattern.py
-import pytest
 from dissmodel.geo import regular_grid, fill, FillStrategy
 
 
