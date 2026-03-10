@@ -1,5 +1,4 @@
 # tests/test_fill_pattern.py
-import pytest
 from dissmodel.geo import regular_grid, fill, FillStrategy
 
 
@@ -43,7 +42,7 @@ def test_pattern_out_of_bounds_ignored():
 
 def test_parse_idx_roundtrip():
     """parse_idx correctly extracts x, y from row-col index."""
-    from dissmodel.geo.regular_grid import parse_idx
+    from dissmodel.geo.raster.regular_grid import parse_idx
     x, y = parse_idx("3-4")
     assert x == 4
     assert y == 3

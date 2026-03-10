@@ -19,7 +19,7 @@ from libpysal.weights import Queen
 
 from dissmodel.core import Environment
 from dissmodel.geo import FillStrategy, fill, regular_grid
-from dissmodel.geo.celullar_automaton import CellularAutomaton
+from dissmodel.geo.raster.celullar_automaton import CellularAutomaton
 
 
 # ---------------------------------------------------------------------------
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     t_orig = run_benchmark(GameOfLifeOriginal, dim=(50, 50), steps=5, name="Original")
     t_opt  = run_benchmark(GameOfLifeOptimized, dim=(50, 50), steps=5, name="Optimized")
 
-    print(f"\nResults:")
+    print("\nResults:")
     print(f"  Original:  {t_orig:.4f}s")
     print(f"  Optimized: {t_opt:.4f}s")
     print(f"  Speedup:   {t_orig / t_opt:.2f}x")
