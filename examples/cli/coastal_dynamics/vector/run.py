@@ -3,40 +3,47 @@ brmangue/run_vector.py — Ponto de entrada BR-MANGUE (versão GeoDataFrame)
 =========================================================================
 Versão vetorial para comparação com run.py (RasterBackend).
 
-Usa FloodVectorModel + GeoDataFrame + Map/Chart do DisSModel.
+Usa FloodVectorModel + MangroveVectorModel + GeoDataFrame + Map/Chart.
 
 Uso
 ---
     python -m brmangue.run_vector flood_model.shp
     python -m brmangue.run_vector flood_model.gpkg --taxa 0.05
     python -m brmangue.run_vector flood_model.shp --chart
+    python -m brmangue.run_vector flood_model.shp --acrecao --no-save
 """
 from __future__ import annotations
 
 import argparse
 import pathlib
-import sys
 
-import numpy as np
 import geopandas as gpd
 from matplotlib.colors import ListedColormap, BoundaryNorm
 
 from dissmodel.core import Environment
 from dissmodel.visualization import Map, Chart
 
-from coastal_dynamics.common.constants import USO_COLORS, USO_LABELS
+from coastal_dynamics.common.constants import (
+    USO_COLORS, USO_LABELS,
+    SOLO_COLORS, SOLO_LABELS,
+)
 from examples.cli.coastal_dynamics.vector.flood_model import FloodVectorModel
+from examples.cli.coastal_dynamics.vector.mangue_model import MangroveModel
 
 
 # ── configuração ──────────────────────────────────────────────────────────────
 
 TAXA_ELEVACAO = 0.011
+ALTURA_MARE   = 6.0
 END_TIME      = 88
 
-# ListedColormap alinhado com tabela_usos do Lua
-_vals  = sorted(USO_COLORS)
+_vals    = sorted(USO_COLORS)
 USO_CMAP = ListedColormap([USO_COLORS[k] for k in _vals])
 USO_NORM = BoundaryNorm([v - 0.5 for v in _vals] + [_vals[-1] + 0.5], USO_CMAP.N)
+
+_svals    = sorted(SOLO_COLORS)
+SOLO_CMAP = ListedColormap([SOLO_COLORS[k] for k in _svals])
+SOLO_NORM = BoundaryNorm([v - 0.5 for v in _svals] + [_svals[-1] + 0.5], SOLO_CMAP.N)
 
 
 # ── main ──────────────────────────────────────────────────────────────────────
@@ -44,8 +51,11 @@ USO_NORM = BoundaryNorm([v - 0.5 for v in _vals] + [_vals[-1] + 0.5], USO_CMAP.N
 def run(
     shp_path:      str | pathlib.Path,
     taxa_elevacao: float = TAXA_ELEVACAO,
+    altura_mare:   float = ALTURA_MARE,
+    acrecao_ativa: bool  = False,
     attr_uso:      str   = "uso",
     attr_alt:      str   = "alt",
+    attr_solo:     str   = "solo",
     show_chart:    bool  = False,
     save:          bool  = True,
 ) -> None:
@@ -59,34 +69,31 @@ def run(
     # ── ambiente ──────────────────────────────────────────────────────────────
     env = Environment(start_time=1, end_time=END_TIME)
 
-    # ── modelo ────────────────────────────────────────────────────────────────
+    # ── modelos — compartilham o mesmo gdf ────────────────────────────────────
+    # Ordem de instanciação = ordem de execução por passo
     FloodVectorModel(
         gdf           = gdf,
         taxa_elevacao = taxa_elevacao,
         attr_uso      = attr_uso,
         attr_alt      = attr_alt,
     )
+    MangroveModel(
+        gdf           = gdf,
+        taxa_elevacao = taxa_elevacao,
+        altura_mare   = altura_mare,
+        acrecao_ativa = acrecao_ativa,
+        attr_uso      = attr_uso,
+        attr_alt      = attr_alt,
+        attr_solo     = attr_solo,
+    )
 
     # ── visualização ──────────────────────────────────────────────────────────
-    Map(
-        gdf         = gdf,
-        plot_params = {
-            "column":  attr_uso,
-            "cmap":    USO_CMAP,
-            "norm":    USO_NORM,
-            "legend":  False,   # legenda manual seria necessária para labels
-        },
-    )
-    Map(
-        gdf         = gdf,
-        plot_params = {
-            "column": attr_alt,
-            "cmap":   "terrain",
-            "legend": True,
-        },
-    )
+    Map(gdf=gdf, plot_params={"column": attr_uso,  "cmap": USO_CMAP,  "norm": USO_NORM,  "legend": False})
+    Map(gdf=gdf, plot_params={"column": attr_alt,  "cmap": "terrain", "legend": True})
+    Map(gdf=gdf, plot_params={"column": attr_solo, "cmap": SOLO_CMAP, "norm": SOLO_NORM, "legend": False})
+
     if show_chart:
-        Chart(select={"celulas_inundadas"})
+        Chart(select={"celulas_inundadas", "mangue_migrado"})
 
     # ── execução ──────────────────────────────────────────────────────────────
     print(f"Executando passos 1 → {END_TIME}...")
@@ -113,16 +120,28 @@ def _parse_args() -> argparse.Namespace:
         help=f"Taxa de elevação do mar em m/ano (padrão: {TAXA_ELEVACAO})",
     )
     p.add_argument(
-        "--attr-uso", default="uso", metavar="COL",
+        "--altura-mare", type=float, default=ALTURA_MARE, metavar="M",
+        help=f"AIM base em metros (padrão: {ALTURA_MARE})",
+    )
+    p.add_argument(
+        "--acrecao", action="store_true",
+        help="Ativa aplicarAcrecao no MangroveVectorModel (Alongi 2008)",
+    )
+    p.add_argument(
+        "--attr-uso",  default="uso",  metavar="COL",
         help="Coluna de uso do solo (padrão: uso)",
     )
     p.add_argument(
-        "--attr-alt", default="alt", metavar="COL",
+        "--attr-alt",  default="alt",  metavar="COL",
         help="Coluna de altitude (padrão: alt)",
     )
     p.add_argument(
+        "--attr-solo", default="solo", metavar="COL",
+        help="Coluna de tipo de solo (padrão: solo)",
+    )
+    p.add_argument(
         "--chart", action="store_true",
-        help="Exibe gráfico de células inundadas por passo",
+        help="Exibe gráfico de métricas por passo",
     )
     p.add_argument(
         "--no-save", dest="save", action="store_false",
@@ -136,8 +155,11 @@ if __name__ == "__main__":
     run(
         shp_path      = args.shp,
         taxa_elevacao = args.taxa,
+        altura_mare   = args.altura_mare,
+        acrecao_ativa = args.acrecao,
         attr_uso      = args.attr_uso,
         attr_alt      = args.attr_alt,
+        attr_solo     = args.attr_solo,
         show_chart    = args.chart,
         save          = args.save,
     )
