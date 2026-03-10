@@ -1,27 +1,34 @@
+"""
+dissmodel/geo/cellular_automaton.py
+=====================================
+Base class for spatial cellular automata backed by a GeoDataFrame.
+
+Extends :class:`~dissmodel.geo.spatial_model.SpatialModel` with a
+cell-by-cell transition rule loop.
+
+For source-oriented (push) models that cannot use rule(idx), inherit
+:class:`~dissmodel.geo.spatial_model.SpatialModel` directly and implement
+execute() freely.
+"""
 from __future__ import annotations
 
 import math
-from typing import Any, Optional, Type
+from abc import ABC, abstractmethod
+from typing import Any, Optional
 
-import numpy as np
 import geopandas as gpd
-from libpysal.weights import Queen, W
+from libpysal.weights import Queen
 
-from dissmodel.core import Model
-from dissmodel.geo import attach_neighbors
-
-
+from dissmodel.geo.spatial_model import SpatialModel
 from dissmodel.geo.neighborhood import StrategyType
 
-from abc import ABC, abstractmethod
 
-
-class CellularAutomaton(Model, ABC):
+class CellularAutomaton(SpatialModel, ABC):
     """
     Base class for spatial cellular automata backed by a GeoDataFrame.
 
-    Extends :class:`~dissmodel.core.Model` with neighborhood management and
-    a cell-by-cell transition rule loop.
+    Extends :class:`~dissmodel.geo.spatial_model.SpatialModel` with
+    neighborhood management and a cell-by-cell transition rule loop.
 
     Parameters
     ----------
@@ -40,7 +47,8 @@ class CellularAutomaton(Model, ABC):
     dim : tuple of int, optional
         Grid dimensions as ``(n_cols, n_rows)``, by default ``None``.
     **kwargs :
-        Extra keyword arguments forwarded to :class:`~dissmodel.core.Model`.
+        Extra keyword arguments forwarded to
+        :class:`~dissmodel.geo.spatial_model.SpatialModel`.
 
     Examples
     --------
@@ -60,12 +68,10 @@ class CellularAutomaton(Model, ABC):
         dim: Optional[int] = None,
         **kwargs: Any,
     ) -> None:
-        self.gdf = gdf
         self.state_attr = state_attr
-        self._neighborhood_created: bool = False
-        self._neighs_cache: dict[Any, list[Any]] = {}
-        self.dim = dim
+        self.dim        = dim
         super().__init__(
+            gdf=gdf,
             step=step,
             start_time=start_time,
             end_time=end_time,
@@ -81,111 +87,6 @@ class CellularAutomaton(Model, ABC):
         """
         pass
 
-    def create_neighborhood(
-        self,
-        strategy: StrategyType = Queen,
-        neighbors_dict: Optional[dict[Any, list[Any]] | str] = None,
-        **kwargs: Any,
-    ) -> None:
-        """
-        Build and attach the neighborhood structure to the GeoDataFrame.
-
-        Parameters
-        ----------
-        strategy : type, optional
-            Libpysal weight class (e.g. ``Queen``, ``Rook``),
-            by default ``Queen``.
-        neighbors_dict : dict or str, optional
-            Precomputed ``{id: [neighbor_ids]}`` mapping or a path to a JSON
-            file with the same structure. If provided, ``strategy`` is ignored.
-        **kwargs :
-            Extra keyword arguments forwarded to the strategy.
-        """
-        self.gdf = attach_neighbors(
-            gdf=self.gdf,
-            strategy=strategy,
-            neighbors_dict=neighbors_dict,
-            **kwargs,
-        )
-        self._neighborhood_created = True
-        self._neighs_cache = self.gdf["_neighs"].to_dict()
-
-    def neighs_id(self, idx: Any) -> list[Any]:
-        """
-        Return the neighbor indices for cell ``idx``.
-
-        Parameters
-        ----------
-        idx : any
-            Index of the cell in the GeoDataFrame.
-
-        Returns
-        -------
-        list
-            List of neighbor indices.
-        """
-        if self._neighs_cache:
-            return self._neighs_cache.get(idx, [])
-        return self.gdf.loc[idx, "_neighs"]
-
-    def neighs(self, idx: Any) -> gpd.GeoDataFrame:
-        """
-        Return the neighboring cells of ``idx`` as a GeoDataFrame.
-
-        Parameters
-        ----------
-        idx : any
-            Index of the cell in the GeoDataFrame.
-
-        Returns
-        -------
-        geopandas.GeoDataFrame
-            GeoDataFrame containing the neighboring rows.
-
-        Raises
-        ------
-        RuntimeError
-            If the neighborhood has not been created yet.
-        ValueError
-            If the ``_neighs`` column is missing from the GeoDataFrame.
-
-        Notes
-        -----
-        Returns a GeoDataFrame slice, which involves Pandas overhead.
-        For performance-critical rule evaluation inside simulation loops,
-        prefer :meth:`neighbor_values` which returns a NumPy array directly.
- 
-        """
-        if not self._neighborhood_created:
-            raise RuntimeError(
-                "Neighborhood has not been created yet. "
-                "Call `.create_neighborhood()` first."
-            )
-        if "_neighs" not in self.gdf.columns:
-            raise ValueError("Column '_neighs' is not present in the GeoDataFrame.")
-
-        return self.gdf.loc[self.neighs_id(idx)]
-
-    def neighbor_values(self, idx: Any, col: str) -> np.ndarray:
-        """
-        Return the values of ``col`` for all neighbors of cell ``idx``.
-
-        Faster than ``neighs(idx)[col]`` because it skips geometry overhead.
-
-        Parameters
-        ----------
-        idx : any
-            Index of the cell in the GeoDataFrame.
-        col : str
-            Column name to retrieve.
-
-        Returns
-        -------
-        numpy.ndarray
-            Array of neighbor values.
-        """
-        return self.gdf.loc[self.neighs_id(idx), col].values
-    
     @abstractmethod
     def rule(self, idx: Any) -> Any:
         """
