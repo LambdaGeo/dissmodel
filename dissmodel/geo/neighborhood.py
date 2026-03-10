@@ -138,7 +138,9 @@ def attach_neighbors(
     if resolved is not None:
         w = W(resolved)
     elif strategy is not None:
-        w = strategy.from_dataframe(gdf, **kwargs)
+         if "use_index" not in kwargs:
+            kwargs["use_index"] = True
+         w = strategy.from_dataframe(gdf, **kwargs)
     else:
         raise ValueError("Provide either `strategy` or `neighbors_dict`.")
 
