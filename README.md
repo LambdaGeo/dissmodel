@@ -196,6 +196,14 @@ pytest tests/
 
 ---
 
+## Version 0.2.0
+
+Major improvements:
+
+- New raster backend architecture
+- Examples for raster and vector simulations
+- Improved modular structure
+
 ## Documentation
 
 Full documentation available at: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github.io/dissmodel/)

@@ -4,15 +4,42 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dissmodel"
-version = "0.1.5"
-description = "dissmodel - Discrete Spatial Modeling"
+version = "0.2.0"
+description = "Discrete Spatial Modeling framework for raster and vector simulations"
 readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.10"
+
 authors = [
     { name = "Sérgio Costa" },
-    { name = "Nerval Santos Junior" },
+    { name = "Nerval Santos Junior" }
 ]
+
+maintainers = [
+    { name = "Sérgio Costa" }
+]
+
 license = { text = "MIT" }
-requires-python = ">=3.10"
+
+keywords = [
+    "spatial modeling",
+    "geospatial simulation",
+    "cellular automata",
+    "gis",
+    "raster modeling",
+    "vector modeling"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
 dependencies = [
     "numpy>=1.25.0",
     "geopandas>=1.0.0",
@@ -27,6 +54,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+
 dev = [
     "mypy",
     "pytest",
@@ -36,14 +64,25 @@ dev = [
     "mkdocs-material",
 ]
 
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mkdocs-jupyter",
+]
+
 [project.urls]
 Homepage = "https://github.com/LambdaGeo/dissmodel"
+Repository = "https://github.com/LambdaGeo/dissmodel"
+Documentation = "https://lambdageo.github.io/dissmodel"
+Issues = "https://github.com/LambdaGeo/dissmodel/issues"
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["dissmodel*"]
 
 [tool.setuptools.package-data]
 "dissmodel" = ["*.json", "*.csv", "*.shp", "*.geojson", "*.tif"]
