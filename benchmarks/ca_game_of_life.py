@@ -19,7 +19,7 @@ from libpysal.weights import Queen
 
 from dissmodel.core import Environment
 from dissmodel.geo import FillStrategy, fill, regular_grid
-from dissmodel.geo.celullar_automaton import CellularAutomaton
+from dissmodel.geo.raster.celullar_automaton import CellularAutomaton
 
 
 # ---------------------------------------------------------------------------

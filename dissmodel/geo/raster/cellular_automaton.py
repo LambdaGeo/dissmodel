@@ -70,8 +70,8 @@ from typing import Any
 
 import numpy as np
 
-from dissmodel.geo.raster_model import RasterModel
-from dissmodel.geo.raster_backend import RasterBackend
+from dissmodel.geo.raster.model import RasterModel
+from dissmodel.geo.raster.backend import RasterBackend
 
 
 class RasterCellularAutomaton(RasterModel, ABC):

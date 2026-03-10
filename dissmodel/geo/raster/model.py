@@ -31,7 +31,7 @@ from __future__ import annotations
 import numpy as np
 
 from dissmodel.core import Model
-from dissmodel.geo.raster_backend import RasterBackend, DIRS_MOORE
+from dissmodel.geo.raster.backend import RasterBackend, DIRS_MOORE
 
 
 class RasterModel(Model):

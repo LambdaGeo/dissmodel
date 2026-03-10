@@ -25,7 +25,7 @@ from typing import Any, Union
 
 import numpy as np
 
-from dissmodel.geo.raster_backend import RasterBackend
+from dissmodel.geo.raster.backend import RasterBackend
 
 # Valor escalar ou array pré-computado
 AttrValue = Union[int, float, np.ndarray]

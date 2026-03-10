@@ -28,7 +28,7 @@ from libpysal.weights import Queen
 from dissmodel.core import Environment
 from dissmodel.geo.raster_backend import RasterBackend, DIRS_MOORE
 from dissmodel.geo.raster_model import RasterModel
-from dissmodel.geo.spatial_model import SpatialModel
+from dissmodel.geo.raster.spatial_model import SpatialModel
 
 
 # ══════════════════════════════════════════════════════════════════════════════

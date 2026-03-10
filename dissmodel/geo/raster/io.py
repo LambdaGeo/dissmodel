@@ -26,7 +26,7 @@ from __future__ import annotations
 import pathlib
 import numpy as np
 
-from dissmodel.geo.raster_backend import RasterBackend
+from dissmodel.geo.raster.backend import RasterBackend
 
 try:
     import rasterio

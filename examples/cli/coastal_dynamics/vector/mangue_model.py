@@ -33,7 +33,7 @@ from __future__ import annotations
 import geopandas as gpd
 from libpysal.weights import Queen
 
-from dissmodel.geo.spatial_model import SpatialModel
+from dissmodel.geo.raster.spatial_model import SpatialModel
 
 from coastal_dynamics.common.constants import (
     MANGUE,

@@ -6,7 +6,7 @@ from typing import Any
 from libpysal.weights import Queen
 
 from dissmodel.geo import FillStrategy, fill
-from dissmodel.geo.celullar_automaton import CellularAutomaton
+from dissmodel.geo.vector.cellular_automaton import CellularAutomaton
 
 
 # ---------------------------------------------------------------------------
