@@ -43,6 +43,15 @@ def load_geotiff(
     if not HAS_RASTERIO:
         raise ImportError("rasterio is required")
 
+    path = str(path)
+
+    if path.endswith(".zip"):
+        import zipfile
+        with zipfile.ZipFile(path) as z:
+            tif = next(f for f in z.namelist() if f.endswith(".tif"))
+        path = f"zip://{path}!{tif}"
+
+
     with rasterio.open(path) as ds:
 
         rows, cols = ds.height, ds.width
