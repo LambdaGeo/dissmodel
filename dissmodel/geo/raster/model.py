@@ -54,7 +54,7 @@ class RasterModel(Model):
     self.dirs       : DIRS_MOORE — as 8 direções da vizinhança de Moore
     """
 
-    def setup(self, backend: RasterBackend, **kwargs) -> None:
+    def setup(self, backend: RasterBackend) -> None:
         self.backend = backend
         self.shape   = backend.shape
         self.shift   = RasterBackend.shift2d
