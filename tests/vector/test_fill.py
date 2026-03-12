@@ -1,5 +1,17 @@
-# tests/test_fill_pattern.py
+"""
+tests/vector/test_fill.py
+====================================
+Tests for fill() and FillStrategy — vector grid fill utilities.
+"""
+import pytest
+from dissmodel.core import Environment
 from dissmodel.geo import regular_grid, fill, FillStrategy
+from dissmodel.geo.vector.regular_grid import parse_idx
+
+
+@pytest.fixture(autouse=True)
+def default_env():
+    return Environment(start_time=1, end_time=1)
 
 
 def test_pattern_square_grid():
@@ -41,8 +53,7 @@ def test_pattern_out_of_bounds_ignored():
 
 
 def test_parse_idx_roundtrip():
-    """parse_idx correctly extracts x, y from row-col index."""
-    from dissmodel.geo.raster.regular_grid import parse_idx
-    x, y = parse_idx("3-4")
-    assert x == 4
-    assert y == 3
+    """parse_idx correctly extracts col, row from row-col index string."""
+    col, row = parse_idx("3-4")
+    assert col == 4   # second number = col
+    assert row == 3   # first number = row
