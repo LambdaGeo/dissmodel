@@ -166,44 +166,51 @@ class TestNeighborValues:
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestExecute:
+    # NOTE: env must be created BEFORE the model — the model registers to
+    # the active Environment at instantiation time.
 
     def test_identity_rule_preserves_state(self, grid_3x3):
         """IdentityCA must not change any cell value."""
         grid_3x3["state"] = 7
+        env = Environment(start_time=1, end_time=1)
         ca = IdentityCA(gdf=grid_3x3)
         ca.create_neighborhood(strategy=Queen, use_index=True)
-        Environment(start_time=1, end_time=1).run()
+        env.run()
         assert (grid_3x3["state"] == 7).all()
 
     def test_increment_rule_updates_all_cells(self, grid_3x3):
         """IncrementCA must add 1 to every cell per step."""
+        env = Environment(start_time=1, end_time=1)
         ca = IncrementCA(gdf=grid_3x3)
         ca.create_neighborhood(strategy=Queen, use_index=True)
-        Environment(start_time=1, end_time=1).run()
+        env.run()
         assert (grid_3x3["state"] == 1).all()
 
     def test_increment_rule_multiple_steps(self, grid_3x3):
         """IncrementCA after N steps — all cells equal N."""
+        env = Environment(start_time=1, end_time=5)
         ca = IncrementCA(gdf=grid_3x3)
         ca.create_neighborhood(strategy=Queen, use_index=True)
-        Environment(start_time=1, end_time=5).run()
+        env.run()
         assert (grid_3x3["state"] == 5).all()
 
     def test_sum_neighbors_center_cell(self, grid_3x3):
         """Center cell surrounded by cells of value 1 gets sum = 8 (Queen)."""
         grid_3x3["state"] = 1
         grid_3x3.loc["1-1", "state"] = 0
+        env = Environment(start_time=1, end_time=1)
         ca = SumNeighborsCA(gdf=grid_3x3)
         ca.create_neighborhood(strategy=Queen, use_index=True)
-        Environment(start_time=1, end_time=1).run()
+        env.run()
         assert grid_3x3.loc["1-1", "state"] == 8
 
     def test_execute_uses_state_attr(self):
         """execute() writes result to state_attr column."""
         gdf = regular_grid(dimension=(3, 3), resolution=1, attrs={"mystate": 3})
+        env = Environment(start_time=1, end_time=1)
         ca  = IncrementCA(gdf=gdf, state_attr="mystate")
         ca.create_neighborhood(strategy=Queen, use_index=True)
-        Environment(start_time=1, end_time=1).run()
+        env.run()
         assert (gdf["mystate"] == 4).all()
 
 

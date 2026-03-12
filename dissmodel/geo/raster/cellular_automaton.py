@@ -104,8 +104,7 @@ class RasterCellularAutomaton(RasterModel, ABC):
     def setup(
         self,
         backend:    RasterBackend,
-        state_attr: str = "state",
-        **kwargs:   Any,
+        state_attr: str = "state"
     ) -> None:
         super().setup(backend)
         self.state_attr = state_attr
