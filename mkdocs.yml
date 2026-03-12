@@ -58,6 +58,8 @@ nav:
 
   - API Reference:
     - Core: api/core.md
-    - Geo: api/geo.md
+    - Geo
+      - Vector: api/geo/vector.md    # atual
+      - Raster:  api/geo/raster.md   # novo
     - Visualization: api/visualization.md
 
