@@ -18,6 +18,11 @@ plugins:
 theme:
   name: material
   language: en
+  palette:
+    - scheme: default
+      primary: teal
+      accent: green
+
 
 markdown_extensions:
   - codehilite
@@ -35,6 +40,7 @@ nav:
 
   - Models:
     - Cellular Automata:
+      - Overview: models/ca/index.md
       - Game of Life: models/ca/game_of_life.md
       - Fire Model: models/ca/fire_model.md
       - Fire Model Prob: models/ca/fire_model_prob.md
@@ -43,6 +49,7 @@ nav:
       - Propagation: models/ca/propagation.md
       - Anneal: models/ca/anneal.md
     - System Dynamics:
+      - Overview:         models/sysdyn/index.md
       - SIR: models/sysdyn/sir.md
       - Predator Prey: models/sysdyn/predator_prey.md
       - Population Growth: models/sysdyn/population_growth.md
