@@ -23,11 +23,11 @@ before running the simulation.
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
 from dissmodel.visualization.map import Map
 
-gdf = regular_grid(dimension=(30, 30), resolution=1)
+gdf = vector_grid(dimension=(30, 30), resolution=1)
 
 env = Environment(end_time=20)
 model = GameOfLife(gdf=gdf)
@@ -42,7 +42,7 @@ Subclass `CellularAutomaton` and implement the `rule(idx)` method:
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid, fill, FillStrategy
+from dissmodel.geo import vector_grid, fill, FillStrategy
 from dissmodel.visualization.map import Map
 from libpysal.weights import Queen
 
@@ -72,7 +72,7 @@ class MyCA(CellularAutomaton):
 Then wire it up:
 
 ```python
-gdf = regular_grid(dimension=(40, 40), resolution=1, attrs={"state": 0})
+gdf = vector_grid(dimension=(40, 40), resolution=1, attrs={"state": 0})
 env = Environment(end_time=10)
 ca  = MyCA(gdf=gdf)
 ca.initialize()

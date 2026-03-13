@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca.snow import Snow, SnowState
 from dissmodel.visualization.map import Map
 from dissmodel.visualization.widgets import display_inputs
@@ -68,7 +68,7 @@ run = st.button("Run Simulation")
 env = Environment(start_time=0, end_time=steps)
 
 # 2. Grid — all cells start empty
-gdf = regular_grid(
+gdf = vector_grid(
     dimension=(grid_size, grid_size),
     resolution=1,
     attrs={"state": SnowState.EMPTY},

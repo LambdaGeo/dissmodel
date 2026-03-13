@@ -59,7 +59,7 @@ While frameworks like **NetLogo** and **Mesa** are excellent for ABM, they often
 DisSModel is organized into four modules, following a strict separation of concerns that allows researchers to extend the framework through class inheritance. 
 
 - **Core:** The central engine that manages the simulation clock and discrete-event execution via Salabim integration. 
-- **Geo:** Manages spatial representations. The `regular_grid` function is used for spatial homogenization, aligning disparate rasters and vectors into a unified cellular space.
+- **Geo:** Manages spatial representations. The `vector_grid` function is used for spatial homogenization, aligning disparate rasters and vectors into a unified cellular space.
 - **Models:** Provides templates for common paradigms, including Cellular Automata (CA) and System Dynamics. 
 - **Visualization:** Integrates Matplotlib for static outputs and Streamlit for interactive dashboards.
 

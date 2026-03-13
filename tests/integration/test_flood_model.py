@@ -22,9 +22,9 @@ import numpy as np
 import pytest
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.geo.raster.backend import RasterBackend
-from dissmodel.geo import make_raster_grid
+from dissmodel.geo import raster_grid
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -151,7 +151,7 @@ def _arrays(rows: int, cols: int, seed: int = 42):
 
 def make_raster(rows: int, cols: int, seed: int = 42) -> RasterBackend:
     uso, alt = _arrays(rows, cols, seed)
-    b = make_raster_grid(rows=rows, cols=cols,
+    b = raster_grid(rows=rows, cols=cols,
                          attrs={"uso": uso.copy(), "alt": alt.copy()})
     return b
 

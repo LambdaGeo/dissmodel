@@ -101,9 +101,9 @@ class GameOfLife(CellularAutomaton):
 
     Examples
     --------
-    >>> from dissmodel.geo import regular_grid
+    >>> from dissmodel.geo import vector_grid
     >>> from dissmodel.core import Environment
-    >>> gdf = regular_grid(dimension=(5, 5), resolution=1, attrs={"state": 0})
+    >>> gdf = vector_grid(dimension=(5, 5), resolution=1, attrs={"state": 0})
     >>> env = Environment(end_time=3)
     >>> gol = GameOfLife(gdf=gdf)
     >>> gol.initialize()
