@@ -22,11 +22,11 @@ import pytest
 import geopandas as gpd
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.geo.vector.cellular_automaton import CellularAutomaton
 from dissmodel.geo.raster.backend import RasterBackend
 from dissmodel.geo.raster.cellular_automaton import RasterCellularAutomaton
-from dissmodel.geo import make_raster_grid
+from dissmodel.geo import raster_grid
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -68,7 +68,7 @@ def make_initial(rows: int, cols: int, seed: int = 42) -> np.ndarray:
 def setup_vector(rows: int, cols: int, steps: int, seed: int = 42):
     from libpysal.weights import Queen
     state = make_initial(rows, cols, seed).ravel().astype(int)
-    gdf   = regular_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
+    gdf   = vector_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
     gdf["state"] = state
     env = Environment(start_time=1, end_time=steps)
     ca  = GameOfLifeVector(gdf=gdf)
@@ -78,7 +78,7 @@ def setup_vector(rows: int, cols: int, steps: int, seed: int = 42):
 
 def setup_raster(rows: int, cols: int, steps: int, seed: int = 42):
     state = make_initial(rows, cols, seed)
-    b     = make_raster_grid(rows=rows, cols=cols, attrs={"state": state})
+    b     = raster_grid(rows=rows, cols=cols, attrs={"state": state})
     env   = Environment(start_time=1, end_time=steps)
     GameOfLifeRaster(backend=b)
     return env, b
@@ -139,7 +139,7 @@ class TestGameOfLifeEquivalence:
             from libpysal.weights import Queen
 
             # vector
-            gdf_s = regular_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
+            gdf_s = vector_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
             gdf_s["state"] = initial.ravel().astype(int)
             env_v = Environment(start_time=1, end_time=step)
             ca = GameOfLifeVector(gdf=gdf_s)
@@ -148,7 +148,7 @@ class TestGameOfLifeEquivalence:
             sv = final_vector(gdf_s, rows, cols)
 
             # raster
-            b_s   = make_raster_grid(rows=rows, cols=cols,
+            b_s   = raster_grid(rows=rows, cols=cols,
                                      attrs={"state": initial.copy()})
             env_r = Environment(start_time=1, end_time=step)
             GameOfLifeRaster(backend=b_s)
@@ -182,7 +182,7 @@ class TestGameOfLifeEquivalence:
         rows, cols, steps = 5, 5, 3
 
         # vector
-        gdf   = regular_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
+        gdf   = vector_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
         env_v = Environment(start_time=1, end_time=steps)
         from libpysal.weights import Queen
         ca = GameOfLifeVector(gdf=gdf)
@@ -191,7 +191,7 @@ class TestGameOfLifeEquivalence:
         assert (gdf["state"] == 0).all(), "All-dead vector grid became alive"
 
         # raster
-        b     = make_raster_grid(rows=rows, cols=cols, attrs={"state": 0})
+        b     = raster_grid(rows=rows, cols=cols, attrs={"state": 0})
         env_r = Environment(start_time=1, end_time=steps)
         GameOfLifeRaster(backend=b)
         env_r.run()
@@ -208,7 +208,7 @@ class TestGameOfLifeEquivalence:
         initial[2:4, 2:4] = 1
 
         # vector
-        gdf = regular_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
+        gdf = vector_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
         gdf["state"] = initial.ravel().astype(int)
         env_v = Environment(start_time=1, end_time=steps)
         from libpysal.weights import Queen
@@ -218,7 +218,7 @@ class TestGameOfLifeEquivalence:
         sv = final_vector(gdf, rows, cols)
 
         # raster
-        b     = make_raster_grid(rows=rows, cols=cols, attrs={"state": initial.copy()})
+        b     = raster_grid(rows=rows, cols=cols, attrs={"state": initial.copy()})
         env_r = Environment(start_time=1, end_time=steps)
         GameOfLifeRaster(backend=b)
         env_r.run()

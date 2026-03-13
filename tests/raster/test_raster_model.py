@@ -11,7 +11,7 @@ import numpy as np
 from dissmodel.core import Environment
 from dissmodel.geo.raster.backend import RasterBackend, DIRS_MOORE
 from dissmodel.geo.raster.raster_model import RasterModel
-from dissmodel.geo import make_raster_grid
+from dissmodel.geo import raster_grid
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -48,12 +48,12 @@ class NullRaster(RasterModel):
 
 @pytest.fixture
 def backend_3x3():
-    return make_raster_grid(rows=3, cols=3, attrs={"state": np.zeros((3, 3), dtype=np.int32)})
+    return raster_grid(rows=3, cols=3, attrs={"state": np.zeros((3, 3), dtype=np.int32)})
 
 
 @pytest.fixture
 def backend_5x5():
-    return make_raster_grid(rows=5, cols=5, attrs={"state": np.zeros((5, 5), dtype=np.int32)})
+    return raster_grid(rows=5, cols=5, attrs={"state": np.zeros((5, 5), dtype=np.int32)})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -126,8 +126,8 @@ class TestEnvironmentIntegration:
 
     def test_two_models_same_env(self):
         """Two RasterModels registered in the same env both execute."""
-        b1 = make_raster_grid(rows=3, cols=3, attrs={"state": np.zeros((3,3), dtype=np.int32)})
-        b2 = make_raster_grid(rows=3, cols=3, attrs={"state": np.zeros((3,3), dtype=np.int32)})
+        b1 = raster_grid(rows=3, cols=3, attrs={"state": np.zeros((3,3), dtype=np.int32)})
+        b2 = raster_grid(rows=3, cols=3, attrs={"state": np.zeros((3,3), dtype=np.int32)})
         env = Environment(start_time=1, end_time=3)
         CounterRaster(backend=b1)
         CounterRaster(backend=b2)
@@ -141,7 +141,7 @@ class TestEnvironmentIntegration:
         Model A doubles state; Model B adds 1. After 1 step from all-ones:
         A runs first → state=2, then B → state=3.
         """
-        b = make_raster_grid(rows=3, cols=3,
+        b = raster_grid(rows=3, cols=3,
                              attrs={"state": np.ones((3,3), dtype=np.int32)})
 
         class DoubleModel(RasterModel):

@@ -24,7 +24,7 @@ import streamlit as st
 
 import dissmodel.models.ca as ca_models
 from dissmodel.core import Environment
-from dissmodel.geo import CellularAutomaton, regular_grid
+from dissmodel.geo import CellularAutomaton, vector_grid
 from dissmodel.visualization.map import Map
 from dissmodel.visualization.widgets import display_inputs
 
@@ -75,7 +75,7 @@ run = st.button("Run Simulation")
 env = Environment(start_time=0, end_time=steps)
 
 # 2. Grid
-gdf = regular_grid(
+gdf = vector_grid(
     dimension=(grid_size, grid_size),
     resolution=1,
     attrs={"state": 0},

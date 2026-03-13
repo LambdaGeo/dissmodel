@@ -12,12 +12,12 @@ A deterministic forest fire spread model implemented on a regular GeoDataFrame g
 from matplotlib.colors import ListedColormap
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca import FireModel
 from dissmodel.models.ca.fire_model import FireState
 from dissmodel.visualization.map import Map
 
-gdf = regular_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
+gdf = vector_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
 
 env = Environment(end_time=20)
 fire = FireModel(gdf=gdf)

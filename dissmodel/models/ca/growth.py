@@ -44,9 +44,9 @@ class Growth(CellularAutomaton):
 
     Examples
     --------
-    >>> from dissmodel.geo import regular_grid
+    >>> from dissmodel.geo import vector_grid
     >>> from dissmodel.core import Environment
-    >>> gdf = regular_grid(dimension=(20, 20), resolution=1, attrs={"state": 0})
+    >>> gdf = vector_grid(dimension=(20, 20), resolution=1, attrs={"state": 0})
     >>> env = Environment(end_time=15)
     >>> growth = Growth(gdf=gdf, dim=20)
     >>> growth.initialize()

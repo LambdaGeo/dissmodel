@@ -15,12 +15,12 @@ from __future__ import annotations
 
 import matplotlib.pyplot as plt
 
-from dissmodel.geo import FillStrategy, fill, regular_grid
+from dissmodel.geo import FillStrategy, fill, vector_grid
 
 # ---------------------------------------------------------------------------
 # Setup
 # ---------------------------------------------------------------------------
-grid = regular_grid(dimension=(5, 5), resolution=1.0)
+grid = vector_grid(dimension=(5, 5), resolution=1.0)
 
 fill(
     strategy=FillStrategy.RANDOM_SAMPLE,

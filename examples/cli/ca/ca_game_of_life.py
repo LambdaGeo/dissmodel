@@ -19,14 +19,14 @@ from __future__ import annotations
 from matplotlib.colors import ListedColormap
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
 from dissmodel.visualization.map import Map
 
 # ---------------------------------------------------------------------------
 # Setup
 # ---------------------------------------------------------------------------
-gdf = regular_grid(dimension=(20, 20), resolution=1, attrs={"state": 0})
+gdf = vector_grid(dimension=(20, 20), resolution=1, attrs={"state": 0})
 
 env = Environment(start_time=0, end_time=10)
 

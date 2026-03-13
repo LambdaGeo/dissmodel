@@ -2,7 +2,7 @@
 
 # vector substrate
 from .vector.neighborhood       import attach_neighbors
-from .vector.regular_grid       import regular_grid, parse_idx
+from .vector.vector_grid       import vector_grid, parse_idx
 from .vector.fill               import fill, FillStrategy
 from .vector.cellular_automaton import CellularAutomaton   
 from .vector.spatial_model              import SpatialModel
@@ -11,7 +11,7 @@ from .vector.spatial_model              import SpatialModel
 from .raster.backend            import RasterBackend, DIRS_MOORE, DIRS_VON_NEUMANN
 from .raster.raster_model              import RasterModel
 from .raster.cellular_automaton import RasterCellularAutomaton
-from .raster.raster_grid       import make_raster_grid
+from .raster.raster_grid       import raster_grid
 from .raster.band_spec          import BandSpec   # se tiver classe exportável
 
 # raster io — opcional, não importa por padrão (requer rasterio)

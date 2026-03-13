@@ -55,11 +55,11 @@ env.run(30)
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca import FireModel
 from dissmodel.models.ca.fire_model import FireState
 
-gdf = regular_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
+gdf = vector_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
 env = Environment(end_time=20)
 fire = FireModel(gdf=gdf)
 fire.initialize()
@@ -160,7 +160,7 @@ See [`examples/notebooks/`](examples/notebooks/) for interactive notebooks with 
 
 ```python
 env = Environment(start_time=0, end_time=steps)
-gdf = regular_grid(dimension=(grid_size, grid_size), resolution=1, attrs={"state": 0})
+gdf = vector_grid(dimension=(grid_size, grid_size), resolution=1, attrs={"state": 0})
 model = FireModel(gdf=gdf)
 display_inputs(model, st.sidebar)  # generates sliders from type annotations
 model.initialize()                 # uses parameters set by display_inputs
@@ -171,10 +171,10 @@ model.initialize()                 # uses parameters set by display_inputs
 ## Grid and Neighborhood
 
 ```python
-from dissmodel.geo import regular_grid, fill, FillStrategy
+from dissmodel.geo import vector_grid, fill, FillStrategy
 
 # Create a 20x20 grid
-gdf = regular_grid(dimension=(20, 20), resolution=1.0, attrs={"state": 0})
+gdf = vector_grid(dimension=(20, 20), resolution=1.0, attrs={"state": 0})
 
 # Fill with random values
 fill(FillStrategy.RANDOM_SAMPLE, gdf=gdf, attr="state", data={0: 0.7, 1: 0.3}, seed=42)

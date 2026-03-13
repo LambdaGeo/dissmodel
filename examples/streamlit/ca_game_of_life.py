@@ -19,7 +19,7 @@ from matplotlib.colors import ListedColormap
 import streamlit as st
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
 from dissmodel.models.ca.game_of_life import PATTERNS
 from dissmodel.visualization.map import Map
@@ -52,7 +52,7 @@ run = st.button("Run Simulation")
 # ---------------------------------------------------------------------------
 # Setup
 # ---------------------------------------------------------------------------
-gdf = regular_grid(dimension=(grid_size, grid_size), resolution=1, attrs={"state": 0})
+gdf = vector_grid(dimension=(grid_size, grid_size), resolution=1, attrs={"state": 0})
 env = Environment(start_time=0, end_time=steps)
 
 gol = GameOfLife(gdf=gdf)

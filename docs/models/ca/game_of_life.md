@@ -9,13 +9,13 @@ Conway's Game of Life implemented on a GeoDataFrame grid.
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
 
 from matplotlib.colors import ListedColormap
 from dissmodel.visualization.map import Map
 
-gdf = regular_grid(dimension=(30, 30), resolution=1)
+gdf = vector_grid(dimension=(30, 30), resolution=1)
 env = Environment(end_time=20)
 model = GameOfLife(gdf=gdf)
 model.initialize()

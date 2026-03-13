@@ -3,18 +3,18 @@ dissmodel/geo/raster_grid.py
 =============================
 Utilitário para criar RasterBackend sintético.
 
-Análogo a regular_grid() (GeoDataFrame), mas para o substrato NumPy.
+Análogo a vector_grid() (GeoDataFrame), mas para o substrato NumPy.
 
 Uso
 ---
-    from dissmodel.geo.raster_grid import make_raster_grid
+    from dissmodel.geo.raster_grid import raster_grid
     import numpy as np
 
     # grade vazia com arrays zerados
-    b = make_raster_grid(rows=50, cols=50, attrs={"state": 0})
+    b = raster_grid(rows=50, cols=50, attrs={"state": 0})
 
     # grade com array inicial customizado
-    b = make_raster_grid(
+    b = raster_grid(
         rows=50, cols=50,
         attrs={"state": np.random.randint(0, 2, (50, 50))}
     )
@@ -31,7 +31,7 @@ from dissmodel.geo.raster.backend import RasterBackend
 AttrValue = Union[int, float, np.ndarray]
 
 
-def make_raster_grid(
+def raster_grid(
     rows:  int,
     cols:  int,
     attrs: dict[str, AttrValue] | None = None,
@@ -40,7 +40,7 @@ def make_raster_grid(
     """
     Create a RasterBackend with optional pre-filled arrays.
 
-    Analogous to :func:`~dissmodel.geo.regular_grid` for the raster
+    Analogous to :func:`~dissmodel.geo.vector_grid` for the raster
     substrate. Useful for tests, examples, and synthetic benchmarks.
 
     Parameters
@@ -65,7 +65,7 @@ def make_raster_grid(
 
     Examples
     --------
-    >>> b = make_raster_grid(10, 10, attrs={"state": 0})
+    >>> b = raster_grid(10, 10, attrs={"state": 0})
     >>> b.shape
     (10, 10)
     >>> b.get("state").shape
@@ -73,7 +73,7 @@ def make_raster_grid(
 
     >>> import numpy as np
     >>> state = np.random.randint(0, 2, (10, 10))
-    >>> b = make_raster_grid(10, 10, attrs={"state": state})
+    >>> b = raster_grid(10, 10, attrs={"state": state})
     """
     b = RasterBackend(shape=(rows, cols))
 

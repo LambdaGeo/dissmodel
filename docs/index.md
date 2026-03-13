@@ -61,11 +61,11 @@ env.run(30)
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.models.ca import FireModel
 from dissmodel.models.ca.fire_model import FireState
 
-gdf = regular_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
+gdf = vector_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
 env = Environment(end_time=20)
 fire = FireModel(gdf=gdf)
 fire.initialize()
