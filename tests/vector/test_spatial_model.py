@@ -12,7 +12,7 @@ from libpysal.weights import Queen, Rook
 
 from dissmodel.core import Environment
 from dissmodel.geo import regular_grid
-from dissmodel.geo.vector.model import SpatialModel
+from dissmodel.geo.vector.spatial_model import SpatialModel
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────

@@ -15,7 +15,7 @@ import numpy as np
 
 from dissmodel.core import Environment
 from dissmodel.geo.raster.backend import RasterBackend
-from dissmodel.geo.raster.regular_grid import make_raster_grid
+from dissmodel.geo import make_raster_grid
 from dissmodel.visualization.raster_map import RasterMap
 
 
@@ -86,7 +86,7 @@ class TestEnvironmentIntegration:
 
     def test_map_and_model_share_env(self, backend):
         """RasterMap and a model run in the same environment without conflict."""
-        from dissmodel.geo.raster.model import RasterModel
+        from dissmodel.geo.raster.raster_model import RasterModel
 
         class IncModel(RasterModel):
             def setup(self, backend): super().setup(backend)
