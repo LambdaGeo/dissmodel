@@ -33,13 +33,16 @@ class Model(sim.Component):
     --------
     >>> class MyModel(Model):
     ...     def execute(self):
-    ...         pass
+    ...         print (self.env.now())
     >>> env = Environment()
     >>> model = MyModel(step=1, start_time=0, end_time=5)
-    >>> model.start_time
-    0
-    >>> model.end_time
-    5
+    >>> env.run(5)
+    Running from 0 to 5 (duration: 5)
+    0.0
+    1.0
+    2.0
+    3.0
+    4.0
     """
 
     def __init__(

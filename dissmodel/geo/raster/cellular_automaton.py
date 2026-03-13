@@ -70,7 +70,7 @@ from typing import Any
 
 import numpy as np
 
-from dissmodel.geo.raster.model import RasterModel
+from dissmodel.geo.raster.raster_model import RasterModel
 from dissmodel.geo.raster.backend import RasterBackend
 
 

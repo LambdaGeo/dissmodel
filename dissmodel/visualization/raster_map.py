@@ -1,58 +1,58 @@
 """
 dissmodel/visualization/raster_map.py
 ======================================
-Visualização de RasterBackend — análogo ao Map (geopandas) do DisSModel,
-mas para grades NumPy 2D.
+Visualization component for RasterBackend — the raster analogue of the
+vector ``Map`` component in DisSModel.
 
-Responsabilidade
-----------------
-Renderizar qualquer array nomeado de um RasterBackend sem saber nada do
-domínio — sem constantes de uso do solo, sem CRS, sem cores fixas.
+Responsibility
+--------------
+Render any named array from a ``RasterBackend`` without any domain
+knowledge — no land-use constants, no CRS, no hard-coded colours.
 
-As definições visuais (cores, labels, colormaps) são passadas pelo
-projeto no momento da instanciação.
+Visual definitions (colours, labels, colormaps) are injected by the
+project at instantiation time.
 
-Destinos de renderização suportados
--------------------------------------
-    1. Streamlit  — plot_area=st.empty()
-    2. Jupyter    — detectado automaticamente
-    3. Interativo — RASTER_MAP_INTERACTIVE=1 (TkAgg/Qt)
-    4. Headless   — salva PNGs em raster_map_frames/ (padrão)
+Supported render targets
+------------------------
+1. **Streamlit**   — ``plot_area=st.empty()``
+2. **Jupyter**     — detected automatically
+3. **Interactive** — ``RASTER_MAP_INTERACTIVE=1`` (TkAgg / Qt)
+4. **Headless**    — saves PNGs to ``raster_map_frames/`` (default)
 
-Uso mínimo (headless / sem cores)
-----------------------------------
+Minimal usage (headless / no colour map)
+-----------------------------------------
     from dissmodel.geo.raster.backend import RasterBackend
     from dissmodel.visualization.raster_map import RasterMap
     from dissmodel.core import Environment
 
     env = Environment(start_time=1, end_time=10)
-    SeuModel(backend=b)
-    RasterMap(backend=b, band="estado")
+    YourModel(backend=b)
+    RasterMap(backend=b, band="state")
     env.run()
-    # → raster_map_frames/estado_step_001.png … estado_step_010.png
+    # → raster_map_frames/state_step_001.png … state_step_010.png
 
-Uso com cores de domínio (projeto BR-MANGUE)
----------------------------------------------
-    from brmangue.constants import USO_COLORS, USO_LABELS
+Categorical usage (domain colour map)
+---------------------------------------
+    from myproject.constants import LAND_USE_COLORS, LAND_USE_LABELS
 
     RasterMap(
         backend    = b,
         band       = "uso",
-        title      = "Uso do Solo",
-        color_map  = USO_COLORS,   # dict[int, str hex]
-        labels     = USO_LABELS,   # dict[int, str]
+        title      = "Land Use",
+        color_map  = LAND_USE_COLORS,   # dict[int, str]  value → hex colour
+        labels     = LAND_USE_LABELS,   # dict[int, str]  value → legend label
     )
 
-Uso com colormap contínuo (altimetria, temperatura, …)
--------------------------------------------------------
+Continuous usage (altimetry, temperature, …)
+---------------------------------------------
     RasterMap(
-        backend    = b,
-        band       = "alt",
-        title      = "Altimetria",
-        cmap       = "terrain",
-        colorbar_label = "Altitude (m)",
-        mask_band  = "uso",    # opcional: mascara células onde uso==mask_value
-        mask_value = 3,        # ex.: MAR=3
+        backend         = b,
+        band            = "alt",
+        title           = "Altimetry",
+        cmap            = "terrain",
+        colorbar_label  = "Altitude (m)",
+        mask_band       = "uso",    # optional: mask cells where uso == mask_value
+        mask_value      = 3,        # e.g. SEA = 3
     )
 """
 from __future__ import annotations
@@ -63,9 +63,9 @@ from typing import Any
 
 import matplotlib
 if os.environ.get("RASTER_MAP_INTERACTIVE", "0") == "1":
-    pass          # deixa matplotlib escolher TkAgg/Qt
+    pass          # let matplotlib choose TkAgg / Qt
 else:
-    matplotlib.use("Agg")   # headless — sem janela
+    matplotlib.use("Agg")   # headless — no display window
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -82,59 +82,69 @@ def _is_interactive() -> bool:
 
 class RasterMap(Model):
     """
-    Modelo de visualização para RasterBackend.
+    Visualization model for RasterBackend.
 
-    Parâmetros
+    Parameters
     ----------
     backend : RasterBackend
-        Backend compartilhado com os modelos de simulação.
+        Backend shared with the simulation models.
     band : str
-        Nome do array a visualizar.
+        Name of the array to visualize.
     title : str
-        Prefixo do título. Padrão: ``"RasterMap"``.
+        Figure title prefix. Default: ``"RasterMap"``.
     figsize : tuple[int, int]
-        Tamanho da figura em polegadas. Padrão: ``(7, 7)``.
+        Figure size in inches. Default: ``(7, 7)``.
     pause : bool
-        Usar plt.pause() em modo interativo. Padrão: ``True``.
+        Use ``plt.pause()`` in interactive mode. Default: ``True``.
+    interval : float
+        Seconds between steps in interactive mode. Default: ``0.5``.
     plot_area : st.empty() | None
-        Placeholder Streamlit. Padrão: ``None``.
+        Streamlit placeholder. Default: ``None``.
 
-    -- modo categórico (color_map preenchido) --
+    Categorical mode (``color_map`` provided)
+    ------------------------------------------
     color_map : dict[int, str] | None
-        Mapeamento valor → cor hex. Ex.: {1: "#006400", 3: "#00008b"}.
-        Se fornecido, renderiza com ListedColormap + legenda.
+        Value-to-hex-colour mapping. Example: ``{1: "#006400", 3: "#00008b"}``.
+        When provided, renders with a ``ListedColormap`` and a legend.
     labels : dict[int, str] | None
-        Mapeamento valor → rótulo para a legenda.
-        Se None e color_map fornecido, usa str(valor).
+        Value-to-label mapping for the legend.
+        If ``None`` and ``color_map`` is provided, uses ``str(value)``.
 
-    -- modo contínuo (color_map ausente) --
+    Continuous mode (``color_map`` absent)
+    ----------------------------------------
     cmap : str
-        Nome do colormap matplotlib. Padrão: ``"viridis"``.
+        Matplotlib colormap name. Default: ``"viridis"``.
     vmin : float | None
-        Valor mínimo da escala. Padrão: mínimo do array.
+        Minimum value for the colour scale. Default: array minimum.
     vmax : float | None
-        Valor máximo da escala. Padrão: máximo do array.
+        Maximum value for the colour scale. Default: array maximum.
     colorbar_label : str
-        Rótulo da colorbar. Padrão: valor de ``band``.
+        Colorbar label. Default: value of ``band``.
     mask_band : str | None
-        Nome de outro array usado para mascarar células.
+        Name of another array used to mask cells.
     mask_value : int | float | None
-        Valor em mask_band a mascarar (ex.: MAR=3 para altimetria).
+        Value in ``mask_band`` to mask (e.g. ``SEA=3`` for altimetry).
+
+    Examples
+    --------
+    >>> env = Environment(start_time=1, end_time=10)
+    >>> RasterMap(backend=b, band="state")
+    >>> env.run()
     """
 
     def setup(
         self,
         backend,
-        band:            str             = "estado",
+        band:            str             = "state",
         title:           str             = "RasterMap",
         figsize:         tuple[int, int] = (7, 7),
         pause:           bool            = True,
-        interval:        float           = 0.5,   # segundos entre passos (modo interativo)
+        interval:        float           = 0.5,
         plot_area:       Any             = None,
-        # modo categórico
+        # categorical mode
         color_map:       dict[int, str] | None = None,
         labels:          dict[int, str] | None = None,
-        # modo contínuo
+        # continuous mode
         cmap:            str             = "viridis",
         vmin:            float | None    = None,
         vmax:            float | None    = None,
@@ -158,7 +168,7 @@ class RasterMap(Model):
         self.mask_band       = mask_band
         self.mask_value      = mask_value
 
-    # ── renderização ──────────────────────────────────────────────────────────
+    # ── rendering ─────────────────────────────────────────────────────────────
 
     def _render(self, step: float) -> matplotlib.figure.Figure:
         plt.close("all")
@@ -167,7 +177,7 @@ class RasterMap(Model):
 
         arr = self.backend.arrays.get(self.band)
         if arr is None:
-            ax.text(0.5, 0.5, f"band '{self.band}' não encontrado",
+            ax.text(0.5, 0.5, f"band '{self.band}' not found",
                     ha="center", va="center", transform=ax.transAxes)
             ax.set_title(f"{self.title} [{self.band}] — Step {int(step)}")
             return fig
@@ -183,7 +193,7 @@ class RasterMap(Model):
         return fig
 
     def _render_categorical(self, ax, arr: np.ndarray) -> None:
-        """ListedColormap para arrays inteiros com mapeamento valor→cor."""
+        """Render integer arrays using a ListedColormap with value-to-colour mapping."""
         vals = sorted(self.color_map)
         cmap = mcolors.ListedColormap([self.color_map[k] for k in vals])
         norm = mcolors.BoundaryNorm(
@@ -191,7 +201,7 @@ class RasterMap(Model):
         )
         ax.imshow(arr, cmap=cmap, norm=norm, aspect="equal", interpolation="nearest")
 
-        # legenda apenas com valores presentes no array atual
+        # legend shows only values present in the current array
         present = set(np.unique(arr))
         patches = [
             matplotlib.patches.Patch(
@@ -204,7 +214,7 @@ class RasterMap(Model):
             ax.legend(handles=patches, loc="lower right", fontsize=7, framealpha=0.7)
 
     def _render_continuous(self, ax, arr: np.ndarray) -> None:
-        """Colormap contínuo com colorbar e máscara opcional."""
+        """Render continuous arrays with a colorbar and optional mask."""
         data = arr.astype(float)
 
         if self.mask_band is not None and self.mask_value is not None:
@@ -224,27 +234,32 @@ class RasterMap(Model):
     # ── execute ───────────────────────────────────────────────────────────────
 
     def execute(self) -> None:
+        """Render the current array state and dispatch to the active output target."""
         step = self.env.now()
         fig  = self._render(step)
         plt.draw()
 
         if self.plot_area is not None:
+            # Streamlit
             self.plot_area.pyplot(fig)
             plt.close(fig)
 
         elif is_notebook():
+            # Jupyter
             from IPython.display import clear_output, display
             clear_output(wait=True)
             display(fig)
             plt.close(fig)
 
         elif self.pause and _is_interactive():
+            # interactive window (TkAgg / Qt)
             plt.pause(self.interval)
             if step == getattr(self.env, "end_time", step):
-                input("Simulação concluída — pressione Enter para fechar...")
+                input("Simulation complete — press Enter to close...")
                 plt.close("all")
 
         else:
+            # headless — save PNG to raster_map_frames/
             out_dir = pathlib.Path("raster_map_frames")
             out_dir.mkdir(exist_ok=True)
             fname = out_dir / f"{self.band}_step_{int(step):03d}.png"
