@@ -11,7 +11,7 @@ Raster substrate classes and utilities backed by NumPy arrays.
         - DIRS_MOORE
         - DIRS_VON_NEUMANN
 
-::: dissmodel.geo.raster.model
+::: dissmodel.geo.raster.raster_model
     options:
       show_source: true
       show_root_heading: true
@@ -25,7 +25,7 @@ Raster substrate classes and utilities backed by NumPy arrays.
       members:
         - RasterCellularAutomaton
 
-::: dissmodel.geo.raster.regular_grid
+::: dissmodel.geo.raster.raster_grid
     options:
       show_source: true
       show_root_heading: true

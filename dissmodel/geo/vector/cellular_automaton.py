@@ -18,7 +18,7 @@ from typing import Any, Optional
 
 import geopandas as gpd
 
-from dissmodel.geo.vector.model import SpatialModel
+from dissmodel.geo.vector.spatial_model import SpatialModel
 
 
 class CellularAutomaton(SpatialModel, ABC):

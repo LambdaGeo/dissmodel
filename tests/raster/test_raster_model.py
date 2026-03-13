@@ -10,8 +10,8 @@ import numpy as np
 
 from dissmodel.core import Environment
 from dissmodel.geo.raster.backend import RasterBackend, DIRS_MOORE
-from dissmodel.geo.raster.model import RasterModel
-from dissmodel.geo.raster.regular_grid import make_raster_grid
+from dissmodel.geo.raster.raster_model import RasterModel
+from dissmodel.geo import make_raster_grid
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────

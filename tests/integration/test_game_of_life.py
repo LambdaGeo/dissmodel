@@ -26,7 +26,7 @@ from dissmodel.geo import regular_grid
 from dissmodel.geo.vector.cellular_automaton import CellularAutomaton
 from dissmodel.geo.raster.backend import RasterBackend
 from dissmodel.geo.raster.cellular_automaton import RasterCellularAutomaton
-from dissmodel.geo.raster.regular_grid import make_raster_grid
+from dissmodel.geo import make_raster_grid
 
 
 # ══════════════════════════════════════════════════════════════════════════════

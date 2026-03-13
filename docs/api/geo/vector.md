@@ -2,7 +2,7 @@
 
 Vector substrate classes and utilities backed by GeoDataFrame.
 
-::: dissmodel.geo.vector.model
+::: dissmodel.geo.vector.spatial_model
     options:
       show_source: true
       show_root_heading: true

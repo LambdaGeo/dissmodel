@@ -27,8 +27,8 @@ from libpysal.weights import Queen
 
 from dissmodel.core import Environment
 from dissmodel.geo.raster.backend import RasterBackend
-from dissmodel.geo.raster.model import RasterModel
-from dissmodel.geo.vector.model import SpatialModel
+from dissmodel.geo.raster.raster_model import RasterModel
+from dissmodel.geo.vector.spatial_model import SpatialModel
 
 
 # ══════════════════════════════════════════════════════════════════════════════
