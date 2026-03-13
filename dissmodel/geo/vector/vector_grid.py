@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import namedtuple
 import numpy as np
 import geopandas as gpd
 from shapely.geometry import box
@@ -9,33 +10,38 @@ from typing import Any, Optional
 Bounds = tuple[float, float, float, float]  # (xmin, ymin, xmax, ymax)
 Dimension = tuple[int, int]                 # (n_cols, n_rows)
 
+# Named return type for parse_idx — eliminates (col, row) vs (row, col) ambiguity.
+GridPos = namedtuple("GridPos", ["row", "col"])
 
-def parse_idx(idx: str) -> tuple[int, int]:
+
+def parse_idx(idx: str) -> GridPos:
     """
-    Extract x and y from an index string in ``'y-x'`` format.
+    Extract row and col from an index string in ``'row-col'`` format.
 
     Parameters
     ----------
     idx : str
-        Index string in ``'y-x'`` format, e.g. ``'0-0'``, ``'3-4'``.
+        Index string in ``'row-col'`` format, e.g. ``'0-0'``, ``'3-4'``.
 
     Returns
     -------
-    tuple of int
-        ``(x, y)`` as integers.
+    GridPos
+        Named tuple with fields ``row`` and ``col``.
 
     Examples
     --------
-    >>> parse_idx('3-4')
-    (4, 3)
-    >>> parse_idx('0-0')
-    (0, 0)
+    >>> pos = parse_idx('3-4')
+    >>> pos.row
+    3
+    >>> pos.col
+    4
+    >>> row, col = parse_idx('3-4')  # tuple unpacking still works
     """
-    y_str, x_str = idx.split("-")
-    return int(x_str), int(y_str)
+    row_str, col_str = idx.split("-")
+    return GridPos(row=int(row_str), col=int(col_str))
 
 
-def regular_grid(
+def vector_grid(
     gdf: Optional[gpd.GeoDataFrame] = None,
     bounds: Optional[Bounds] = None,
     resolution: Optional[float] = None,
@@ -82,7 +88,7 @@ def regular_grid(
 
     Examples
     --------
-    >>> gdf = regular_grid(dimension=(3, 3), resolution=1.0)
+    >>> gdf = vector_grid(dimension=(3, 3), resolution=1.0)
     >>> len(gdf)
     9
     >>> gdf.index[0]
@@ -123,7 +129,7 @@ def regular_grid(
             raise ValueError("Provide either `resolution` or `dimension`.")
 
     elif gdf is not None:
-        return regular_grid(
+        return vector_grid(
             bounds=tuple(gdf.total_bounds),  # type: ignore[arg-type]
             resolution=resolution,
             dimension=dimension,
@@ -149,3 +155,15 @@ def regular_grid(
         data[key] = [value] * len(grid_cells)
 
     return gpd.GeoDataFrame(data, crs=crs).set_index("id")
+
+
+# Deprecated alias — will be removed in v0.3.0
+def regular_grid(*args, **kwargs) -> gpd.GeoDataFrame:
+    """Deprecated. Use :func:`vector_grid` instead."""
+    import warnings
+    warnings.warn(
+        "regular_grid() is deprecated, use vector_grid() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return vector_grid(*args, **kwargs)

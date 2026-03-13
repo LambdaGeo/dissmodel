@@ -30,4 +30,4 @@ Raster substrate classes and utilities backed by NumPy arrays.
       show_source: true
       show_root_heading: true
       members:
-        - make_raster_grid
+        - raster_grid

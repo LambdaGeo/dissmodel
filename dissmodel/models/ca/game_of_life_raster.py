@@ -35,12 +35,12 @@ Comparison
 Usage
 -----
     from dissmodel.core import Environment
-    from dissmodel.geo.raster_grid import make_raster_grid
+    from dissmodel.geo.raster_grid import raster_grid
     from dissmodel.examples.game_of_life_raster import GameOfLife
     import numpy as np
 
     rng = np.random.default_rng(42)
-    b   = make_raster_grid(50, 50, attrs={"state": rng.integers(0, 2, (50, 50))})
+    b   = raster_grid(50, 50, attrs={"state": rng.integers(0, 2, (50, 50))})
 
     env = Environment(start_time=1, end_time=100)
     GameOfLife(backend=b)
@@ -77,10 +77,10 @@ class GameOfLife(RasterCellularAutomaton):
     Examples
     --------
     >>> from dissmodel.core import Environment
-    >>> from dissmodel.geo.raster_grid import make_raster_grid
+    >>> from dissmodel.geo.raster_grid import raster_grid
     >>> import numpy as np
     >>> rng = np.random.default_rng(0)
-    >>> b = make_raster_grid(20, 20, attrs={"state": rng.integers(0, 2, (20, 20))})
+    >>> b = raster_grid(20, 20, attrs={"state": rng.integers(0, 2, (20, 20))})
     >>> env = Environment(start_time=1, end_time=10)
     >>> GameOfLife(backend=b)
     """

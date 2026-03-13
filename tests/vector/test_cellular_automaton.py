@@ -10,7 +10,7 @@ import numpy as np
 from libpysal.weights import Queen, Rook
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.geo.vector.cellular_automaton import CellularAutomaton
 
 
@@ -50,7 +50,7 @@ def default_env():
 
 @pytest.fixture
 def grid_3x3():
-    return regular_grid(dimension=(3, 3), resolution=1, attrs={"state": 0})
+    return vector_grid(dimension=(3, 3), resolution=1, attrs={"state": 0})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -206,7 +206,7 @@ class TestExecute:
 
     def test_execute_uses_state_attr(self):
         """execute() writes result to state_attr column."""
-        gdf = regular_grid(dimension=(3, 3), resolution=1, attrs={"mystate": 3})
+        gdf = vector_grid(dimension=(3, 3), resolution=1, attrs={"mystate": 3})
         env = Environment(start_time=1, end_time=1)
         ca  = IncrementCA(gdf=gdf, state_attr="mystate")
         ca.create_neighborhood(strategy=Queen, use_index=True)

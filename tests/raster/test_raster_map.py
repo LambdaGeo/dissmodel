@@ -15,7 +15,7 @@ import numpy as np
 
 from dissmodel.core import Environment
 from dissmodel.geo.raster.backend import RasterBackend
-from dissmodel.geo import make_raster_grid
+from dissmodel.geo import raster_grid
 from dissmodel.visualization.raster_map import RasterMap
 
 
@@ -31,7 +31,7 @@ def headless(monkeypatch):
 def backend():
     uso = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.int32)
     alt = np.linspace(0, 1, 9, dtype=np.float32).reshape(3, 3)
-    return make_raster_grid(rows=3, cols=3, attrs={"uso": uso, "alt": alt})
+    return raster_grid(rows=3, cols=3, attrs={"uso": uso, "alt": alt})
 
 
 # ══════════════════════════════════════════════════════════════════════════════

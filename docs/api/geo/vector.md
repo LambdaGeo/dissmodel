@@ -16,12 +16,12 @@ Vector substrate classes and utilities backed by GeoDataFrame.
       members:
         - CellularAutomaton
 
-::: dissmodel.geo.vector.regular_grid
+::: dissmodel.geo.vector.vector_grid
     options:
       show_source: true
       show_root_heading: true
       members:
-        - regular_grid
+        - vector_grid
         - parse_idx
 
 ::: dissmodel.geo.vector.fill

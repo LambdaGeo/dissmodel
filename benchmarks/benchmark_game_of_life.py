@@ -30,8 +30,8 @@ from dissmodel.core import Environment
 from dissmodel.geo.vector.cellular_automaton import CellularAutomaton
 from dissmodel.geo.raster.backend import RasterBackend
 from dissmodel.geo.raster.cellular_automaton import RasterCellularAutomaton
-from dissmodel.geo import regular_grid
-from dissmodel.geo import make_raster_grid
+from dissmodel.geo import vector_grid
+from dissmodel.geo import raster_grid
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -76,14 +76,14 @@ def make_initial_state(rows: int, cols: int, seed: int = 42) -> np.ndarray:
 
 def make_vector_grid(rows: int, cols: int, seed: int = 42) -> gpd.GeoDataFrame:
     state = make_initial_state(rows, cols, seed).ravel().astype(int)
-    gdf   = regular_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
+    gdf   = vector_grid(dimension=(cols, rows), resolution=1, attrs={"state": 0})
     gdf["state"] = state
     return gdf
 
 
-def make_raster_grid_gol(rows: int, cols: int, seed: int = 42) -> RasterBackend:
+def raster_grid_gol(rows: int, cols: int, seed: int = 42) -> RasterBackend:
     state = make_initial_state(rows, cols, seed)
-    return make_raster_grid(rows=rows, cols=cols, attrs={"state": state})
+    return raster_grid(rows=rows, cols=cols, attrs={"state": state})
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -124,7 +124,7 @@ def run_vector(rows: int, cols: int, steps: int, seed: int = 42) -> BenchResult:
 
 
 def run_raster(rows: int, cols: int, steps: int, seed: int = 42) -> BenchResult:
-    b   = make_raster_grid_gol(rows, cols, seed)
+    b   = raster_grid_gol(rows, cols, seed)
     env = Environment(start_time=1, end_time=steps)
     GameOfLifeRaster(backend=b)
 

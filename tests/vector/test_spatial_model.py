@@ -11,7 +11,7 @@ import geopandas as gpd
 from libpysal.weights import Queen, Rook
 
 from dissmodel.core import Environment
-from dissmodel.geo import regular_grid
+from dissmodel.geo import vector_grid
 from dissmodel.geo.vector.spatial_model import SpatialModel
 
 
@@ -59,12 +59,12 @@ def default_env():
 
 @pytest.fixture
 def grid_3x3():
-    return regular_grid(dimension=(3, 3), resolution=1, attrs={"state": 0, "count": 0})
+    return vector_grid(dimension=(3, 3), resolution=1, attrs={"state": 0, "count": 0})
 
 
 @pytest.fixture
 def grid_5x5():
-    return regular_grid(dimension=(5, 5), resolution=1, attrs={"state": 0})
+    return vector_grid(dimension=(5, 5), resolution=1, attrs={"state": 0})
 
 
 # ══════════════════════════════════════════════════════════════════════════════

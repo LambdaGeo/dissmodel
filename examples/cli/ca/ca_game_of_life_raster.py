@@ -13,14 +13,14 @@ Usage
 from __future__ import annotations
 
 from dissmodel.core import Environment
-from dissmodel.geo import make_raster_grid
+from dissmodel.geo import raster_grid
 from dissmodel.models.ca.game_of_life_raster import GameOfLife
 from dissmodel.visualization.raster_map import RasterMap
 
 # ---------------------------------------------------------------------------
 # Setup
 # ---------------------------------------------------------------------------
-b = make_raster_grid(rows=1000, cols=1000, attrs={"state": 0})
+b = raster_grid(rows=1000, cols=1000, attrs={"state": 0})
 
 env = Environment(start_time=0, end_time=10)
 

@@ -158,8 +158,8 @@ def _fill_pattern(
     Notes
     -----
     Cell IDs follow the ``'row-col'`` (``y-x``) convention used by
-    :func:`~dissmodel.geo.regular_grid.regular_grid` and
-    :func:`~dissmodel.geo.regular_grid.parse_idx`.
+    :func:`~dissmodel.geo.vector_grid.vector_grid` and
+    :func:`~dissmodel.geo.vector_grid.parse_idx`.
     """
     n_rows = len(pattern)
     n_cols = len(pattern[0]) if n_rows > 0 else 0
