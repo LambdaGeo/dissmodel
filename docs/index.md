@@ -7,6 +7,10 @@ Developed by the [LambdaGeo](https://github.com/LambdaGeo) group at the Federal 
 it provides a unified environment for building **Cellular Automata (CA)** and **System Dynamics (SysDyn)** models
 on top of the Python geospatial ecosystem.
 
+Inspired by the [TerraME](http://www.terrame.org/) framework, DisSModel brings the same modeling
+expressiveness to Python — replacing the TerraLib/Lua stack with GeoPandas, NumPy, and Salabim,
+while remaining fully interoperable with the broader Python data science ecosystem.
+
 ```bash
 pip install dissmodel
 ```
@@ -15,15 +19,9 @@ pip install dissmodel
 
 ## Why DisSModel?
 
-DisSModel was designed as a modern, Pythonic alternative to the [TerraME](http://www.terrame.org/) framework,
-replacing the TerraLib/Lua stack with the standardized GeoPandas/Python stack.
-This transition gives researchers direct access to the full Python data science ecosystem
-while maintaining the modeling expressiveness required for Land Use and Cover Change (LUCC) applications.
-
-**Core objectives:**
-
 - **Multi-paradigm support** — Cellular Automata, System Dynamics, and Agent-Based Models in a unified environment
-- **Geospatial ecosystem integration** — GeoPandas, libpysal, and rasterstats for advanced spatial operations
+- **Dual-substrate architecture** — vector (GeoDataFrame) for spatial expressiveness, raster (NumPy) for high-performance vectorized computation
+- **Geospatial ecosystem integration** — GeoPandas, libpysal, rasterio, and rasterstats for advanced spatial operations
 - **Open science and reproducibility** — open-source, installable via PyPI, examples included
 - **Standardized implementation** — pure Python lowers the barrier for interdisciplinary collaboration
 
@@ -36,9 +34,30 @@ DisSModel is organized into four modules:
 | Module | Description |
 |:---|:---|
 | `dissmodel.core` | Simulation clock and execution lifecycle powered by [Salabim](https://www.salabim.org/) |
-| `dissmodel.geo` | Spatial data structures — grid generation, fill strategies, neighborhood |
+| `dissmodel.geo` | Spatial data structures — dual-substrate design (vector + raster) |
 | `dissmodel.models` | Ready-to-use CA and SysDyn reference implementations |
-| `dissmodel.visualization` | Observer-based visualization — `Chart`, `Map`, `display_inputs`, `@track_plot` |
+| `dissmodel.visualization` | Observer-based visualization — `Chart`, `Map`, `RasterMap`, `display_inputs` |
+
+### `dissmodel.geo` — Dual Substrate
+
+The `geo` module provides two independent spatial substrates that share the same simulation clock:
+
+**Vector substrate** (`dissmodel.geo.vector`) — backed by GeoDataFrame. Supports irregular
+geometries, direct GIS integration, and libpysal neighbourhoods (Queen, Rook).
+Use for models that require spatial joins, real-world projections, or interoperability
+with existing GIS workflows.
+
+**Raster substrate** (`dissmodel.geo.raster`) — backed by `RasterBackend` (NumPy 2D arrays).
+Replaces cell-by-cell iteration with fully vectorized operations (`shift2d`, `focal_sum`,
+`neighbor_contact`). At 10,000 cells, the raster substrate is **~4,500× faster** than the
+vector substrate.
+
+| | Vector | Raster |
+|---|---|---|
+| Data structure | GeoDataFrame | NumPy 2D array (`RasterBackend`) |
+| Neighbourhood | Queen / Rook (libpysal) | Moore / Von Neumann (shift2d) |
+| Rule pattern | `rule(idx)` per cell | `rule(arrays) → dict` vectorized |
+| Performance @ 10k cells | ~2,700 ms/step | ~0.6 ms/step |
 
 ---
 
@@ -57,7 +76,7 @@ Chart(show_legend=True)
 env.run(30)
 ```
 
-### Cellular Automaton
+### Cellular Automaton — Vector
 
 ```python
 from dissmodel.core import Environment
@@ -69,6 +88,23 @@ gdf = vector_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FO
 env = Environment(end_time=20)
 fire = FireModel(gdf=gdf)
 fire.initialize()
+env.run()
+```
+
+### Cellular Automaton — Raster
+
+```python
+from dissmodel.core import Environment
+from dissmodel.geo.raster.regular_grid import raster_grid
+from dissmodel.models.ca import GameOfLifeRaster
+from dissmodel.visualization.raster_map import RasterMap
+
+backend = raster_grid(rows=100, cols=100, attrs={"state": 0})
+
+env = Environment(end_time=20)
+model = GameOfLifeRaster(backend=backend)
+model.initialize()
+RasterMap(backend=backend, band="state")
 env.run()
 ```
 
@@ -128,7 +164,9 @@ DisSModel builds on well-established, industry-standard libraries:
 |:---|:---|
 | [GeoPandas](https://geopandas.org/) | Vector data and GeoDataFrame operations |
 | [Salabim](https://www.salabim.org/) | Discrete event simulation engine |
+| [NumPy](https://numpy.org/) | Vectorized array operations — raster substrate |
 | [libpysal](https://pysal.org/libpysal/) | Spatial weights and neighborhood analysis |
+| [rasterio](https://rasterio.readthedocs.io/) | GeoTIFF I/O |
 | [rasterstats](https://pythonhosted.org/rasterstats/) | Raster/vector zonal statistics |
 | [Shapely](https://shapely.readthedocs.io/) | Geometric operations |
 | [Matplotlib](https://matplotlib.org/) | Time-series and spatial visualization |

@@ -66,6 +66,7 @@ nav:
   - API Reference:
     - Core: api/core.md
     - Geo:
+      - Overview:  api/geo/index.md   
       - Vector: api/geo/vector.md
       - Raster:  api/geo/raster.md
     - Visualization: api/visualization.md
