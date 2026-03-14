@@ -37,6 +37,8 @@ extra_javascript:
 nav:
   - Home: index.md
   - Getting Started: getting_started.md
+  - Why DisSModel?: why_dissmodel.md   
+
 
   - Models:
     - Cellular Automata:
