@@ -177,6 +177,6 @@ if run_btn:
 
 ::: dissmodel.visualization.Chart
 
-::: dissmodel.visualization.map.Map
+::: dissmodel.visualization.Map
 
-::: dissmodel.visualization.raster_map.RasterMap
+::: dissmodel.visualization.RasterMap

@@ -8,8 +8,15 @@ Supported render targets
 ------------------------
 1. **Streamlit**   — ``plot_area=st.empty()``
 2. **Jupyter**     — detected automatically
-3. **Interactive** — ``RASTER_MAP_INTERACTIVE=1`` (TkAgg / Qt)
-4. **Headless**    — saves PNGs to ``raster_map_frames/`` (default)
+3. **Interactive** — matplotlib window (TkAgg / Qt), used when a display
+                     is available
+4. **Headless**    — saves PNGs to ``raster_map_frames/`` when no display
+                     is detected or ``save_frames=True``
+
+The component does NOT call ``matplotlib.use()`` at import time — the
+backend is left to matplotlib's own detection. This prevents side effects
+when ``RasterMap`` is imported alongside other visualization components
+(e.g. via ``dissmodel.visualization.__init__``).
 
 Usage examples
 --------------
@@ -41,27 +48,17 @@ O ``backend.nodata_mask`` é derivado automaticamente pelo RasterBackend:
 """
 from __future__ import annotations
 
-import os
 import pathlib
 from typing import Any
 
 import matplotlib
-if os.environ.get("RASTER_MAP_INTERACTIVE", "0") == "1":
-    pass
-else:
-    matplotlib.use("Agg")
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import matplotlib.patches
 
 from dissmodel.core import Model
-from dissmodel.visualization._utils import is_notebook
-
-
-def _is_interactive() -> bool:
-    return matplotlib.get_backend().lower() not in ("agg", "cairo", "svg", "pdf", "ps")
+from dissmodel.visualization._utils import is_notebook, is_interactive_backend
 
 
 def _get_nodata_mask(backend) -> np.ndarray | None:
@@ -159,6 +156,7 @@ class RasterMap(Model):
         interval:        float            = 0.5,
         plot_area:       Any              = None,
         auto_mask:       bool             = True,
+        save_frames:     bool             = False,
         # categorical
         color_map:       dict[int, str] | None = None,
         labels:          dict[int, str] | None = None,
@@ -181,6 +179,7 @@ class RasterMap(Model):
         self.interval       = interval
         self.plot_area      = plot_area
         self.auto_mask      = auto_mask
+        self.save_frames    = save_frames
         self.color_map      = color_map
         self.labels         = labels or {}
         self.cmap           = cmap
@@ -320,18 +319,20 @@ class RasterMap(Model):
             display(fig)
             plt.close(fig)
 
-        elif self.pause and _is_interactive():
-            plt.pause(self.interval)
-            if step == getattr(self.env, "end_time", step):
-                input("Simulation complete — press Enter to close...")
-                plt.close("all")
-
-        else:
+        elif self.save_frames or not is_interactive_backend():
             out_dir = pathlib.Path("raster_map_frames")
             out_dir.mkdir(exist_ok=True)
             fname = out_dir / f"{self.band}_step_{int(step):03d}.png"
             fig.savefig(fname, dpi=100, bbox_inches="tight",
                         facecolor=fig.get_facecolor())
             plt.close(fig)
-            if int(step) % 10 == 0 or step == getattr(self.env, "end_time", step):
+            end_time = getattr(self.env, "end_time", step)
+            if int(step) % 10 == 0 or step == end_time:
                 print(f"  RasterMap [{self.band}] step {int(step):3d} → {fname}")
+
+        else:
+            if self.pause:
+                plt.pause(self.interval)
+            end_time = getattr(self.env, "end_time", step)
+            if step == end_time:
+                plt.show()
