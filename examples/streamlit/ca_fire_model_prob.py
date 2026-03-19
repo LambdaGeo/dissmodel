@@ -26,7 +26,7 @@ from dissmodel.geo import vector_grid
 from dissmodel.models.ca import FireModelProb
 from dissmodel.models.ca.fire_model import FireState
 from dissmodel.visualization import display_inputs
-from dissmodel.visualization.map import Map
+from dissmodel.visualization import Map
 
 # ---------------------------------------------------------------------------
 # Page config

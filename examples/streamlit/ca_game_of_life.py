@@ -22,7 +22,7 @@ from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
 from dissmodel.models.ca.game_of_life import PATTERNS
-from dissmodel.visualization.map import Map
+from dissmodel.visualization import Map
 
 # ---------------------------------------------------------------------------
 # Page config

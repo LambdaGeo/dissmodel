@@ -15,7 +15,7 @@ from __future__ import annotations
 from dissmodel.core import Environment
 from dissmodel.geo import raster_grid
 from dissmodel.models.ca.game_of_life_raster import GameOfLife
-from dissmodel.visualization.raster_map import RasterMap
+from dissmodel.visualization.raster.raster_map import RasterMap
 
 # ---------------------------------------------------------------------------
 # Setup

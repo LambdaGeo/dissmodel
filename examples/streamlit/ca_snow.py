@@ -25,7 +25,7 @@ import streamlit as st
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
 from dissmodel.models.ca.snow import Snow, SnowState
-from dissmodel.visualization.map import Map
+from dissmodel.visualization import Map
 from dissmodel.visualization.widgets import display_inputs
 
 # ---------------------------------------------------------------------------

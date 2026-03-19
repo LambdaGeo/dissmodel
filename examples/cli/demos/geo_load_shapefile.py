@@ -13,7 +13,7 @@ from __future__ import annotations
 import geopandas as gpd
 
 from dissmodel.core import Environment
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.vector.map import Map
 
 # ---------------------------------------------------------------------------
 # Setup
