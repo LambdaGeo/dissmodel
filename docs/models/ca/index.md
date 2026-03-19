@@ -25,7 +25,7 @@ before running the simulation.
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.map  import Map
 
 gdf = vector_grid(dimension=(30, 30), resolution=1)
 
@@ -43,7 +43,7 @@ Subclass `CellularAutomaton` and implement the `rule(idx)` method:
 ```python
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid, fill, FillStrategy
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.map  import Map
 from libpysal.weights import Queen
 
 from dissmodel.geo.vector.cellular_automaton import CellularAutomaton

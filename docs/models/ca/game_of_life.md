@@ -13,7 +13,7 @@ from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
 
 from matplotlib.colors import ListedColormap
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.map  import Map
 
 gdf = vector_grid(dimension=(30, 30), resolution=1)
 env = Environment(end_time=20)

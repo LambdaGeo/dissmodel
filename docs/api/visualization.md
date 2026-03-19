@@ -80,7 +80,7 @@ Chart(plot_area=st.empty())
 Renders spatial data from a GeoDataFrame, updated at every simulation step.
 
 ```python
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.map  import Map
 from matplotlib.colors import ListedColormap
 
 Map(
@@ -175,8 +175,8 @@ if run_btn:
 
 ## API Reference
 
-::: dissmodel.visualization.Chart
+::: dissmodel.visualization.chart.Chart
 
-::: dissmodel.visualization.Map
+::: dissmodel.visualization.map.Map
 
-::: dissmodel.visualization.RasterMap
+::: dissmodel.visualization.raster_map.RasterMap

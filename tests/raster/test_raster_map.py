@@ -16,7 +16,7 @@ import numpy as np
 from dissmodel.core import Environment
 from dissmodel.geo.raster.backend import RasterBackend
 from dissmodel.geo import raster_grid
-from dissmodel.visualization.raster.raster_map import RasterMap
+from dissmodel.visualization.raster_map import RasterMap
 
 
 # ── force headless for all tests ──────────────────────────────────────────────
