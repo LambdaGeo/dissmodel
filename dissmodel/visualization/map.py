@@ -126,20 +126,27 @@ class Map(Model):
     # ── rendering ─────────────────────────────────────────────────────────────
 
     def _render(self, step: float) -> matplotlib.figure.Figure:
-        """Build and return the figure for the current step."""
-        if is_notebook():
-            from IPython.display import clear_output
-            clear_output(wait=True)
-            self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
-        else:
-            self.fig.clf()
-            self.ax = self.fig.add_subplot(1, 1, 1)
+            """Build and return the figure for the current step."""
+            # Verifica se é notebook OU se a figura ainda não existe (Streamlit)
+            if is_notebook() or not hasattr(self, 'fig'):
+                if is_notebook():
+                    from IPython.display import clear_output
+                    clear_output(wait=True)
+                # Cria a figura para Streamlit ou recria para Jupyter
+                self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
+            else:
+                # Reutiliza a janela em modo interativo (TkAgg/Qt)
+                self.fig.clf()
+                self.ax = self.fig.add_subplot(1, 1, 1)
 
-        self.gdf.plot(ax=self.ax, **self.plot_params)
-        self.ax.set_title(f"Map — Step {int(step)}")
-        plt.tight_layout()
-        plt.draw()
-        return self.fig
+            # Renderiza o mapa e ajusta os títulos
+            self.gdf.plot(ax=self.ax, **self.plot_params)
+            self.ax.set_title(f"Map — Step {int(step)}")
+            
+            plt.tight_layout()
+            plt.draw()
+            
+            return self.fig
 
     def _save_frame(self, fig: matplotlib.figure.Figure, step: float) -> None:
         """Save the current figure to map_frames/{column}_step_NNN.png."""
