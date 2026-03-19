@@ -17,13 +17,27 @@ Usage examples
     RasterMap(backend=b, band="uso", color_map=COLORS, labels=LABELS)
 
     # continuous — paridade com Map vetorial
+    # auto_mask=True (default) aplica o extent mask do backend automaticamente
     RasterMap(backend=b, band="f", cmap="Greens",
               scheme="equal_interval", k=5, legend=True)
 
-    # continuous — vmin/vmax explícitos
+    # continuous — vmin/vmax explícitos + mask de domínio (ex: mar na altimetria)
     RasterMap(backend=b, band="alt", cmap="terrain",
               vmin=0.0, vmax=100.0, colorbar_label="Altitude (m)",
               mask_band="uso", mask_value=3)
+
+    # desligar auto_mask se quiser o comportamento pré-v2
+    RasterMap(backend=b, band="f", auto_mask=False)
+
+Extent mask automático
+-----------------------
+Quando ``auto_mask=True`` (default), o RasterMap consulta
+``backend.nodata_mask`` antes de renderizar. Células fora do extent
+ficam transparentes sem nenhuma configuração adicional.
+
+O ``backend.nodata_mask`` é derivado automaticamente pelo RasterBackend:
+  - se existe a banda ``"mask"``: True onde mask != 0
+  - senão, usa ``nodata_value`` do backend sobre o primeiro array disponível
 """
 from __future__ import annotations
 
@@ -50,6 +64,37 @@ def _is_interactive() -> bool:
     return matplotlib.get_backend().lower() not in ("agg", "cairo", "svg", "pdf", "ps")
 
 
+def _get_nodata_mask(backend) -> np.ndarray | None:
+    """
+    Deriva a extent mask do backend sem exigir que o backend implemente
+    um atributo específico — funciona com qualquer RasterBackend existente.
+
+    Prioridade:
+    1. backend.nodata_mask  — se o backend já expõe a propriedade
+    2. arrays["mask"]       — convenção dissluc (mask != 0 = válido)
+    3. nodata_value         — aplica sobre o primeiro array disponível
+    """
+    # 1. propriedade nativa (futura)
+    if hasattr(backend, "nodata_mask"):
+        mask = backend.nodata_mask
+        if mask is not None:
+            return mask
+
+    arrays = getattr(backend, "arrays", {})
+
+    # 2. banda "mask" — convenção dissluc
+    if "mask" in arrays:
+        return arrays["mask"] != 0
+
+    # 3. nodata_value sobre o primeiro array
+    nodata = getattr(backend, "nodata_value", None)
+    if nodata is not None and arrays:
+        first = next(iter(arrays.values()))
+        return first != nodata
+
+    return None
+
+
 class RasterMap(Model):
     """
     Visualization model for RasterBackend.
@@ -69,6 +114,10 @@ class RasterMap(Model):
         Seconds between steps in interactive mode. Default: ``0.5``.
     plot_area : st.empty() | None
         Streamlit placeholder.
+    auto_mask : bool
+        Apply the backend's extent mask automatically so pixels outside
+        the study area are transparent. Default: ``True``.
+        Set to ``False`` to restore the pre-v2 behaviour.
 
     Categorical mode  (``color_map`` provided)
     -------------------------------------------
@@ -86,8 +135,7 @@ class RasterMap(Model):
         ``"equal_interval"`` — divide [min, max] of valid data into ``k`` classes.
         ``"quantiles"``      — p2–p98 of valid data, robust to outliers.
     k : int
-        Number of colour classes for ``scheme="equal_interval"``.
-        Analogous to ``k`` in the vector Map. Default: ``5``.
+        Number of colour classes for ``scheme="equal_interval"``. Default: ``5``.
     vmin, vmax : float | None
         Bounds for ``scheme="manual"``.
     legend : bool
@@ -95,15 +143,10 @@ class RasterMap(Model):
     colorbar_label : str
         Colorbar label. Default: ``band``.
     mask_band : str | None
-        Array used to mask cells.
+        Additional domain mask (e.g. mask sea cells for altimetry).
+        Applied on top of the automatic extent mask.
     mask_value : int | float | None
         Value in ``mask_band`` to mask.
-
-    Notes
-    -----
-    NaN / Inf cells — including pixels outside the study extent — are
-    rendered as fully transparent so they never inherit the colormap's
-    "under" colour.
     """
 
     def setup(
@@ -115,6 +158,7 @@ class RasterMap(Model):
         pause:           bool             = True,
         interval:        float            = 0.5,
         plot_area:       Any              = None,
+        auto_mask:       bool             = True,
         # categorical
         color_map:       dict[int, str] | None = None,
         labels:          dict[int, str] | None = None,
@@ -136,6 +180,7 @@ class RasterMap(Model):
         self.pause          = pause
         self.interval       = interval
         self.plot_area      = plot_area
+        self.auto_mask      = auto_mask
         self.color_map      = color_map
         self.labels         = labels or {}
         self.cmap           = cmap
@@ -147,6 +192,11 @@ class RasterMap(Model):
         self.colorbar_label = colorbar_label or band
         self.mask_band      = mask_band
         self.mask_value     = mask_value
+
+        # resolve extent mask once at setup — not on every frame
+        self._extent_mask: np.ndarray | None = (
+            _get_nodata_mask(backend) if auto_mask else None
+        )
 
     # ── rendering ─────────────────────────────────────────────────────────────
 
@@ -173,15 +223,34 @@ class RasterMap(Model):
         plt.tight_layout()
         return fig
 
+    def _apply_masks(self, data: np.ndarray) -> np.ma.MaskedArray:
+        """
+        Aplica todas as máscaras em ordem e retorna um MaskedArray:
+        1. extent mask automático (auto_mask=True)
+        2. mask_band / mask_value  (domínio, ex: mar para altimetria)
+        3. NaN / Inf residuais
+        """
+        # 1. extent mask — pixels fora do estudo
+        if self._extent_mask is not None:
+            data = np.where(self._extent_mask, data, np.nan)
+
+        # 2. domain mask — ex: mascarar mar na visualização de altimetria
+        if self.mask_band is not None and self.mask_value is not None:
+            mask_arr = self.backend.arrays.get(self.mask_band)
+            if mask_arr is not None:
+                data = np.where(mask_arr == self.mask_value, np.nan, data)
+
+        # 3. cobre NaN / Inf (inclui os inseridos pelos passos acima)
+        return np.ma.masked_invalid(data)
+
     def _render_categorical(self, ax, arr: np.ndarray) -> None:
         vals = sorted(self.color_map)
         cmap = mcolors.ListedColormap([self.color_map[v] for v in vals])
         norm = mcolors.BoundaryNorm(
             [v - 0.5 for v in vals] + [vals[-1] + 0.5], cmap.N
         )
-        # NaN → transparent
-        data = np.ma.masked_invalid(arr.astype(float))
         cmap.set_bad(color="white", alpha=0)
+        data = self._apply_masks(arr.astype(float))
 
         ax.imshow(data, cmap=cmap, norm=norm, aspect="equal", interpolation="nearest")
 
@@ -195,29 +264,16 @@ class RasterMap(Model):
             ax.legend(handles=patches, loc="lower right", fontsize=7, framealpha=0.7)
 
     def _render_continuous(self, ax, arr: np.ndarray) -> None:
-        data = arr.astype(float)
-
-        # 1. máscara explícita de no-data (ex: células de mar)
-        if self.mask_band is not None and self.mask_value is not None:
-            mask_arr = self.backend.arrays.get(self.mask_band)
-            if mask_arr is not None:
-                data = np.where(mask_arr == self.mask_value, np.nan, data)
-
-        # 2. mascara NaN/Inf — cobre pixels fora do extent
-        data = np.ma.masked_invalid(data)
-
-        # 3. colormap com células mascaradas transparentes
-        cmap = plt.get_cmap(self.cmap).copy()
+        data  = self._apply_masks(arr.astype(float))
+        cmap  = plt.get_cmap(self.cmap).copy()
         cmap.set_bad(color="white", alpha=0)
 
-        # 4. limites da escala de cor
-        valid = data.compressed()   # apenas valores não mascarados
+        valid = data.compressed()
 
         if len(valid) == 0:
             vmin, vmax = 0.0, 1.0
 
         elif self.scheme == "equal_interval":
-            # divide [min, max] em k classes iguais — análogo ao Map vetorial
             vmin = float(valid.min())
             vmax = float(valid.max())
             if vmin != vmax and self.k > 1:
@@ -228,7 +284,7 @@ class RasterMap(Model):
                 if self.legend:
                     plt.colorbar(im, ax=ax, label=self.colorbar_label,
                                  fraction=0.03, pad=0.02)
-                return   # saída antecipada — norm já aplicado
+                return
 
         elif self.scheme == "quantiles":
             vmin = float(np.percentile(valid, 2))
