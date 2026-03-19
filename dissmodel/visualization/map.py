@@ -10,35 +10,6 @@ Supported render targets
 2. **Jupyter**     — detected automatically
 3. **Interactive** — matplotlib window (TkAgg / Qt)
 4. **Headless**    — saves PNGs to ``map_frames/`` (default fallback)
-
-The headless fallback means the component never raises ``RuntimeError``
-in CI or server environments — it simply writes one PNG per step.
-
-Usage examples
---------------
-    # basic
-    Map(gdf=grid, plot_params={"column": "state", "cmap": "viridis"})
-
-    # with legend and classification scheme
-    Map(gdf=grid, plot_params={
-        "column": "f",
-        "cmap":   "Greens",
-        "scheme": "equal_interval",
-        "k":      5,
-        "legend": True,
-    })
-
-    # Streamlit
-    plot_area = st.empty()
-    Map(gdf=grid, plot_params={"column": "uso"}, plot_area=plot_area)
-
-    # force frame saving even in interactive mode
-    Map(gdf=grid, plot_params={"column": "uso"}, save_frames=True)
-
-Notes
------
-Analogous to ``RasterMap`` for vector data. Both components share the
-same rendering targets and the same ``save_frames`` / headless behaviour.
 """
 from __future__ import annotations
 
@@ -59,37 +30,22 @@ class Map(Model):
     """
     Simulation model that renders a live choropleth map of a GeoDataFrame.
 
-    Extends :class:`~dissmodel.core.Model` and redraws the map at every
-    simulation step.
-
     Parameters
     ----------
     gdf : geopandas.GeoDataFrame
-        GeoDataFrame to render. Updated in-place by the simulation models
-        sharing the same reference.
+        GeoDataFrame to render.
     plot_params : dict
-        Keyword arguments forwarded to :meth:`GeoDataFrame.plot`
-        (e.g. ``column``, ``cmap``, ``scheme``, ``legend``).
+        Keyword arguments forwarded to :meth:`GeoDataFrame.plot`.
     figsize : tuple[int, int]
         Figure size in inches. Default: ``(10, 6)``.
     pause : bool
         Call ``plt.pause()`` after each update in interactive mode.
-        Default: ``True``.
     interval : float
         Seconds passed to ``plt.pause()``. Default: ``0.01``.
     plot_area : st.empty() | None
         Streamlit placeholder. Default: ``None``.
     save_frames : bool
-        If ``True``, save one PNG per step to ``map_frames/`` regardless
-        of the rendering environment. Default: ``False``.
-
-    Notes
-    -----
-    **Headless / CI behaviour** — when no interactive backend is available
-    and ``plot_area`` is ``None`` and the code is not running in a notebook,
-    the component automatically saves PNGs to ``map_frames/`` instead of
-    raising an error. This makes it safe to use in CI pipelines and remote
-    servers without a display.
+        Save one PNG per step to ``map_frames/``. Default: ``False``.
 
     Examples
     --------
@@ -98,18 +54,15 @@ class Map(Model):
     >>> env.run()
     """
 
-    fig: matplotlib.figure.Figure
-    ax:  matplotlib.axes.Axes
-
     def setup(
         self,
         gdf:         gpd.GeoDataFrame,
         plot_params: dict[str, Any],
-        figsize:     tuple[int, int]  = (10, 6),
-        pause:       bool             = True,
-        interval:    float            = 0.01,
-        plot_area:   Any              = None,
-        save_frames: bool             = False,
+        figsize:     tuple[int, int] = (10, 6),
+        pause:       bool            = True,
+        interval:    float           = 0.01,
+        plot_area:   Any             = None,
+        save_frames: bool            = False,
     ) -> None:
         self.gdf         = gdf
         self.plot_params = plot_params
@@ -119,37 +72,31 @@ class Map(Model):
         self.plot_area   = plot_area
         self.save_frames = save_frames
 
-        # pre-create figure for interactive mode to avoid flicker
-        if not is_notebook() and plot_area is None:
-            self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
+        # always create fig so _render() can always call self.fig.clf()
+        self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
+
+        # close immediately if not needed for interactive mode
+        if is_notebook() or plot_area is not None:
+            plt.close(self.fig)
 
     # ── rendering ─────────────────────────────────────────────────────────────
 
     def _render(self, step: float) -> matplotlib.figure.Figure:
-            """Build and return the figure for the current step."""
-            # Verifica se é notebook OU se a figura ainda não existe (Streamlit)
-            if is_notebook() or not hasattr(self, 'fig'):
-                if is_notebook():
-                    from IPython.display import clear_output
-                    clear_output(wait=True)
-                # Cria a figura para Streamlit ou recria para Jupyter
-                self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
-            else:
-                # Reutiliza a janela em modo interativo (TkAgg/Qt)
-                self.fig.clf()
-                self.ax = self.fig.add_subplot(1, 1, 1)
+        if is_notebook() or self.plot_area is not None:
+            # create a fresh figure every step
+            self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
+        else:
+            # reuse existing figure — clear and redraw
+            self.fig.clf()
+            self.ax = self.fig.add_subplot(1, 1, 1)
 
-            # Renderiza o mapa e ajusta os títulos
-            self.gdf.plot(ax=self.ax, **self.plot_params)
-            self.ax.set_title(f"Map — Step {int(step)}")
-            
-            plt.tight_layout()
-            plt.draw()
-            
-            return self.fig
+        self.gdf.plot(ax=self.ax, **self.plot_params)
+        self.ax.set_title(f"Map — Step {int(step)}")
+        plt.tight_layout()
+        plt.draw()
+        return self.fig
 
     def _save_frame(self, fig: matplotlib.figure.Figure, step: float) -> None:
-        """Save the current figure to map_frames/{column}_step_NNN.png."""
         col     = self.plot_params.get("column", "map")
         out_dir = pathlib.Path("map_frames")
         out_dir.mkdir(exist_ok=True)
@@ -164,27 +111,27 @@ class Map(Model):
     # ── execute ───────────────────────────────────────────────────────────────
 
     def execute(self) -> None:
-        """Redraw the map for the current simulation step."""
         step = self.env.now()
         fig  = self._render(step)
 
-        # ── Streamlit ─────────────────────────────────────────────────────────
         if self.plot_area is not None:
+            # Streamlit
             self.plot_area.pyplot(fig)
             plt.close(fig)
 
-        # ── Jupyter ───────────────────────────────────────────────────────────
         elif is_notebook():
-            from IPython.display import display
+            # Jupyter
+            from IPython.display import clear_output, display
+            clear_output(wait=True)
             display(fig)
             plt.close(fig)
 
-        # ── save frames (explicit or headless fallback) ───────────────────────
         elif self.save_frames or not is_interactive_backend():
+            # headless / CI
             self._save_frame(fig, step)
 
-        # ── interactive window ────────────────────────────────────────────────
         else:
+            # interactive window
             if self.pause:
                 plt.pause(self.interval)
             end_time = getattr(self.env, "end_time", step)
