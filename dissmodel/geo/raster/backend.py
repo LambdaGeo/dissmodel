@@ -33,7 +33,6 @@ from scipy.ndimage import binary_dilation
 
 
 # Moore neighbourhood (8 directions) — framework constant, not domain-specific.
-# Models import from here; projects do not need to redefine it.
 DIRS_MOORE: list[tuple[int, int]] = [
     (-1, -1), (-1, 0), (-1, 1),
     ( 0, -1),          ( 0, 1),
@@ -64,6 +63,11 @@ class RasterBackend:
     ----------
     shape : tuple[int, int]
         Grid shape as ``(rows, cols)``.
+    nodata_value : float | int | None
+        Sentinel value used to mark cells outside the study extent.
+        When provided, ``nodata_mask`` derives the extent mask automatically,
+        so ``RasterMap`` renders those cells as transparent without any extra
+        configuration. Default: ``None``.
 
     Examples
     --------
@@ -71,11 +75,44 @@ class RasterBackend:
     >>> b.set("state", np.zeros((10, 10), dtype=np.int8))
     >>> b.get("state").shape
     (10, 10)
+
+    >>> b = RasterBackend(shape=(10, 10), nodata_value=-1)
+    >>> b.nodata_mask   # True = valid cell, False = outside extent
     """
 
-    def __init__(self, shape: tuple[int, int]) -> None:
-        self.shape  = shape              # (rows, cols)
+    def __init__(
+        self,
+        shape: tuple[int, int],
+        nodata_value: float | int | None = None,
+    ) -> None:
+        self.shape        = shape
         self.arrays: dict[str, np.ndarray] = {}
+        self.nodata_value = nodata_value   # sentinel for out-of-extent cells
+
+    # ── extent mask ───────────────────────────────────────────────────────────
+
+    @property
+    def nodata_mask(self) -> np.ndarray | None:
+        """
+        Boolean mask: ``True`` = valid cell, ``False`` = outside extent / nodata.
+
+        Derived in priority order:
+        1. ``arrays["mask"]``  — explicit mask band (dissluc / coastal convention:
+                                 non-zero = valid).
+        2. ``nodata_value``    — applied over the first available array.
+        3. ``None``            — no information; ``RasterMap`` skips auto-masking.
+
+        Used by ``RasterMap`` (``auto_mask=True``) to render out-of-extent pixels
+        as transparent without any per-project configuration.
+        """
+        if "mask" in self.arrays:
+            return self.arrays["mask"] != 0
+
+        if self.nodata_value is not None and self.arrays:
+            first = next(iter(self.arrays.values()))
+            return first != self.nodata_value
+
+        return None
 
     # ── read / write ──────────────────────────────────────────────────────────
 
@@ -120,14 +157,9 @@ class RasterBackend:
         Shift ``arr`` by ``(dr, dc)`` rows/columns without wrap-around.
         Edges are filled with zero.
 
-        Equivalent to reading the neighbour in direction ``(dr, dc)`` for every
-        cell simultaneously — replaces ``forEachNeighbor`` with a vectorized
-        operation.
-
         Parameters
         ----------
         arr : np.ndarray
-            2D source array.
         dr : int
             Row offset (positive = down, negative = up).
         dc : int
@@ -137,11 +169,6 @@ class RasterBackend:
         -------
         np.ndarray
             Shifted array of the same shape as ``arr``.
-
-        Examples
-        --------
-        >>> shift2d(alt, -1, 0)   # altitude of the northern neighbour of each cell
-        >>> shift2d(alt,  1, 1)   # altitude of the south-eastern neighbour
         """
         rows, cols = arr.shape
         out = np.zeros_like(arr)
@@ -164,26 +191,16 @@ class RasterBackend:
         Parameters
         ----------
         condition : np.ndarray
-            Boolean array marking the source cells.
         neighborhood : list[tuple[int, int]] | None
-            Directions to check. ``None`` uses Moore neighbourhood via
-            ``binary_dilation`` with a 3×3 structuring element (includes the
-            cell itself). Pass ``DIRS_VON_NEUMANN`` or a custom list for other
-            neighbourhoods.
+            ``None`` uses Moore neighbourhood via ``binary_dilation``.
 
         Returns
         -------
         np.ndarray
-            Boolean array; ``True`` where a cell neighbours at least one
-            ``True`` cell in ``condition``.
-
-        Notes
-        -----
-        Equivalent to ``forEachNeighbor`` checking membership in a set.
+            Boolean array.
         """
         if neighborhood is None:
             return binary_dilation(condition.astype(bool), structure=np.ones((3, 3)))
-        # custom neighbourhood via manual shifts
         result = np.zeros_like(condition, dtype=bool)
         for dr, dc in neighborhood:
             result |= RasterBackend.shift2d(condition.astype(np.int8), dr, dc) > 0
@@ -198,19 +215,15 @@ class RasterBackend:
         Focal sum: for each cell, sum the values of ``name`` across its neighbours.
         The cell itself is not included.
 
-        Useful for counting neighbours in a given state, computing gradients, etc.
-
         Parameters
         ----------
         name : str
-            Name of the array to aggregate.
         neighborhood : list[tuple[int, int]]
-            Directions to include. Default: ``DIRS_MOORE``.
+            Default: ``DIRS_MOORE``.
 
         Returns
         -------
         np.ndarray
-            Float array with per-cell neighbour sums.
         """
         arr    = self.arrays[name]
         result = np.zeros_like(arr, dtype=float)
@@ -229,9 +242,8 @@ class RasterBackend:
         Parameters
         ----------
         mask : np.ndarray
-            Boolean array marking the cells to count.
         neighborhood : list[tuple[int, int]]
-            Directions to include. Default: ``DIRS_MOORE``.
+            Default: ``DIRS_MOORE``.
 
         Returns
         -------

@@ -21,7 +21,7 @@ from matplotlib.colors import ListedColormap
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
 from dissmodel.models.ca import GameOfLife
-from dissmodel.visualization.map import Map
+from dissmodel.visualization import Map
 
 # ---------------------------------------------------------------------------
 # Setup

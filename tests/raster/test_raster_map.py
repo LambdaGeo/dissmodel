@@ -43,18 +43,18 @@ class TestInstantiation:
     def test_categorical_mode(self, backend):
         env = Environment(start_time=1, end_time=1)
         color_map = {i: f"#{i:02x}{i:02x}{i:02x}" for i in range(1, 10)}
-        m = RasterMap(backend=backend, band="uso", color_map=color_map)
+        m = RasterMap(backend=backend, band="uso", save_frames=True, color_map=color_map)
         assert m is not None
 
     def test_continuous_mode(self, backend):
         env = Environment(start_time=1, end_time=1)
-        m = RasterMap(backend=backend, band="alt", cmap="terrain",
+        m = RasterMap(backend=backend, band="alt", save_frames=True, cmap="terrain",
                       vmin=0.0, vmax=1.0)
         assert m is not None
 
     def test_default_band(self, backend):
         env = Environment(start_time=1, end_time=1)
-        m = RasterMap(backend=backend, band="uso")
+        m = RasterMap(backend=backend, save_frames=True, band="uso")
         assert m.band == "uso"
 
 
@@ -68,12 +68,12 @@ class TestHeadlessRender:
         """RasterMap must not raise when no display is available."""
         env = Environment(start_time=1, end_time=3)
         color_map = {i: "blue" for i in range(1, 10)}
-        RasterMap(backend=backend, band="uso", color_map=color_map)
+        RasterMap(backend=backend, band="uso", save_frames=True,color_map=color_map)
         env.run()   # must complete without error
 
     def test_continuous_runs_without_display(self, backend):
         env = Environment(start_time=1, end_time=3)
-        RasterMap(backend=backend, band="alt", cmap="viridis",
+        RasterMap(backend=backend, band="alt",save_frames=True, cmap="viridis",
                   vmin=0.0, vmax=1.0)
         env.run()
 
@@ -94,7 +94,7 @@ class TestEnvironmentIntegration:
 
         env = Environment(start_time=1, end_time=3)
         IncModel(backend=backend)
-        RasterMap(backend=backend, band="uso")
+        RasterMap(backend=backend,save_frames=True, band="uso")
         env.run()
 
         # model ran 3 steps — original values 1..9, now 4..12
@@ -104,6 +104,6 @@ class TestEnvironmentIntegration:
         """RasterMap must only read arrays, never write to them."""
         original = backend.get("uso").copy()
         env = Environment(start_time=1, end_time=3)
-        RasterMap(backend=backend, band="uso")
+        RasterMap(backend=backend,save_frames=True, band="uso")
         env.run()
         np.testing.assert_array_equal(backend.get("uso"), original)

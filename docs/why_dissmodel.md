@@ -78,7 +78,7 @@ This works. But the researcher is responsible for:
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
 from dissmodel.geo.vector.model import SpatialModel
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.map  import Map
 from libpysal.weights import Queen
 
 gdf = vector_grid(dimension=(100, 100), resolution=100,

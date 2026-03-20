@@ -90,7 +90,7 @@ detects the Jupyter environment automatically and renders visualizations inline.
 from dissmodel.core import Environment
 from dissmodel.geo import regular_grid
 from dissmodel.models.ca import GameOfLife
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.map  import Map
 from matplotlib.colors import ListedColormap
 
 gdf = regular_grid(dimension=(30, 30), resolution=1)

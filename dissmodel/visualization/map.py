@@ -1,7 +1,22 @@
+"""
+dissmodel/visualization/map.py
+================================
+Visualization component for GeoDataFrame — choropleth map rendered at
+every simulation step.
+
+Supported render targets
+------------------------
+1. **Streamlit**   — ``plot_area=st.empty()``
+2. **Jupyter**     — detected automatically
+3. **Interactive** — matplotlib window (TkAgg / Qt)
+4. **Headless**    — saves PNGs to ``map_frames/`` (default fallback)
+"""
 from __future__ import annotations
 
+import pathlib
 from typing import Any
 
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.figure
 import matplotlib.axes
@@ -13,27 +28,24 @@ from dissmodel.visualization._utils import is_interactive_backend, is_notebook
 
 class Map(Model):
     """
-    Simulation model that renders a live choropleth map.
-
-    Extends :class:`~dissmodel.core.Model` and redraws the map at every
-    time step. Supports three rendering targets:
-
-    - **Streamlit** — pass a ``plot_area`` (``st.empty()``).
-    - **Jupyter** — detected automatically via :func:`is_notebook`.
-    - **Matplotlib window** — fallback for plain Python scripts.
+    Simulation model that renders a live choropleth map of a GeoDataFrame.
 
     Parameters
     ----------
     gdf : geopandas.GeoDataFrame
         GeoDataFrame to render.
     plot_params : dict
-        Keyword arguments forwarded to :meth:`GeoDataFrame.plot`
-        (e.g. ``column``, ``cmap``, ``legend``).
-    pause : bool, optional
-        If ``True``, call ``plt.pause()`` after each update, by default
-        ``True``. Required for live updates outside notebooks.
-    plot_area : any, optional
-        Streamlit ``st.empty()`` placeholder, by default ``None``.
+        Keyword arguments forwarded to :meth:`GeoDataFrame.plot`.
+    figsize : tuple[int, int]
+        Figure size in inches. Default: ``(10, 6)``.
+    pause : bool
+        Call ``plt.pause()`` after each update in interactive mode.
+    interval : float
+        Seconds passed to ``plt.pause()``. Default: ``0.01``.
+    plot_area : st.empty() | None
+        Streamlit placeholder. Default: ``None``.
+    save_frames : bool
+        Save one PNG per step to ``map_frames/``. Default: ``False``.
 
     Examples
     --------
@@ -42,95 +54,86 @@ class Map(Model):
     >>> env.run()
     """
 
-    fig: matplotlib.figure.Figure
-    ax: matplotlib.axes.Axes
-    gdf: gpd.GeoDataFrame
-    plot_params: dict[str, Any]
-    pause: bool
-    plot_area: Any
-
     def setup(
         self,
-        gdf: gpd.GeoDataFrame,
+        gdf:         gpd.GeoDataFrame,
         plot_params: dict[str, Any],
-        pause: bool = True,
-        plot_area: Any = None,
+        figsize:     tuple[int, int] = (10, 6),
+        pause:       bool            = True,
+        interval:    float           = 0.01,
+        plot_area:   Any             = None,
+        save_frames: bool            = False,
     ) -> None:
-        """
-        Configure the map.
-
-        Called automatically by salabim during component initialisation.
-
-        Parameters
-        ----------
-        gdf : geopandas.GeoDataFrame
-            GeoDataFrame to render.
-        plot_params : dict
-            Keyword arguments forwarded to :meth:`GeoDataFrame.plot`
-            (e.g. ``column``, ``cmap``, ``legend``).
-        pause : bool, optional
-            If ``True``, call ``plt.pause()`` after each update,
-            by default ``True``.
-        plot_area : any, optional
-            Streamlit ``st.empty()`` placeholder, by default ``None``.
-        """
-        self.gdf = gdf
+        self.gdf         = gdf
         self.plot_params = plot_params
-        self.pause = pause
-        self.plot_area = plot_area
+        self.figsize     = figsize
+        self.pause       = pause
+        self.interval    = interval
+        self.plot_area   = plot_area
+        self.save_frames = save_frames
 
-        if not is_notebook():
-            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 6))
+        # always create fig so _render() can always call self.fig.clf()
+        self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
 
-    def update(self, year: float, gdf: gpd.GeoDataFrame) -> None:
-        """
-        Redraw the map for a given simulation time.
+        # close immediately if not needed for interactive mode
+        if is_notebook() or plot_area is not None:
+            plt.close(self.fig)
 
-        Parameters
-        ----------
-        year : float
-            Current simulation time, displayed in the map title.
-        gdf : geopandas.GeoDataFrame
-            GeoDataFrame snapshot to render.
+    # ── rendering ─────────────────────────────────────────────────────────────
 
-        Raises
-        ------
-        RuntimeError
-            If no interactive matplotlib backend is detected and the code is
-            not running in a notebook or Streamlit context.
-        """
-        if is_notebook():
-            from IPython.display import clear_output, display
-            clear_output(wait=True)
-            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 6))
+    def _render(self, step: float) -> matplotlib.figure.Figure:
+        if is_notebook() or self.plot_area is not None:
+            # create a fresh figure every step
+            self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
         else:
+            # reuse existing figure — clear and redraw
             self.fig.clf()
             self.ax = self.fig.add_subplot(1, 1, 1)
 
-        gdf.plot(ax=self.ax, **self.plot_params)
-        self.ax.set_title(f"Map — Step {year}")
+        self.gdf.plot(ax=self.ax, **self.plot_params)
+        self.ax.set_title(f"Map — Step {int(step)}")
         plt.tight_layout()
         plt.draw()
+        return self.fig
 
-        if self.plot_area is not None:
-            self.plot_area.pyplot(self.fig)
-        elif is_notebook():
-            from IPython.display import display
-            display(self.fig)
-            plt.close(self.fig)
-        elif self.pause:
-            if is_interactive_backend():
-                plt.pause(0.01)
-                if self.env.now() == self.env.end_time:
-                    plt.show()
-            else:
-                raise RuntimeError(
-                    "No interactive matplotlib backend detected. "
-                    "On Linux, install tkinter:\n\n"
-                    "    sudo apt install python3-tk\n"
-                )
+    def _save_frame(self, fig: matplotlib.figure.Figure, step: float) -> None:
+        col     = self.plot_params.get("column", "map")
+        out_dir = pathlib.Path("map_frames")
+        out_dir.mkdir(exist_ok=True)
+        fname = out_dir / f"{col}_step_{int(step):03d}.png"
+        fig.savefig(fname, dpi=100, bbox_inches="tight",
+                    facecolor=fig.get_facecolor())
+        plt.close(fig)
+        end_time = getattr(self.env, "end_time", step)
+        if int(step) % 10 == 0 or step == end_time:
+            print(f"  Map [{col}] step {int(step):3d} → {fname}")
 
+    # ── execute ───────────────────────────────────────────────────────────────
 
     def execute(self) -> None:
-        """Redraw the map for the current simulation time step."""
-        self.update(year=self.env.now(), gdf=self.gdf)
+        step = self.env.now()
+        fig  = self._render(step)
+
+        if self.plot_area is not None:
+            # Streamlit
+            self.plot_area.pyplot(fig)
+            plt.close(fig)
+
+        elif is_notebook():
+            # Jupyter
+            from IPython.display import clear_output, display
+            clear_output(wait=True)
+            display(fig)
+            plt.close(fig)
+
+        elif self.save_frames or not is_interactive_backend():
+            # headless / CI
+            self._save_frame(fig, step)
+
+        else:
+            # interactive window
+            if self.pause:
+                plt.pause(self.interval)
+            end_time = getattr(self.env, "end_time", step)
+            if step == end_time:
+                plt.show()
