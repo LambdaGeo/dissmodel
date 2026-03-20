@@ -6,6 +6,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.0] - 2026-04
+
+### Added
+
+#### Sync models
+- `SyncSpatialModel` — `SpatialModel` with automatic `_past` snapshot semantics,
+  equivalent to TerraME's `cs:synchronize()`. Declare `self.land_use_types` in
+  `setup()` and `<col>_past` columns are managed automatically.
+- `SyncRasterModel` — raster analogue of `SyncSpatialModel`. Copies each array in
+  `land_use_types` to `<n>_past` in the `RasterBackend` before and after each step.
+- Both expose a public `synchronize()` method that can also be called manually.
+
+#### I/O — `dissmodel.geo.raster.io`
+- `shapefile_to_raster_backend` — loads any GeoPandas-supported vector format
+  (Shapefile, GeoJSON, GeoPackage, ZIP) and rasterizes attribute columns into a
+  `RasterBackend`. Adds a `"mask"` band marking valid cells. Supports
+  `nodata_value` to distinguish out-of-extent cells from valid zero values.
+- `save_raster_backend` — convenience wrapper that writes all (or selected) arrays
+  to a GeoTIFF without requiring a `band_spec`.
+- `load_geotiff` and `save_geotiff` updated with full docstrings and support for
+  `.zip` archives containing a single GeoTIFF.
+
+#### `RasterMap`
+- `scheme` parameter: `"manual"` (default), `"equal_interval"`, `"quantiles"`.
+- `k` — number of colour classes for `equal_interval`. Default: `5`.
+- `legend` — show or hide the colorbar. Default: `True`.
+- `save_frames` — force PNG output even in interactive mode.
+- `auto_mask` — automatically applies the `"mask"` band from the backend so
+  out-of-extent cells are transparent. Default: `True`.
+
+#### `Map`
+- `figsize`, `interval`, `save_frames` parameters.
+- Headless fallback: saves PNGs to `map_frames/` when no display is available.
+
+### Changed
+- `RasterMap` no longer calls `matplotlib.use()` at import time, preventing side
+  effects when imported alongside other visualization components.
+- `make_raster_grid()` renamed to `raster_grid()`. Old name kept as a
+  `DeprecationWarning` alias and will be removed in v0.4.0.
+
+### Fixed
+- `Map`: fixed `AttributeError: 'Map' object has no attribute 'fig'` when used
+  with Streamlit (`plot_area=st.empty()`).
+- `Map`: no longer raises `RuntimeError` when no display is available — falls back
+  to saving PNGs to `map_frames/`.
+- `RasterMap`: fixed `plt.close("all")` closing all figures when multiple
+  `RasterMap` instances are active. Each instance now maintains its own persistent
+  figure and updates independently.
+
+---
+
 ## [0.2.1] - 2026-03
 
 ### Changed

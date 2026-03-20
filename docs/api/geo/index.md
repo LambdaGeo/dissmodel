@@ -40,7 +40,7 @@ no conversion step.
 ```python
 import geopandas as gpd
 from dissmodel.core import Model, Environment
-from dissmodel.visualization.map import Map
+from dissmodel.visualization.map  import Map
 
 gdf = gpd.read_file("area.shp")
 gdf.set_index("object_id", inplace=True)

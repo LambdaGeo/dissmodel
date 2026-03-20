@@ -16,3 +16,6 @@ from .raster.band_spec          import BandSpec   # se tiver classe exportável
 
 # raster io — opcional, não importa por padrão (requer rasterio)
 # from .raster.io import load_geotiff, save_geotiff
+
+from .vector.sync_model import SyncSpatialModel
+from .raster.sync_model import SyncRasterModel

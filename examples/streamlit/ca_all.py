@@ -25,7 +25,7 @@ import streamlit as st
 import dissmodel.models.ca as ca_models
 from dissmodel.core import Environment
 from dissmodel.geo import CellularAutomaton, vector_grid
-from dissmodel.visualization.map import Map
+from dissmodel.visualization import Map
 from dissmodel.visualization.widgets import display_inputs
 
 # ---------------------------------------------------------------------------
