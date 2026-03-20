@@ -200,9 +200,16 @@ class RasterMap(Model):
     # ── rendering ─────────────────────────────────────────────────────────────
 
     def _render(self, step: float) -> matplotlib.figure.Figure:
-        plt.close("all")
-        fig, ax = plt.subplots(figsize=self.figsize)
-        self.fig, self.ax = fig, ax
+        # each RasterMap owns its own figure — reuse across steps
+        # so multiple instances show as separate windows simultaneously
+        if not hasattr(self, "_fig") or self._fig is None \
+                or not plt.fignum_exists(self._fig.number):
+            self._fig, self._ax = plt.subplots(figsize=self.figsize)
+        else:
+            self._fig.clf()
+            self._ax = self._fig.add_subplot(1, 1, 1)
+
+        fig, ax = self._fig, self._ax
 
         arr = self.backend.arrays.get(self.band)
         if arr is None:
