@@ -40,32 +40,12 @@ from libpysal.weights import Queen
 from dissmodel.geo import SpatialModel
 from dissmodel.visualization import track_plot
 
-# ── Land use constants ────────────────────────────────────────────────────────
-# Kept here until coastal_dynamics is available as a dependency
 
-MANGUE                    = 1
-VEGETACAO_TERRESTRE       = 2
-MAR                       = 3
-AREA_ANTROPIZADA          = 4
-SOLO_DESCOBERTO           = 5
-SOLO_INUNDADO             = 6
-AREA_ANTROPIZADA_INUNDADA = 7
-MANGUE_MIGRADO            = 8
-MANGUE_INUNDADO           = 9
-VEG_TERRESTRE_INUNDADA    = 10
-
-USOS_INUNDADOS: list[int] = [
-    MAR, SOLO_INUNDADO, AREA_ANTROPIZADA_INUNDADA,
-    MANGUE_INUNDADO, VEG_TERRESTRE_INUNDADA,
-]
-
-REGRAS_INUNDACAO: dict[int, int] = {
-    MANGUE:              MANGUE_INUNDADO,
-    MANGUE_MIGRADO:      MANGUE_INUNDADO,
-    VEGETACAO_TERRESTRE: VEG_TERRESTRE_INUNDADA,
-    AREA_ANTROPIZADA:    AREA_ANTROPIZADA_INUNDADA,
-    SOLO_DESCOBERTO:     SOLO_INUNDADO,
-}
+from .constants import (
+    USOS_INUNDADOS,
+    REGRAS_INUNDACAO,
+    MAR,
+)
 
 @track_plot("flooded_cells", "blue")
 class FloodModel(SpatialModel):
