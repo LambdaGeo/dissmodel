@@ -179,6 +179,10 @@ class RasterBackend:
         out[rd, cd] = arr[rs, cs_]
         return out
 
+    def band_names(self) -> list[str]:
+        """Return the names of all arrays currently stored in the backend."""
+        return list(self.arrays.keys())
+
     @staticmethod
     def neighbor_contact(
         condition: np.ndarray,
