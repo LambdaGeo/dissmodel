@@ -4,67 +4,75 @@ from datetime import datetime
 from typing import Literal
 from uuid import uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class DataSource(BaseModel):
-    """Tracks the origin and integrity of an input dataset."""
-
-    type:       Literal["local", "s3", "http", "bdc_stac", "wcpms"] = "local"
+    type:       str = "local"   # 'local' | 's3' | 'http' | 'bdc_stac'
     uri:        str = ""
-    collection: str = ""   # reserved for BDC/STAC integration (post-MVP)
-    version:    str = ""   # reserved for BDC collection version
-    checksum:   str = ""   # sha256 — filled by executor.load()
-
-
+    collection: str = ""
+    version:    str = ""
+    checksum:   str = ""
+ 
+ 
 class ExperimentRecord(BaseModel):
-    """
-    Immutable provenance object for a single simulation run.
-
-    Captures everything needed to reproduce the result exactly:
-    model spec snapshot, input provenance, variable mapping, and
-    output checksums. Filled progressively by the runner and executor.
-
-    Used in both contexts:
-    - Platform: created by runner, persisted in Redis
-    - CLI: created by cli.py, used in-process only
-    """
-
-    # Identity
-    experiment_id: str      = Field(default_factory=lambda: str(uuid4()))
+    # Identidade
+    experiment_id: str      = Field(default_factory=lambda: __import__("uuid").uuid4().hex)
     created_at:    datetime = Field(default_factory=datetime.utcnow)
-
-    # Model provenance
+ 
+    # Proveniência
     model_name:    str  = ""
-    model_commit:  str  = ""   # git hash of dissmodel-configs at execution time
-    code_version:  str  = ""   # dissmodel PyPI tag (e.g. "0.1.5")
-    resolved_spec: dict = {}   # full TOML snapshot — immutable after job starts
-
-    # Input provenance
+    model_commit:  str  = ""
+    code_version:  str  = ""
+    resolved_spec: dict = {}
+ 
+    # Input
     source:       DataSource = Field(default_factory=DataSource)
-    input_format: Literal["tiff", "vector", "auto"] = "auto"
-
-    # Variable mapping — travels with the request, stored for reproducibility
-    column_map: dict = {}   # canonical → real column name (vector input)
-    band_map:   dict = {}   # canonical → real band name (raster input)
-
-    # Execution parameters — override TOML defaults per run
-    parameters: dict = {}   # resolution, n_steps, start_year, etc.
-
-    # Results
-    output_path:   str | None = None
-    output_sha256: str | None = None
-    metrics:       dict       = {}
-
-    # Lifecycle
-    status: Literal["pending", "running", "completed", "failed"] = "pending"
-    logs:   list[str] = []
-
-    def add_log(self, message: str) -> None:
-        """Append a timestamped log entry."""
-        ts = datetime.utcnow().strftime("%H:%M:%S")
-        self.logs.append(f"[{ts}] {message}")
-
+    input_format: str        = "auto"
+    column_map:   dict       = {}
+    band_map:     dict       = {}
+    parameters:   dict       = {}
+ 
+    # Output
+    output_path: str | None = None
+ 
+    artifacts: dict[str, str] = {}
+    # Ex: {"output": "sha256...", "report": "sha256...", "plot": "sha256..."}
+    # Chave "output" é a principal — usada para verificação de reprodutibilidade.
+ 
+    metrics: dict = {}
+    status:  str  = "pending"
+    logs:    list[str] = []
+ 
+    # ── compatibilidade com executors existentes ──────────────────────────────
+ 
+    @property
+    def output_sha256(self) -> str | None:
+        """Compat: retorna artifacts["output"] se existir."""
+        return self.artifacts.get("output")
+ 
+    @output_sha256.setter
+    def output_sha256(self, value: str | None) -> None:
+        """Compat: salva em artifacts["output"] — executors antigos continuam funcionando."""
+        if value is not None:
+            self.artifacts["output"] = value
+ 
+    # ── helpers ───────────────────────────────────────────────────────────────
+ 
+    def add_log(self, msg: str) -> None:
+        self.logs.append(msg)
+ 
+    def add_artifact(self, name: str, checksum: str) -> None:
+        """
+        Registra um artefato com seu checksum.
+ 
+        Uso no executor:
+            record.add_artifact("report", write_text(md, uri))
+            record.add_artifact("plot",   write_bytes(buf, uri))
+            record.add_artifact("output", write_bytes(tif, uri))
+        """
+        self.artifacts[name] = checksum
+ 
 
 class JobRequest(BaseModel):
     """Payload for POST /submit_job (platform only)."""
