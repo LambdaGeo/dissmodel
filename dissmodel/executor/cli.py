@@ -1,7 +1,7 @@
+
+# dissmodel/executor/cli.py
 from __future__ import annotations
 
-import argparse
-import importlib
 import sys
 import tomllib
 from pathlib import Path
@@ -28,32 +28,53 @@ def _parse_params(param_list: list[str] | None) -> dict:
     return params
 
 
-def _load_local_params() -> dict:
-    """
-    Load default parameters from model.toml in the current directory.
-    Returns empty dict if file not found.
-    """
-    path = Path("model.toml")
-    if not path.exists():
-        return {}
+def _load_toml(path: str) -> tuple[dict, dict]:
+    """Load parameters and full spec from a TOML file."""
     with open(path, "rb") as f:
         config = tomllib.load(f)
-    return config.get("model", {}).get("parameters", {})
+    model  = config.get("model", {})
+    params = model.get("parameters", {})
+    return params, model
+
+
+def _load_local_params(toml_path: str | None = None) -> tuple[dict, dict]:
+    """
+    Load parameters and full spec from a TOML file.
+    Uses --toml if provided, otherwise falls back to model.toml in current dir.
+    Returns (parameters, full_model_spec).
+    """
+    if toml_path:
+        if not Path(toml_path).exists():
+            print(f"TOML file not found: {toml_path}", file=sys.stderr)
+            sys.exit(1)
+        return _load_toml(toml_path)
+
+    path = Path("model.toml")
+    if not path.exists():
+        return {}, {}
+    return _load_toml(str(path))
 
 
 # ── Record factory ────────────────────────────────────────────────────────────
 
 def _build_record(args):
-    from .schemas import DataSource, ExperimentRecord
+    from dissmodel.executor.schemas import DataSource, ExperimentRecord
 
-    # TOML defaults merged with CLI overrides — CLI wins
-    params = {**_load_local_params(), **_parse_params(args.param)}
+    toml_path    = getattr(args, "toml", None)
+    params, spec = _load_local_params(toml_path)
+    params       = {**params, **_parse_params(args.param)}   # CLI overrides TOML
+
+    # land_use_types lives under spec, not parameters
+    if "land_use_types" in spec:
+        lu = spec["land_use_types"]
+        if isinstance(lu, dict):
+            spec["land_use_types"] = lu.get("types", [])
 
     record = ExperimentRecord(
         model_name    = "local",
         model_commit  = "local-cli",
         code_version  = "dev",
-        resolved_spec = {"model": {"parameters": params}},
+        resolved_spec = {"model": spec} if spec else {},
         source        = DataSource(
             type = "s3" if args.input.startswith("s3://") else "local",
             uri  = args.input,
@@ -95,7 +116,7 @@ def _cmd_run(executor_cls, args) -> None:
 
 
 def _cmd_validate(executor_cls, args) -> None:
-    from .testing import ExecutorTestHarness
+    from dissmodel.executor.testing import ExecutorTestHarness
 
     harness = ExecutorTestHarness(executor_cls)
     ok      = harness.run_contract_tests()
@@ -108,7 +129,9 @@ def _cmd_validate(executor_cls, args) -> None:
 
 
 def _cmd_show(executor_cls, args) -> None:
-    params = {**_load_local_params(), **_parse_params(getattr(args, "param", None))}
+    toml_path    = getattr(args, "toml", None)
+    params, spec = _load_local_params(toml_path)
+    params       = {**params, **_parse_params(getattr(args, "param", None))}
 
     print(f"Executor: {executor_cls.__module__}.{executor_cls.__name__}")
     if hasattr(executor_cls, "name"):
@@ -121,23 +144,39 @@ def _cmd_show(executor_cls, args) -> None:
     else:
         print("  (none — no model.toml found and no --param given)")
 
+    if spec:
+        print(f"\nSpec sections: {list(spec.keys())}")
+
 
 # ── Parser ────────────────────────────────────────────────────────────────────
 
-def _build_parser() -> argparse.ArgumentParser:
+def _add_common_args(p) -> None:
+    """Add arguments shared across all subcommands."""
+    p.add_argument(
+        "--toml", "-t", default=None, metavar="FILE",
+        help="TOML spec file (default: model.toml in current directory)",
+    )
+    p.add_argument(
+        "--param", "-p", action="append", metavar="KEY=VALUE",
+        help="Override model parameter (repeatable)",
+    )
+
+
+def _build_parser():
+    import argparse
+
     parser = argparse.ArgumentParser(
-        description = "DisSModel CLI — run and validate executors locally",
+        description="DisSModel CLI — run and validate executors locally",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
     # ── run ──────────────────────────────────────────────────────────────────
     run_p = sub.add_parser("run", help="Run the simulation locally")
+    _add_common_args(run_p)
     run_p.add_argument("--input",  "-i", required=True,
                        help="Input URI: local path or s3://bucket/key")
     run_p.add_argument("--output", "-o", default=None,
                        help="Output path: local file or s3://bucket/key")
-    run_p.add_argument("--param",  "-p", action="append", metavar="KEY=VALUE",
-                       help="Override model parameter (repeatable)")
     run_p.add_argument("--column-map", action="append", metavar="CANONICAL=REAL",
                        help="Column mapping for vector input (repeatable)")
     run_p.add_argument("--band-map",   action="append", metavar="CANONICAL=REAL",
@@ -148,14 +187,14 @@ def _build_parser() -> argparse.ArgumentParser:
 
     # ── validate ─────────────────────────────────────────────────────────────
     val_p = sub.add_parser("validate", help="Validate executor contract without running")
+    _add_common_args(val_p)
     val_p.add_argument("--input", "-i", default=None,
                        help="Optional input for full cycle test")
-    val_p.add_argument("--param", "-p", action="append", metavar="KEY=VALUE")
     val_p.set_defaults(func=_cmd_validate)
 
     # ── show ─────────────────────────────────────────────────────────────────
     show_p = sub.add_parser("show", help="Show resolved parameters")
-    show_p.add_argument("--param", "-p", action="append", metavar="KEY=VALUE")
+    _add_common_args(show_p)
     show_p.set_defaults(func=_cmd_show)
 
     return parser
@@ -170,16 +209,16 @@ def run_cli(executor_cls, args=None) -> None:
 
     Usage
     -----
-    # In your executor module:
     if __name__ == "__main__":
-        from dissmodel.cli import run_cli
-        run_cli(FloodVectorExecutor)
+        from dissmodel.executor.cli import run_cli
+        run_cli(MyExecutor)
 
-    Then from the terminal:
-        python -m coastal_flood.flood_executor run  --input data/grid.zip
-        python -m coastal_flood.flood_executor validate
-        python -m coastal_flood.flood_executor show
+    Terminal:
+        python -m my_package.my_executor run --input data/grid.zip
+        python -m my_package.my_executor run --toml configs/model.toml --input data/grid.zip
+        python -m my_package.my_executor validate
+        python -m my_package.my_executor show --toml configs/model.toml
     """
-    parser    = _build_parser()
-    parsed    = parser.parse_args(args)
+    parser = _build_parser()
+    parsed = parser.parse_args(args)
     parsed.func(executor_cls, parsed)
