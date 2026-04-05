@@ -106,6 +106,8 @@ def _cmd_run(executor_cls, args) -> None:
     print("▶ Saving...")
     record = executor.save(result, record)
 
+    _save_record_locally(record, args.output)
+
     print(f"\n✅ Completed")
     print(f"   output:  {record.output_path}")
     if record.output_sha256:
@@ -222,3 +224,20 @@ def run_cli(executor_cls, args=None) -> None:
     parser = _build_parser()
     parsed = parser.parse_args(args)
     parsed.func(executor_cls, parsed)
+
+def _record_path(output_path: str | None) -> str:
+    """Derive record path from output path."""
+    from pathlib import Path
+    if not output_path:
+        return "experiment_record.json"
+    p = Path(output_path)
+    return str(p.with_name(p.stem + ".record.json"))
+
+
+def _save_record_locally(record, output_path: str | None) -> None:
+    """Save ExperimentRecord JSON next to the output file."""
+    import json
+    from pathlib import Path
+
+    path = Path(_record_path(output_path))
+    path.write_text(record.model_dump_json(indent=2), encoding="utf-8")
