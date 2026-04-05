@@ -13,5 +13,15 @@ def is_notebook() -> bool:
 
 
 def is_interactive_backend() -> bool:
-    """Return True if the current matplotlib backend supports interactive display."""
-    return matplotlib.get_backend().lower() not in {"agg", "pdf", "ps", "svg", "cairo"}
+    """
+    Checks if the current matplotlib backend supports interactive windows.
+    Converts to lowercase to support Matplotlib 3.x backend name changes.
+    """
+    backend = matplotlib.get_backend().lower()
+    
+    interactive_backends = {
+        'qt5agg', 'qtagg', 'qt4agg', 'tkagg', 
+        'macosx', 'gtk3agg', 'gtk4agg', 'wxagg'
+    }
+    
+    return backend in interactive_backends
