@@ -20,7 +20,7 @@ def is_interactive_backend() -> bool:
     backend = matplotlib.get_backend().lower()
     
     interactive_backends = {
-        'qt5agg', 'qtagg', 'qt4agg', 'tkagg', 
+        'qt5agg', 'qtagg', 'qt4agg', 'tkagg','agg',
         'macosx', 'gtk3agg', 'gtk4agg', 'wxagg'
     }
     

@@ -327,6 +327,7 @@ class RasterMap(Model):
             plt.close(fig)
 
         elif self.save_frames or not is_interactive_backend():
+            print ("---",self.save_frames , is_interactive_backend(),matplotlib.get_backend().lower())
             out_dir = pathlib.Path("raster_map_frames")
             out_dir.mkdir(exist_ok=True)
             fname = out_dir / f"{self.band}_step_{int(step):03d}.png"
