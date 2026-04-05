@@ -110,6 +110,7 @@ def _cmd_run(executor_cls, args) -> None:
 
     print(f"\n✅ Completed")
     print(f"   output:  {record.output_path}")
+    print(f"   record:  {_record_path(args.output)}")
     if record.output_sha256:
         print(f"   sha256:  {record.output_sha256[:16]}...")
     print(f"   status:  {record.status}")
