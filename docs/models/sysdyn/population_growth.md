@@ -1,3 +1,3 @@
 # Population Growth
 
-::: dissmodel.models.sysdyn.population_growth.PopulationGrowth
+::: examples.models.sysdyn.population_growth.PopulationGrowth

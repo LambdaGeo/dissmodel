@@ -1,4 +1,4 @@
 # Snow
 
-::: dissmodel.models.ca.snow.Snow
-::: dissmodel.models.ca.snow.SnowState
+::: examples.models.ca.snow.Snow
+::: examples.models.ca.snow.SnowState

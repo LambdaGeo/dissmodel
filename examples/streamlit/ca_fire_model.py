@@ -20,8 +20,8 @@ import streamlit as st
 
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
-from dissmodel.models.ca import FireModel
-from dissmodel.models.ca.fire_model import FireState
+from examples.models.ca import FireModel
+from examples.models.ca.fire_model import FireState
 from dissmodel.visualization import display_inputs
 from dissmodel.visualization import Map
 

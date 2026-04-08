@@ -1,7 +1,7 @@
 """
 System Dynamics Explorer — Streamlit
 =====================================
-Dynamically loads all system dynamics models from ``dissmodel.models.sysdyn``
+Dynamically loads all system dynamics models from ``examples.models.sysdyn``
 and lets the user choose, configure, and run any of them from a single
 interface.
 
@@ -20,7 +20,7 @@ import inspect
 
 import streamlit as st
 
-import dissmodel.models.sysdyn as sysdyn_models
+import examples.models.sysdyn as sysdyn_models
 from dissmodel.core import Environment, Model
 from dissmodel.visualization import Chart, display_inputs
 

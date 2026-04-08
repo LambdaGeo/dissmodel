@@ -1,3 +1,3 @@
 # SIR
 
-::: dissmodel.models.sysdyn.sir.SIR
+::: examples.models.sysdyn.sir.SIR
