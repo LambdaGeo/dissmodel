@@ -18,7 +18,7 @@ can share the same simulation clock and exchange state at every step.
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.models.sysdyn import SIR
+from examples.models.sysdyn import SIR
 from dissmodel.visualization import Chart
 
 env = Environment()

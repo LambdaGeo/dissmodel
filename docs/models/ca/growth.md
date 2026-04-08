@@ -1,4 +1,4 @@
 # Growth
 
-::: dissmodel.models.ca.growth.Growth
-::: dissmodel.models.ca.growth.GrowthState
+::: examples.models.ca.growth.Growth
+::: examples.models.ca.growth.GrowthState

@@ -42,7 +42,7 @@ Requires Python 3.10+.
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.models.sysdyn import SIR
+from examples.models.sysdyn import SIR
 from dissmodel.visualization import Chart
 
 env = Environment()
@@ -56,8 +56,8 @@ env.run(30)
 ```python
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
-from dissmodel.models.ca import FireModel
-from dissmodel.models.ca.fire_model import FireState
+from examples.models.ca import FireModel
+from examples.models.ca.fire_model import FireState
 
 gdf = vector_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
 env = Environment(end_time=20)
@@ -89,7 +89,7 @@ Environment  →  Model  →  Visualization
 
 ## Architecture
 
-DisSModel is organized into four modules:
+DisSModel is organized into three core modules:
 
 ![alt text](docs/images/arquitetura_dissmodel.png)
 
@@ -97,14 +97,17 @@ DisSModel is organized into four modules:
 |:---|:---|
 | `dissmodel.core` | Simulation clock and execution lifecycle (`Environment`, `Model`) |
 | `dissmodel.geo` | Spatial data structures — grid generation, fill strategies, neighborhood |
-| `dissmodel.models` | Ready-to-use CA and SysDyn reference implementations |
 | `dissmodel.visualization` | Observer-based visualization — `Chart`, `Map`, `display_inputs`, `@track_plot` |
+
+The framework also includes a collection of reference implementations in the `examples/models` directory.
 
 ---
 
-## Included Models
+## Reference Models
 
-### Cellular Automata (`dissmodel.models.ca`)
+DisSModel provides several ready-to-use models as examples in the `examples/models` folder. These can be used as a starting point for your own simulations.
+
+### Cellular Automata (`examples.models.ca`)
 
 | Model | Description |
 |:---|:---|
@@ -116,7 +119,7 @@ DisSModel is organized into four modules:
 | `Propagation` | Active state transmission with KNN neighborhood |
 | `Anneal` | Binary system relaxation via majority-vote rule |
 
-### System Dynamics (`dissmodel.models.sysdyn`)
+### System Dynamics (`examples.models.sysdyn`)
 
 | Model | Description |
 |:---|:---|

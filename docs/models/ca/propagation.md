@@ -1,4 +1,4 @@
 # Propagation
 
-::: dissmodel.models.ca.propagation.Propagation
-::: dissmodel.models.ca.propagation.PropagationState
+::: examples.models.ca.propagation.Propagation
+::: examples.models.ca.propagation.PropagationState

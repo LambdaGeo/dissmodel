@@ -35,7 +35,7 @@ DisSModel is organized into four modules:
 |:---|:---|
 | `dissmodel.core` | Simulation clock and execution lifecycle powered by [Salabim](https://www.salabim.org/) |
 | `dissmodel.geo` | Spatial data structures — dual-substrate design (vector + raster) |
-| `dissmodel.models` | Ready-to-use CA and SysDyn reference implementations |
+| `examples.models` | Ready-to-use CA and SysDyn reference implementations |
 | `dissmodel.visualization` | Observer-based visualization — `Chart`, `Map`, `RasterMap`, `display_inputs` |
 
 ### `dissmodel.geo` — Dual Substrate
@@ -67,7 +67,7 @@ vector substrate.
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.models.sysdyn import SIR
+from examples.models.sysdyn import SIR
 from dissmodel.visualization import Chart
 
 env = Environment()
@@ -81,8 +81,8 @@ env.run(30)
 ```python
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
-from dissmodel.models.ca import FireModel
-from dissmodel.models.ca.fire_model import FireState
+from examples.models.ca import FireModel
+from examples.models.ca.fire_model import FireState
 
 gdf = vector_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
 env = Environment(end_time=20)
@@ -96,7 +96,7 @@ env.run()
 ```python
 from dissmodel.core import Environment
 from dissmodel.geo.raster.regular_grid import raster_grid
-from dissmodel.models.ca import GameOfLifeRaster
+from examples.models.ca import GameOfLifeRaster
 from dissmodel.visualization.raster_map import RasterMap
 
 backend = raster_grid(rows=100, cols=100, attrs={"state": 0})

@@ -24,7 +24,7 @@ before running the simulation.
 ```python
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
-from dissmodel.models.ca import GameOfLife
+from examples.models.ca import GameOfLife
 from dissmodel.visualization.map  import Map
 
 gdf = vector_grid(dimension=(30, 30), resolution=1)

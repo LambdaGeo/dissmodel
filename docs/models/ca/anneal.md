@@ -1,4 +1,4 @@
 # Anneal
 
-::: dissmodel.models.ca.anneal.Anneal
-::: dissmodel.models.ca.anneal.AnnealState
+::: examples.models.ca.anneal.Anneal
+::: examples.models.ca.anneal.AnnealState

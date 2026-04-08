@@ -53,7 +53,7 @@ Environment  →  Model  →  Visualization  →  env.run()
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.models.sysdyn import SIR
+from examples.models.sysdyn import SIR
 from dissmodel.visualization import Chart
 
 env = Environment()
@@ -89,7 +89,7 @@ detects the Jupyter environment automatically and renders visualizations inline.
 ```python
 from dissmodel.core import Environment
 from dissmodel.geo import regular_grid
-from dissmodel.models.ca import GameOfLife
+from examples.models.ca import GameOfLife
 from dissmodel.visualization.map  import Map
 from matplotlib.colors import ListedColormap
 

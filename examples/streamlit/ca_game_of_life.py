@@ -20,8 +20,8 @@ import streamlit as st
 
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
-from dissmodel.models.ca import GameOfLife
-from dissmodel.models.ca.game_of_life import PATTERNS
+from examples.models.ca import GameOfLife
+from examples.models.ca.game_of_life import PATTERNS
 from dissmodel.visualization import Map
 
 # ---------------------------------------------------------------------------

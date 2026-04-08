@@ -1,3 +1,3 @@
 # Predator Prey
 
-::: dissmodel.models.sysdyn.predatorprey.PredatorPrey
+::: examples.models.sysdyn.predatorprey.PredatorPrey

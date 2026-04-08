@@ -13,7 +13,7 @@ Usage
 from __future__ import annotations
 
 from dissmodel.core import Environment
-from dissmodel.models.sysdyn import SIR
+from examples.models.sysdyn import SIR
 from dissmodel.visualization import Chart
 
 # ---------------------------------------------------------------------------
