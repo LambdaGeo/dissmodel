@@ -84,10 +84,15 @@ class RasterBackend:
         self,
         shape: tuple[int, int],
         nodata_value: float | int | None = None,
+        transform: Any = None,
+        crs: Any = None,
     ) -> None:
         self.shape        = shape
         self.arrays: dict[str, np.ndarray] = {}
         self.nodata_value = nodata_value   # sentinel for out-of-extent cells
+
+        self.transform    = transform
+        self.crs          = crs
 
     # ── extent mask ───────────────────────────────────────────────────────────
 

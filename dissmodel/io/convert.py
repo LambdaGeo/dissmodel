@@ -134,6 +134,8 @@ def vector_to_raster_backend(
     backend = RasterBackend(
         shape        = (n_rows, n_cols),
         nodata_value = nodata_value,
+        transform    = transform,  
+        crs          = gdf.crs     
     )
 
     # ── rasterize geometry coverage → "mask" band ─────────────────────────────
