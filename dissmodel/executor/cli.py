@@ -92,7 +92,6 @@ def _build_record(args):
 
 
 # ── Commands ──────────────────────────────────────────────────────────────────
-
 def _cmd_run(executor_cls, args) -> None:
     import time
     from dissmodel.io._utils import write_text # Importando o seu gravador de artefatos
@@ -113,6 +112,20 @@ def _cmd_run(executor_cls, args) -> None:
     t_run = time.perf_counter() - t0
 
     print("▶ Saving...")
+    
+    # ── NOVA BLINDAGEM: Prevenção de Sobrescrita (Overwrite Guard) ────────
+    if record.output_path and str(record.output_path) == str(record.source.uri):
+        p = Path(record.output_path)
+        # Adiciona _out_ e o ID do experimento antes da extensão
+        safe_name = f"{p.stem}_out_{record.experiment_id[:8]}{p.suffix}"
+        record.output_path = str(p.with_name(safe_name))
+        
+        # Sincroniza o args.output para que o .json e o .md vão para o lugar certo
+        args.output = record.output_path
+        
+        record.add_log(f"⚠️ Failsafe: Input and output paths were identical. Appended suffix to prevent overwrite: {safe_name}")
+    # ──────────────────────────────────────────────────────────────────────
+
     t0 = time.perf_counter()
     record = executor.save(result, record)
     t_save = time.perf_counter() - t0
@@ -139,7 +152,7 @@ def _cmd_run(executor_cls, args) -> None:
         f"| **Total** | **{t_total:.3f}** | **100%** |\n"
     )
 
-    # Descobre onde salvar o md (junto do output.tif ou localmente)
+    # Descobre onde salvar o md (junto do output atualizado ou localmente)
     if record.output_path:
         base_dir = str(Path(record.output_path).parent)
     elif args.output:
