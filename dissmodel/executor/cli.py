@@ -94,7 +94,7 @@ def _build_record(args):
 # ── Commands ──────────────────────────────────────────────────────────────────
 def _cmd_run(executor_cls, args) -> None:
     import time
-    from dissmodel.io._utils import write_text # Importando o seu gravador de artefatos
+    from dissmodel.io._utils import write_text
     from pathlib import Path
 
     record   = _build_record(args)
@@ -113,17 +113,23 @@ def _cmd_run(executor_cls, args) -> None:
 
     print("▶ Saving...")
     
-    # ── NOVA BLINDAGEM: Prevenção de Sobrescrita (Overwrite Guard) ────────
-    if record.output_path and str(record.output_path) == str(record.source.uri):
+    # ── Inteligência de Output: Rastreabilidade e Failsafe ───────────────
+    if record.output_path:
         p = Path(record.output_path)
-        # Adiciona _out_ e o ID do experimento antes da extensão
-        safe_name = f"{p.stem}_out_{record.experiment_id[:8]}{p.suffix}"
-        record.output_path = str(p.with_name(safe_name))
+        exp_id_short = record.experiment_id[:8]
         
-        # Sincroniza o args.output para que o .json e o .md vão para o lugar certo
+        # Cenário A: O usuário passou apenas uma pasta (termina com / ou já existe)
+        if str(record.output_path).endswith(("/", "\\")) or p.is_dir():
+            safe_name = f"simulacao_{exp_id_short}.tif"
+            record.output_path = str(p / safe_name)
+            
+        # Cenário B: O usuário passou um arquivo, mas sem o ID no nome
+        elif exp_id_short not in p.name:
+            safe_name = f"{p.stem}_{exp_id_short}{p.suffix}"
+            record.output_path = str(p.with_name(safe_name))
+            
+        # Sincroniza o args.output para os artefatos (.json, .md) acompanharem
         args.output = record.output_path
-        
-        record.add_log(f"⚠️ Failsafe: Input and output paths were identical. Appended suffix to prevent overwrite: {safe_name}")
     # ──────────────────────────────────────────────────────────────────────
 
     t0 = time.perf_counter()
@@ -152,7 +158,6 @@ def _cmd_run(executor_cls, args) -> None:
         f"| **Total** | **{t_total:.3f}** | **100%** |\n"
     )
 
-    # Descobre onde salvar o md (junto do output atualizado ou localmente)
     if record.output_path:
         base_dir = str(Path(record.output_path).parent)
     elif args.output:
@@ -162,7 +167,6 @@ def _cmd_run(executor_cls, args) -> None:
 
     profiling_uri = f"{base_dir}/profiling_{record.experiment_id[:8]}.md"
     
-    # Grava fisicamente e adiciona na propriedade "artifacts"
     try:
         chk = write_text(md_report, profiling_uri, content_type="text/markdown")
         record.add_artifact("profiling", chk)
@@ -177,7 +181,6 @@ def _cmd_run(executor_cls, args) -> None:
     print(f"   output:  {record.output_path}")
     print(f"   record:  {_record_path(args.output)}")
     
-    # Exibe os artefatos gerados
     if record.artifacts:
         print("   artifacts:")
         for art_name, art_chk in record.artifacts.items():
