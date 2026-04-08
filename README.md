@@ -1,101 +1,216 @@
+# DisSModel 🌍
 
-# DisSModel
-
-**Discrete Spatial Modeling framework for Python**
+> **Discrete Spatial Modeling framework for Python** — the simulation layer of the LambdaGeo ecosystem.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/dissmodel.svg)](https://pypi.org/project/dissmodel/)
+[![LambdaGeo](https://img.shields.io/badge/LambdaGeo-Research-green.svg)](https://github.com/LambdaGeo)
 
-DisSModel is a modular Python framework for spatially explicit dynamic modeling. Developed by the [LambdaGeo](https://github.com/LambdaGeo) group at the Federal University of Maranhão (UFMA), it provides a unified environment for building **Cellular Automata (CA)** and **System Dynamics (SysDyn)** models on top of the modern Python geospatial ecosystem.
+---
+
+## 📖 About
+
+**DisSModel** is a modular Python framework for spatially explicit dynamic simulation models. Developed by the [LambdaGeo](https://github.com/LambdaGeo) group at the Federal University of Maranhão (UFMA), it provides the simulation layer that connects domain models (LUCC, coastal dynamics) to a reproducible, cloud-native execution platform.
+
+| INPE / TerraME Ecosystem | LambdaGeo Ecosystem | Role |
+|--------------------------|---------------------|------|
+| **TerraME** | `dissmodel` | Generic framework for dynamic spatial modeling |
+| **LUCCME** | `DisSLUCC` | LUCC domain models built on dissmodel |
+| — | `coastal-dynamics` | Coastal domain models built on dissmodel |
+| **TerraLib** | `geopandas` / `rasterio` | Geographic data handling |
 
 ---
 
 ## 🌟 Key Features
 
-- **Hybrid Modeling Engine** — Unified API for Cellular Automata (Raster/Vector) and System Dynamics.
-- **Storage-Agnostic I/O** — Seamlessly switch between local files and **MinIO/S3** buckets.
-- **Performance Profiling** — Automatic generation of execution metrics and Markdown telemetry reports.
-- **Experiment Tracking** — Every run generates an `ExperimentRecord` (JSON) with SHA256 integrity checks.
-- **Reactive UI** — Automatic Streamlit widget generation and live Matplotlib plotting.
+- **Dual substrate** — same model logic runs on vector (`GeoDataFrame`) and raster (`RasterBackend`/NumPy).
+- **Discrete Event Simulation** — built on [Salabim](https://salabim.org/); time advances to the next relevant event, not millisecond by millisecond.
+- **Executor pattern** — strict separation between science (models) and infrastructure (I/O, cloud, queues).
+- **Experiment tracking** — every run generates an immutable `ExperimentRecord` with SHA-256 checksums, TOML snapshot, and full provenance.
+- **Storage-agnostic I/O** — `dissmodel.io` handles local paths and `s3://` URIs transparently.
+- **CLI + Platform** — the same executor runs locally via CLI and on the DisSModel Platform via API.
 
 ---
 
-## 🏗 Project Architecture
+## 🏗 Architecture
 
-DisSModel is organized into decoupled modules to ensure flexibility:
-
-- **`dissmodel.core`**: Simulation lifecycle and environment control (`Environment`, `Model`).
-- **`dissmodel.geo`**: Spatial backends (Raster/Vector) and neighborhood strategies.
-- **`dissmodel.executor`**: Command-line interface and standardized execution schemas.
-- **`dissmodel.io`**: Generic I/O layer handling local paths and S3 protocols.
-- **`dissmodel.visualization`**: Observer-based charts, maps, and interactive widgets.
-
----
-
-## 🚀 Execution Modes
-
-### 1. Command Line (CLI)
-Run simulations with built-in experiment tracking and overwrite protection. The CLI automatically appends short IDs to results for better traceability.
-
-```bash
-# Example: Running Forest Fire from the project root
-python -m examples.cli.ca.ca_fire_model run \
-  --input data/forest.tif \
-  --output ./results/ \
-  --param end_time=50
+```
+┌──────────────────────────────────────────────────────────┐
+│  Science Layer  (Model / Salabim)                        │
+│  FloodModel, AllocationCClueLike, MangroveModel, ...     │
+│  → only knows math, geometry and time                    │
+├──────────────────────────────────────────────────────────┤
+│  Infrastructure Layer  (ModelExecutor)                   │
+│  CoastalRasterExecutor, LUCCVectorExecutor, ...          │
+│  → only knows URIs, MinIO, column_map, parameters        │
+├──────────────────────────────────────────────────────────┤
+│  Core modules                                            │
+│  dissmodel.core      — Environment, SpatialModel         │
+│  dissmodel.geo       — RasterBackend, neighborhoods      │
+│  dissmodel.executor  — ModelExecutor ABC, ExperimentRecord│
+│  dissmodel.io        — load_dataset / save_dataset       │
+│  dissmodel.visualization — Map, RasterMap, Chart         │
+└──────────────────────────────────────────────────────────┘
 ```
 
-### 2. Jupyter Notebooks
-Ideal for researchers. Use the integrated I/O utils to fetch data directly from MinIO or local storage.
+"A ciência não deve ser reescrita para ir para a produção."
+
+---
+
+## 🚀 Quick Start
+
+### Writing a model
 
 ```python
-from dissmodel.io._utils import read_text
-import json
+# my_model.py
+from dissmodel.core import SpatialModel, Environment
 
-# Load metadata from a previous experiment
-content = read_text("s3://bucket/experiments/9c218c92.record.json")
-record = json.loads(content)
-print(f"Metrics: {record['metrics']}")
+class ForestFireModel(SpatialModel):
+
+    def setup(self, prob_spread=0.3):
+        self.prob_spread = prob_spread
+
+    def execute(self):
+        # Called every step by Salabim — only math here, no I/O
+        burning = self.gdf["state"] == "burning"
+        ...
+
+env = Environment(end_time=50)
+ForestFireModel(gdf=gdf, prob_spread=0.4)
+env.run()
 ```
 
-### 3. Streamlit Apps
-DisSModel can automatically generate sidebar widgets from your model's type annotations.
+### Writing an executor
+
+```python
+# my_executor.py
+from dissmodel.executor     import ExperimentRecord, ModelExecutor
+from dissmodel.executor.cli import run_cli
+from dissmodel.io           import load_dataset, save_dataset
+
+class ForestFireExecutor(ModelExecutor):
+    name = "forest_fire"
+
+    def load(self, record: ExperimentRecord):
+        gdf, checksum = load_dataset(record.source.uri)
+        record.source.checksum = checksum
+        return gdf
+
+    def run(self, record: ExperimentRecord):
+        from dissmodel.core import Environment
+        gdf     = self.load(record)
+        env     = Environment(end_time=record.parameters.get("end_time", 50))
+        ForestFireModel(gdf=gdf, **record.parameters)
+        env.run()
+        return gdf
+
+    def save(self, result, record: ExperimentRecord) -> ExperimentRecord:
+        uri      = record.output_path or "output.gpkg"
+        checksum = save_dataset(result, uri)
+        record.output_path   = uri
+        record.output_sha256 = checksum
+        record.status        = "completed"
+        return record
+
+if __name__ == "__main__":
+    run_cli(ForestFireExecutor)
+```
+
+### Running via CLI
 
 ```bash
-streamlit run examples/streamlit/ca_all.py
+# Run
+python my_executor.py run \
+  --input  data/forest.gpkg \
+  --output data/result.gpkg \
+  --param  end_time=50 \
+  --toml   model.toml
+
+# Validate data contract without running
+python my_executor.py validate --input data/forest.gpkg
+
+# Show resolved parameters
+python my_executor.py show --toml model.toml
+```
+
+### Running via Platform API
+
+```bash
+curl -X POST http://localhost:8000/submit_job \
+  -H "X-API-Key: chave-sergio" \
+  -H "Content-Type: application/json" \
+  -d '{"model_name": "forest_fire", "input_dataset": "s3://inputs/forest.gpkg"}'
+```
+
+---
+
+## 📦 ExperimentRecord
+
+Every run produces an immutable provenance record:
+
+```json
+{
+  "experiment_id":  "abc123",
+  "model_commit":   "a3f9c12",
+  "code_version":   "0.1.5",
+  "resolved_spec":  { "...TOML snapshot..." },
+  "source":         { "uri": "s3://...", "checksum": "e3b0c44..." },
+  "artifacts":      { "output": "sha256...", "profiling": "sha256..." },
+  "metrics":        { "time_run_sec": 2.15, "time_total_sec": 2.34 },
+  "status":         "completed"
+}
+```
+
+Reproduce any past experiment exactly:
+
+```bash
+curl -X POST http://localhost:8000/experiments/abc123/reproduce \
+  -H "X-API-Key: chave-sergio"
 ```
 
 ---
 
 ## 📊 Performance Telemetry
 
-Every simulation executed via the standard pipeline generates a `profiling_{id}.md` report to help identify bottlenecks:
+Every platform run generates a `profiling_{id}.md` alongside the output:
 
-| Phase | Time (seconds) | % of Total |
-|---|---|---|
-| **Validate** | 0.005 | 0.2% |
-| **Run** | 2.150 | 92.1% |
-| **Save** | 0.180 | 7.7% |
+| Phase | Time (s) | % |
+|-------|----------|---|
+| Validate | 0.005 | 0.2% |
+| Run | 2.150 | 92.1% |
+| Save | 0.180 | 7.7% |
 | **Total** | **2.335** | **100%** |
 
 ---
 
-## 📖 Examples & Reference Models
+## 📖 Examples
 
-Full implementations are available in the [`examples/`](examples/) directory:
-- **CA**: Game of Life, Forest Fire (Probabilistic), Snowfall, Growth.
-- **System Dynamics**: SIR, Predator-Prey, Lorenz Attractor, Coffee Cooling.
+Full implementations in [`examples/`](examples/):
+
+- **CA**: Game of Life, Forest Fire, Snowfall, Growth
+- **System Dynamics**: SIR, Predator-Prey, Lorenz Attractor
+- **LUCC**: [`DisSLUCC`](https://github.com/LambdaGeo/DisSLUCC) — C-CLUE on vector and raster
+- **Coastal**: [`coastal-dynamics`](https://github.com/LambdaGeo/coastal-dynamics) — Flood + Mangrove
 
 Documentation: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github.io/dissmodel/)
 
 ---
 
+## 📦 Installation
+
+```bash
+pip install dissmodel
+
+# Latest development version
+pip install "git+https://github.com/LambdaGeo/dissmodel.git@main"
+```
+
+---
+
 ## 🎓 Citation
 
-If you use DisSModel in your research, please cite:
-
-```text
+```
 Costa, S. & Santos Junior, N. (2026). DisSModel: A Discrete Spatial Modeling
 Framework for Python. LambdaGeo, Federal University of Maranhão (UFMA).
 ```
