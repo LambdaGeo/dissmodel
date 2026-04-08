@@ -94,29 +94,87 @@ def _build_record(args):
 # ── Commands ──────────────────────────────────────────────────────────────────
 
 def _cmd_run(executor_cls, args) -> None:
+    import time
+    from dissmodel.io._utils import write_text # Importando o seu gravador de artefatos
+    from pathlib import Path
+
     record   = _build_record(args)
     executor = executor_cls()
 
+    # ── 1. Execução com Cronômetro ──────────────────────────────────────────
     print("▶ Validating...")
+    t0 = time.perf_counter()
     executor.validate(record)
+    t_val = time.perf_counter() - t0
 
     print("▶ Running...")
+    t0 = time.perf_counter()
     result = executor.run(record)
+    t_run = time.perf_counter() - t0
 
     print("▶ Saving...")
+    t0 = time.perf_counter()
     record = executor.save(result, record)
+    t_save = time.perf_counter() - t0
 
+    t_total = t_val + t_run + t_save
+
+    # ── 2. Alimentando o dicionário nativo 'metrics' ──────────────────────
+    record.metrics["time_validate_sec"] = round(t_val, 3)
+    record.metrics["time_run_sec"]      = round(t_run, 3)
+    record.metrics["time_save_sec"]     = round(t_save, 3)
+    record.metrics["time_total_sec"]    = round(t_total, 3)
+
+    # ── 3. Criando o Artefato Markdown de Profiling ───────────────────────
+    md_report = (
+        f"# Profiling Report: {getattr(executor_cls, 'name', 'Model')}\n\n"
+        f"**Experiment ID:** `{record.experiment_id}`\n"
+        f"**Date:** `{record.created_at.isoformat()}`\n\n"
+        "## Execution Times\n\n"
+        "| Phase | Time (seconds) | % of Total |\n"
+        "|---|---|---|\n"
+        f"| **Validate** | {t_val:.3f} | {(t_val/t_total)*100:.1f}% |\n"
+        f"| **Run** | {t_run:.3f} | {(t_run/t_total)*100:.1f}% |\n"
+        f"| **Save** | {t_save:.3f} | {(t_save/t_total)*100:.1f}% |\n"
+        f"| **Total** | **{t_total:.3f}** | **100%** |\n"
+    )
+
+    # Descobre onde salvar o md (junto do output.tif ou localmente)
+    if record.output_path:
+        base_dir = str(Path(record.output_path).parent)
+    elif args.output:
+        base_dir = str(Path(args.output).parent)
+    else:
+        base_dir = "."
+
+    profiling_uri = f"{base_dir}/profiling_{record.experiment_id[:8]}.md"
+    
+    # Grava fisicamente e adiciona na propriedade "artifacts"
+    try:
+        chk = write_text(md_report, profiling_uri, content_type="text/markdown")
+        record.add_artifact("profiling", chk)
+        record.add_log(f"Saved profiling artifact → {profiling_uri}")
+    except Exception as e:
+        record.add_log(f"Warning: Could not save profiling artifact: {e}")
+
+    # ── 4. Salvando o JSON final e Prints ─────────────────────────────────
     _save_record_locally(record, args.output)
 
     print(f"\n✅ Completed")
     print(f"   output:  {record.output_path}")
     print(f"   record:  {_record_path(args.output)}")
-    if record.output_sha256:
-        print(f"   sha256:  {record.output_sha256[:16]}...")
+    
+    # Exibe os artefatos gerados
+    if record.artifacts:
+        print("   artifacts:")
+        for art_name, art_chk in record.artifacts.items():
+            print(f"      - {art_name}: {art_chk[:16]}...")
+            
     print(f"   status:  {record.status}")
+    print(f"   ⏱️  Times: val={t_val:.2f}s | run={t_run:.2f}s | save={t_save:.2f}s | TOTAL={t_total:.2f}s")
+    
     for log in record.logs:
         print(f"   {log}")
-
 
 def _cmd_validate(executor_cls, args) -> None:
     from dissmodel.executor.testing import ExecutorTestHarness
