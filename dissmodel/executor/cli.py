@@ -1,5 +1,3 @@
-
-# dissmodel/executor/cli.py
 from __future__ import annotations
 
 import sys
@@ -91,60 +89,63 @@ def _build_record(args):
     return record
 
 
+# ── Output path intelligence (CLI-only) ───────────────────────────────────────
+
+def _apply_output_path_intelligence(record, args) -> None:
+    """
+    Inject experiment_id into the output path for traceability.
+
+    Must run before execute_lifecycle so that save() receives the
+    already-corrected path.
+
+    Scenario A: user passed a directory → generate a safe filename.
+    Scenario B: user passed a file without the experiment ID → inject it.
+    """
+    if not record.output_path:
+        return
+
+    p            = Path(record.output_path)
+    exp_id_short = record.experiment_id[:8]
+
+    if str(record.output_path).endswith(("/", "\\")) or p.is_dir():
+        # Scenario A — directory only, generate filename
+        safe_name          = f"simulacao_{exp_id_short}.tif"
+        record.output_path = str(p / safe_name)
+    elif exp_id_short not in p.name:
+        # Scenario B — file path without the experiment ID
+        safe_name          = f"{p.stem}_{exp_id_short}{p.suffix}"
+        record.output_path = str(p.with_name(safe_name))
+
+    # Keep args.output in sync so the .json and .md artefacts follow
+    args.output = record.output_path
+
+
 # ── Commands ──────────────────────────────────────────────────────────────────
+
 def _cmd_run(executor_cls, args) -> None:
-    import time
-    from dissmodel.io._utils import write_text
-    from pathlib import Path
+    from dissmodel.executor.runner import execute_lifecycle
+    from dissmodel.io._utils       import write_text
 
     record   = _build_record(args)
     executor = executor_cls()
 
-    # ── 1. Execução com Cronômetro ──────────────────────────────────────────
+    # Output path intelligence runs before save() inside execute_lifecycle
+    _apply_output_path_intelligence(record, args)
+
     print("▶ Validating...")
-    t0 = time.perf_counter()
-    executor.validate(record)
-    t_val = time.perf_counter() - t0
-
+    print("▶ Loading...")
     print("▶ Running...")
-    t0 = time.perf_counter()
-    result = executor.run(record)
-    t_run = time.perf_counter() - t0
-
     print("▶ Saving...")
-    
-    # ── Inteligência de Output: Rastreabilidade e Failsafe ───────────────
-    if record.output_path:
-        p = Path(record.output_path)
-        exp_id_short = record.experiment_id[:8]
-        
-        # Cenário A: O usuário passou apenas uma pasta (termina com / ou já existe)
-        if str(record.output_path).endswith(("/", "\\")) or p.is_dir():
-            safe_name = f"simulacao_{exp_id_short}.tif"
-            record.output_path = str(p / safe_name)
-            
-        # Cenário B: O usuário passou um arquivo, mas sem o ID no nome
-        elif exp_id_short not in p.name:
-            safe_name = f"{p.stem}_{exp_id_short}{p.suffix}"
-            record.output_path = str(p.with_name(safe_name))
-            
-        # Sincroniza o args.output para os artefatos (.json, .md) acompanharem
-        args.output = record.output_path
-    # ──────────────────────────────────────────────────────────────────────
 
-    t0 = time.perf_counter()
-    record = executor.save(result, record)
-    t_save = time.perf_counter() - t0
+    record, timings = execute_lifecycle(executor, record)
 
-    t_total = t_val + t_run + t_save
+    t_val   = timings["time_validate_sec"]
+    t_load  = timings["time_load_sec"]
+    t_run   = timings["time_run_sec"]
+    t_save  = timings["time_save_sec"]
+    t_total = timings["time_total_sec"]
 
-    # ── 2. Alimentando o dicionário nativo 'metrics' ──────────────────────
-    record.metrics["time_validate_sec"] = round(t_val, 3)
-    record.metrics["time_run_sec"]      = round(t_run, 3)
-    record.metrics["time_save_sec"]     = round(t_save, 3)
-    record.metrics["time_total_sec"]    = round(t_total, 3)
-
-    # ── 3. Criando o Artefato Markdown de Profiling ───────────────────────
+    # ── Profiling Markdown artefact ───────────────────────────────────────────
     md_report = (
         f"# Profiling Report: {getattr(executor_cls, 'name', 'Model')}\n\n"
         f"**Experiment ID:** `{record.experiment_id}`\n"
@@ -152,10 +153,11 @@ def _cmd_run(executor_cls, args) -> None:
         "## Execution Times\n\n"
         "| Phase | Time (seconds) | % of Total |\n"
         "|---|---|---|\n"
-        f"| **Validate** | {t_val:.3f} | {(t_val/t_total)*100:.1f}% |\n"
-        f"| **Run** | {t_run:.3f} | {(t_run/t_total)*100:.1f}% |\n"
-        f"| **Save** | {t_save:.3f} | {(t_save/t_total)*100:.1f}% |\n"
-        f"| **Total** | **{t_total:.3f}** | **100%** |\n"
+        f"| **Validate** | {t_val:.3f}   | {(t_val   / t_total) * 100:.1f}% |\n"
+        f"| **Load**     | {t_load:.3f}  | {(t_load  / t_total) * 100:.1f}% |\n"
+        f"| **Run**      | {t_run:.3f}   | {(t_run   / t_total) * 100:.1f}% |\n"
+        f"| **Save**     | {t_save:.3f}  | {(t_save  / t_total) * 100:.1f}% |\n"
+        f"| **Total**    | **{t_total:.3f}** | **100%** |\n"
     )
 
     if record.output_path:
@@ -166,7 +168,7 @@ def _cmd_run(executor_cls, args) -> None:
         base_dir = "."
 
     profiling_uri = f"{base_dir}/profiling_{record.experiment_id[:8]}.md"
-    
+
     try:
         chk = write_text(md_report, profiling_uri, content_type="text/markdown")
         record.add_artifact("profiling", chk)
@@ -174,23 +176,27 @@ def _cmd_run(executor_cls, args) -> None:
     except Exception as e:
         record.add_log(f"Warning: Could not save profiling artifact: {e}")
 
-    # ── 4. Salvando o JSON final e Prints ─────────────────────────────────
+    # ── Final JSON record and summary prints ──────────────────────────────────
     _save_record_locally(record, args.output)
 
     print(f"\n✅ Completed")
     print(f"   output:  {record.output_path}")
     print(f"   record:  {_record_path(args.output)}")
-    
+
     if record.artifacts:
         print("   artifacts:")
         for art_name, art_chk in record.artifacts.items():
             print(f"      - {art_name}: {art_chk[:16]}...")
-            
+
     print(f"   status:  {record.status}")
-    print(f"   ⏱️  Times: val={t_val:.2f}s | run={t_run:.2f}s | save={t_save:.2f}s | TOTAL={t_total:.2f}s")
-    
+    print(
+        f"   ⏱️  Times: val={t_val:.2f}s | load={t_load:.2f}s | "
+        f"run={t_run:.2f}s | save={t_save:.2f}s | TOTAL={t_total:.2f}s"
+    )
+
     for log in record.logs:
         print(f"   {log}")
+
 
 def _cmd_validate(executor_cls, args) -> None:
     from dissmodel.executor.testing import ExecutorTestHarness
@@ -300,9 +306,9 @@ def run_cli(executor_cls, args=None) -> None:
     parsed = parser.parse_args(args)
     parsed.func(executor_cls, parsed)
 
+
 def _record_path(output_path: str | None) -> str:
     """Derive record path from output path."""
-    from pathlib import Path
     if not output_path:
         return "experiment_record.json"
     p = Path(output_path)
@@ -311,8 +317,5 @@ def _record_path(output_path: str | None) -> str:
 
 def _save_record_locally(record, output_path: str | None) -> None:
     """Save ExperimentRecord JSON next to the output file."""
-    import json
-    from pathlib import Path
-
     path = Path(_record_path(output_path))
     path.write_text(record.model_dump_json(indent=2), encoding="utf-8")

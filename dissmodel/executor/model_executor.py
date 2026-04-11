@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import ClassVar, TYPE_CHECKING
+from typing import Any, ClassVar, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from dissmodel.core.schemas import ExperimentRecord
+    from dissmodel.executor.schemas import ExperimentRecord
 
 
 class ModelExecutor(ABC):
@@ -14,6 +14,13 @@ class ModelExecutor(ABC):
     Subclasses register themselves automatically in ExecutorRegistry
     via __init_subclass__ — no boilerplate required.
 
+    The platform orchestrates the full lifecycle in order:
+
+        validate(record)          # stateless pre-flight checks
+        data = load(record)       # I/O — called once by the platform
+        result = run(data, record) # simulation — no I/O here
+        record = save(result, record)
+
     Minimal implementation
     ----------------------
     class MyExecutor(ModelExecutor):
@@ -22,10 +29,10 @@ class ModelExecutor(ABC):
         def load(self, record: ExperimentRecord):
             return gpd.read_file(record.source.uri)
 
-        def run(self, record: ExperimentRecord):
-            data = self.load(record)
+        def run(self, data, record: ExperimentRecord):
+            gdf = data  # already loaded — no I/O here
             # ... run simulation ...
-            return data
+            return gdf
 
         def save(self, result, record: ExperimentRecord) -> ExperimentRecord:
             record.status = "completed"
@@ -34,7 +41,7 @@ class ModelExecutor(ABC):
     CLI usage
     ---------
     if __name__ == "__main__":
-        from dissmodel.cli import run_cli
+        from dissmodel.executor.cli import run_cli
         run_cli(MyExecutor)
     """
 
@@ -51,9 +58,12 @@ class ModelExecutor(ABC):
     # ── Required lifecycle methods ────────────────────────────────────────────
 
     @abstractmethod
-    def load(self, record: ExperimentRecord):
+    def load(self, record: ExperimentRecord) -> Any:
         """
         Load and resolve the input dataset.
+
+        Called by the platform before run(). The return value is passed
+        directly as the first argument to run() — no second load occurs.
 
         Responsibilities:
         - Resolve URI (s3://, http://, local path)
@@ -63,9 +73,12 @@ class ModelExecutor(ABC):
         """
 
     @abstractmethod
-    def run(self, record: ExperimentRecord):
+    def run(self, data: Any, record: ExperimentRecord) -> Any:
         """
         Execute the simulation.
+
+        `data` is the direct return value of load(), injected by the platform.
+        No I/O should happen here — all loading is done by load().
 
         Receives record with resolved_spec and parameters already merged.
         Returns raw result — format defined by the subclass and
@@ -73,7 +86,7 @@ class ModelExecutor(ABC):
         """
 
     @abstractmethod
-    def save(self, result, record: ExperimentRecord) -> ExperimentRecord:
+    def save(self, result: Any, record: ExperimentRecord) -> ExperimentRecord:
         """
         Persist the result and return the updated record.
 
@@ -88,10 +101,10 @@ class ModelExecutor(ABC):
 
     def validate(self, record: ExperimentRecord) -> None:
         """
-        Validate spec and data before running.
+        Stateless pre-flight checks on the record — no data loading.
 
-        Called by runner before run(). Override to check canonical
-        columns/bands, value ranges, etc.
+        Called by the platform before load(). Override to check canonical
+        columns/bands, value ranges, parameter constraints, etc.
         Raise ValueError with an actionable message if invalid.
 
         Default implementation: no-op.
@@ -112,9 +125,9 @@ class ModelExecutor(ABC):
 
         if uri.startswith("s3://"):
             from dissmodel.io._storage import get_default_client
-            minio          = get_default_client()
-            bucket, key    = uri[5:].split("/", 1)
-            local_path     = f"/tmp/{os.path.basename(key)}"
+            minio       = get_default_client()
+            bucket, key = uri[5:].split("/", 1)
+            local_path  = f"/tmp/{os.path.basename(key)}"
             minio.fget_object(bucket, key, local_path)
             return local_path
 
