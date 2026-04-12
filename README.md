@@ -1,7 +1,5 @@
 # DisSModel 🌍
 
-> **Discrete Spatial Modeling framework for Python** — the simulation layer of the LambdaGeo ecosystem.
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/dissmodel.svg)](https://pypi.org/project/dissmodel/)
