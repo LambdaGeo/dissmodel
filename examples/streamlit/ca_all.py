@@ -1,7 +1,7 @@
 """
 Cellular Automata Explorer — Streamlit
 =======================================
-Dynamically loads all cellular automaton models from ``dissmodel.models.ca``
+Dynamically loads all cellular automaton models from ``examples.models.ca``
 and lets the user choose, configure, and run any of them from a single
 interface.
 
@@ -22,7 +22,7 @@ import inspect
 import matplotlib.pyplot as plt
 import streamlit as st
 
-import dissmodel.models.ca as ca_models
+import examples.models.ca as ca_models
 from dissmodel.core import Environment
 from dissmodel.geo import CellularAutomaton, vector_grid
 from dissmodel.visualization import Map

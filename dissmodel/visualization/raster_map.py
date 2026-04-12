@@ -8,9 +8,10 @@ Supported render targets
 ------------------------
 1. **Streamlit**   — ``plot_area=st.empty()``
 2. **Jupyter**     — detected automatically
-3. **Interactive** — matplotlib window (TkAgg / Qt), used when a display
+3. **Colab**       — detected automatically
+4. **Interactive** — matplotlib window (TkAgg / Qt), used when a display
                      is available
-4. **Headless**    — saves PNGs to ``raster_map_frames/`` when no display
+5. **Headless**    — saves PNGs to ``raster_map_frames/`` when no display
                      is detected or ``save_frames=True``
 
 The component does NOT call ``matplotlib.use()`` at import time — the
@@ -197,6 +198,17 @@ class RasterMap(Model):
             _get_nodata_mask(backend) if auto_mask else None
         )
 
+        # widget Output ancorado — elimina blink no Jupyter/Colab
+        self._out = None
+        if is_notebook():
+            try:
+                import ipywidgets as widgets
+                from IPython.display import display
+                self._out = widgets.Output()
+                display(self._out)
+            except ImportError:
+                pass  # ipywidgets ausente — cai no fallback clear_output
+
     # ── rendering ─────────────────────────────────────────────────────────────
 
     def _render(self, step: float) -> matplotlib.figure.Figure:
@@ -317,16 +329,25 @@ class RasterMap(Model):
         plt.draw()
 
         if self.plot_area is not None:
+            # Streamlit
             self.plot_area.pyplot(fig)
             plt.close(fig)
 
         elif is_notebook():
             from IPython.display import clear_output, display
-            clear_output(wait=True)
-            display(fig)
+            if self._out is not None:
+                # Output widget ancorado — sem blink
+                with self._out:
+                    clear_output(wait=True)
+                    display(fig)
+            else:
+                # fallback: ipywidgets ausente
+                clear_output(wait=True)
+                display(fig)
             plt.close(fig)
 
         elif self.save_frames or not is_interactive_backend():
+            # headless / CI
             out_dir = pathlib.Path("raster_map_frames")
             out_dir.mkdir(exist_ok=True)
             fname = out_dir / f"{self.band}_step_{int(step):03d}.png"
@@ -338,6 +359,7 @@ class RasterMap(Model):
                 print(f"  RasterMap [{self.band}] step {int(step):3d} → {fname}")
 
         else:
+            # interactive window
             if self.pause:
                 plt.pause(self.interval)
             end_time = getattr(self.env, "end_time", step)

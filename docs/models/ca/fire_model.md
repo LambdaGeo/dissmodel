@@ -13,8 +13,8 @@ from matplotlib.colors import ListedColormap
 
 from dissmodel.core import Environment
 from dissmodel.geo import vector_grid
-from dissmodel.models.ca import FireModel
-from dissmodel.models.ca.fire_model import FireState
+from examples.models.ca import FireModel
+from examples.models.ca.fire_model import FireState
 from dissmodel.visualization.map  import Map
 
 gdf = vector_grid(dimension=(30, 30), resolution=1, attrs={"state": FireState.FOREST})
@@ -37,5 +37,5 @@ env.run()
 
 ## API Reference
 
-::: dissmodel.models.ca.fire_model.FireModel
-::: dissmodel.models.ca.fire_model.FireState
+::: examples.models.ca.fire_model.FireModel
+::: examples.models.ca.fire_model.FireState

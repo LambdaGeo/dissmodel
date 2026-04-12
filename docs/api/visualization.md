@@ -58,7 +58,7 @@ Displays time-series data from variables annotated with `@track_plot`.
 
 ```python
 from dissmodel.core import Environment
-from dissmodel.models.sysdyn import SIR
+from examples.models.sysdyn import SIR
 from dissmodel.visualization import Chart
 
 env = Environment(end_time=30)
@@ -152,7 +152,7 @@ display_inputs(sir, st.sidebar)
 ```python
 import streamlit as st
 from dissmodel.core import Environment
-from dissmodel.models.sysdyn import SIR
+from examples.models.sysdyn import SIR
 from dissmodel.visualization import Chart, display_inputs
 
 st.set_page_config(page_title="SIR Model", layout="centered")
