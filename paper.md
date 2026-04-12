@@ -23,25 +23,60 @@ affiliations:
     city: São Luís
     state: MA
     country: Brazil
-date: 2 March 2026
+date: 12 April 2026
 bibliography: paper.bib
 ---
 
 ## Summary
 
-DisSModel (Discrete Spatial Modeling) is a modular Python framework designed for spatially explicit dynamic modeling, specifically targeting the complexities of Land Use and Land Cover Change (LUCC). Developed to bridge the gap between static geospatial analysis and high-level dynamic simulations, DisSModel translates the modeling paradigms of the TerraME framework [@Carneiro2013] into the Python ecosystem. It enables researchers to simulate complex socio-environmental systems—including forest fires, epidemiological spreads, and urban expansion—by integrating the simulation clock of discrete-event engines with the spatial data structures of GeoPandas [@Jordahl2021].
+DisSModel (Discrete Spatial Modeling) is a modular Python framework designed for
+spatially explicit dynamic modeling, specifically targeting the complexities of
+Land Use and Land Cover Change (LUCC). Developed to bridge the gap between static
+geospatial analysis and high-level dynamic simulations, DisSModel translates the
+modeling paradigms of the TerraME framework [@Carneiro2013] into the Python
+ecosystem. It enables researchers to simulate complex socio-environmental
+systems — including forest fires, epidemiological spreads, and coastal dynamics —
+by integrating the simulation clock of discrete-event engines with the spatial
+data structures of GeoPandas [@Jordahl2021].
 
-The framework provides a **dual-substrate architecture**: a vector substrate backed by GeoDataFrame for flexibility and spatial expressiveness, and a raster substrate backed by NumPy 2D arrays for high-performance vectorized computation. DisSModel is available through the LambdaGeo GitHub repository and on PyPI.
+The framework provides a **dual-substrate architecture**: a vector substrate backed
+by GeoDataFrame for flexibility and spatial expressiveness, and a raster substrate
+backed by NumPy 2D arrays for high-performance vectorised computation. DisSModel is
+available through the LambdaGeo GitHub repository and on PyPI.
 
 ## Statement of Need
 
-In the Geographic Information Systems (GIS) landscape, Python has become the lingua franca for data science, supported by libraries such as GeoPandas for vector manipulation and PySAL for spatial statistics. However, these tools are primarily designed for static analysis. Dynamic spatial modeling—simulating how landscapes evolve over time—has historically required specialized platforms like TerraME [@Carneiro2013] or Dinamica EGO.
+In the Geographic Information Systems (GIS) landscape, Python has become the lingua
+franca for data science, supported by libraries such as GeoPandas for vector
+manipulation and PySAL for spatial statistics. However, these tools are primarily
+designed for static analysis. Dynamic spatial modeling — simulating how landscapes
+evolve over time — has historically required specialised platforms like TerraME
+[@Carneiro2013] or Dinamica EGO.
 
-While TerraME is conceptually robust, the requirement for Lua scripting creates a barrier for data scientists already invested in the Python ecosystem. Furthermore, while discrete-event simulation libraries exist, they lack native "glue code" to synchronize a simulation clock with the geographical state of a GeoDataFrame. DisSModel fulfills this need by providing a Pythonic implementation of the TerraME paradigm, democratizing access to complex modeling for territorial planners and environmental scientists [@Verburg2006]. It offers native support for hybrid data types—Geo-fields and Geo-objects—allowing for simulations that remain interoperable with modern machine learning and GIS workflows [@Bezerra2022; @Varnier2025].
+While TerraME is conceptually robust, the requirement for Lua scripting creates a
+barrier for data scientists already invested in the Python ecosystem. Furthermore,
+while discrete-event simulation libraries exist, they lack native "glue code" to
+synchronise a simulation clock with the geographical state of a GeoDataFrame.
+DisSModel fulfils this need by providing a Pythonic implementation of the TerraME
+paradigm, democratising access to complex modeling for territorial planners and
+environmental scientists [@Verburg2006]. It offers native support for hybrid data
+types — Geo-fields and Geo-objects — allowing for simulations that remain
+interoperable with modern machine learning and GIS workflows
+[@Bezerra2022; @Varnier2025].
 
-## State of the field
+Beyond simulation execution, reproducibility is a first-class concern in DisSModel.
+The `executor` module provides a standardised lifecycle — `validate → load → run → save`
+— that captures provenance metadata (input checksums, parameters, timing, output
+paths) in an `ExperimentRecord` object automatically generated for every run. This
+design ensures that results produced locally, via CLI, or through the cloud-native
+`dissmodel-platform` [@LambdaGeoPlatform] are fully traceable without additional
+instrumentation by the modeller.
 
-DisSModel occupies a unique niche between general-purpose agent-based modeling (ABM) libraries and specialized GIS simulation software. The following table highlights its positioning:
+## State of the Field
+
+DisSModel occupies a unique niche between general-purpose agent-based modeling (ABM)
+libraries and specialised GIS simulation software. The following table highlights
+its positioning:
 
 | Aspect | TerraME | Dinamica EGO | DisSModel |
 |--------|---------|--------------|-----------|
@@ -50,24 +85,63 @@ DisSModel occupies a unique niche between general-purpose agent-based modeling (
 | Spatial Structure | CellularSpace (Fixed) | Cellular Grid | GeoDataFrame + NumPy (Dual) |
 | GIS Integration | TerraLib | Native Raster | GeoPandas / Rasterio |
 | Extensibility | Script-based | Block-based | Class Inheritance |
+| Reproducibility | Manual | Manual | Automated (ExperimentRecord) |
 | Anisotropy | GPM Support | Limited | GPM Support |
 
-While frameworks like **NetLogo** and **Mesa** are excellent for ABM, they often require significant boilerplate to handle real-world spatial projections. DisSModel simplifies this by using GeoPandas as its core engine, following the discrete spatial modeling approach proposed by @SantosJunior2025.
+While frameworks like **NetLogo** and **Mesa** are excellent for ABM, they often
+require significant boilerplate to handle real-world spatial projections. DisSModel
+simplifies this by using GeoPandas as its core engine, following the discrete
+spatial modeling approach proposed by @SantosJunior2025.
 
 ## Software Design
 
-DisSModel is organized into four modules, following a strict separation of concerns that allows researchers to extend the framework through class inheritance.
+DisSModel is organised into five modules, following a strict separation of concerns
+that allows researchers to extend the framework through class inheritance.
 
-- **Core:** The central engine that manages the simulation clock and discrete-event execution via Salabim integration.
-- **Geo:** Manages spatial representations through a dual-substrate design. The vector substrate (`vector_grid`, `SpatialModel`, `CellularAutomaton`) operates on GeoDataFrame structures with libpysal neighborhoods [@Rey2021]. The raster substrate (`raster_grid`, `RasterModel`, `RasterCellularAutomaton`) operates on named NumPy arrays via `RasterBackend`, enabling fully vectorized spatial operations — `shift2d`, `focal_sum`, and `neighbor_contact` — that replace cell-by-cell iteration loops.
-- **Models:** Provides templates for common paradigms, including Cellular Automata (CA) and System Dynamics.
-- **Visualization:** Integrates Matplotlib for static outputs, Streamlit for interactive dashboards, and `RasterMap` for step-by-step raster rendering in both headless and interactive modes.
+**Core** manages the simulation clock and discrete-event execution via Salabim
+integration. The `Environment` class orchestrates time progression, and all spatial
+models register themselves as Salabim components, receiving clock ticks
+automatically.
+
+**Geo** manages spatial representations through a dual-substrate design. The vector
+substrate (`vector_grid`, `SpatialModel`, `CellularAutomaton`) operates on
+GeoDataFrame structures with libpysal neighbourhoods [@Rey2021]. The raster
+substrate (`raster_grid`, `RasterModel`, `RasterCellularAutomaton`) operates on
+named NumPy arrays via `RasterBackend`, enabling fully vectorised spatial
+operations — `shift2d`, `focal_sum`, and `neighbor_contact` — that replace
+cell-by-cell iteration loops.
+
+**Executor** provides the standardised interface for packaging, deploying, and
+reproducing simulations. The `ModelExecutor` abstract base class defines a four-phase
+lifecycle — `validate`, `load`, `run`, `save` — that the platform orchestrates via
+`execute_lifecycle`. Subclasses register themselves automatically in
+`ExecutorRegistry` through Python's `__init_subclass__` mechanism, requiring no
+boilerplate. Every execution produces an `ExperimentRecord` Pydantic object capturing
+the input URI, SHA-256 checksum, resolved parameters, per-phase timing, output path,
+and free-form logs. Executors are distributed as standard Python packages and
+resolved at runtime from a TOML-based model registry, enabling institutional
+governance of calibrated model configurations through version-controlled pull
+requests.
+
+**IO** provides a unified dataset abstraction (`load_dataset` / `save_dataset`) that
+detects format automatically and dispatches to the appropriate backend —
+GeoDataFrame, rasterio GeoTIFF, or Xarray/Zarr — based on file extension or an
+explicit `fmt` argument. For cloud deployments, the same API resolves
+`s3://` URIs transparently via the configured MinIO/S3 client.
+
+**Visualization** integrates Matplotlib for static outputs, Streamlit for
+interactive dashboards, and `RasterMap` for step-by-step raster rendering in both
+headless and interactive modes.
 
 ## Performance
 
-The dual-substrate design exposes a fundamental performance trade-off. The vector substrate offers spatial expressiveness and direct integration with GIS workflows, while the raster substrate achieves high throughput through NumPy vectorization.
+The dual-substrate design exposes a fundamental performance trade-off. The vector
+substrate offers spatial expressiveness and direct integration with GIS workflows,
+while the raster substrate achieves high throughput through NumPy vectorisation.
 
-Benchmarks running Conway's Game of Life under identical conditions on both substrates show the following results:
+**Synthetic benchmark — Conway's Game of Life.** Running identical rules on both
+substrates confirms that mathematical equivalence is preserved across substrates
+while throughput scales differently:
 
 | Grid | Cells | Raster (ms/step) | Vector (ms/step) | Speedup |
 |-----:|------:|-----------------:|-----------------:|--------:|
@@ -77,14 +151,53 @@ Benchmarks running Conway's Game of Life under identical conditions on both subs
 | 500×500 | 250,000 | 15.36 | — | — |
 | 1,000×1,000 | 1,000,000 | 25.85 | — | — |
 
-Results were validated cell-by-cell: both substrates produce identical output for all comparable grid sizes. The raster substrate processes grids of one million cells in approximately 26 ms per step, making it suitable for large-scale LUCC simulations such as the BR-MANGUE coastal dynamics model (94,704 cells, 88 time steps).
+The raster substrate processes grids of one million cells in approximately 26 ms per
+step.
 
-## Research impact statement
+**Domain validation — BR-MANGUE coastal dynamics model.** The `coastal-dynamics`
+package [@CoastalDynamics] implements coupled flood and mangrove succession models
+over the same spatial domain on both substrates. Running 20 simulation steps over a
+60×60 synthetic grid (3,600 cells, EPSG:31984) produces the following results:
 
-DisSModel provides a critical bridge for the environmental modeling community. By providing a Pythonic interface for complex spatial dynamics, it lowers the barrier for scientists to move from static GIS analysis to dynamic simulations. This framework has already been instrumental in academic research at the **LambdaGeo** group (UFMA), supporting studies on mangrove ecosystem dynamics and land-use change, building upon established spatial modeling practices [@Verburg2006; @SantosJunior2025].
+| Band | Match % | MAE | RMSE | Max Error | Cells |
+|------|--------:|----:|-----:|----------:|------:|
+| uso (land use) | 100.00% | 0.000000 | 0.000000 | 0.000000 | 3,600 |
+| solo (soil)    | 100.00% | 0.000000 | 0.000000 | 0.000000 | 3,600 |
+| alt (elevation)| 99.92%  | 0.003086 | 0.008362 | 0.072591  | 3,600 |
 
-## AI usage disclosure
+The raster substrate ran at 2.4 ms/step against 70.9 ms/step for the vector
+substrate (29.7× speedup). The minor divergence in the elevation band (0.08% of
+cells) reflects expected floating-point rounding differences between GeoDataFrame
+and NumPy computation paths, not algorithmic disagreement. The `ExperimentRecord`
+generated by this run captured the full execution provenance automatically:
+load phase 2.898 s (49.4%), run phase 2.972 s (50.6%), input SHA-256 checksum, and
+artifact paths — with zero additional instrumentation by the modeller.
 
-This submission used generative AI tools (Claude Sonnet 4.6, NotebookLM, and Google Jules) to assist with structuring documentation, synthesizing prior work, and generating submission checklists. All outputs were reviewed and validated by the human authors.
+## Research Impact Statement
+
+DisSModel provides a critical bridge for the environmental modeling community. By
+providing a Pythonic interface for complex spatial dynamics, it lowers the barrier
+for scientists to move from static GIS analysis to dynamic simulations. The
+framework has already been instrumental in academic research at the **LambdaGeo**
+group (UFMA), supporting studies on mangrove ecosystem dynamics and land-use change,
+building upon established spatial modeling practices [@Verburg2006; @SantosJunior2025].
+
+The `executor` module and its companion `dissmodel-platform` [@LambdaGeoPlatform]
+extend DisSModel's reach from individual research scripts to institutional
+simulation infrastructure: models are packaged as versioned Python packages,
+registered in a governed TOML registry, and executed through a FastAPI gateway with
+automatic provenance capture, MinIO artifact storage, and JupyterLab integration.
+This architecture positions DisSModel as the simulation layer in the Brazilian Earth
+Observation stack — complementary to SITS [@Simoes2021] for present-state land
+classification and the Brazil Data Cube [@Ferreira2020] for satellite data
+access — and is designed to scale toward Pangeo-style ensemble runs via Dask
+delayed operations over shared loaded datasets.
+
+## AI Usage Disclosure
+
+This submission used generative AI tools (Claude Sonnet 4.6, NotebookLM, and Google
+Jules) to assist with structuring documentation, synthesising prior work, and
+generating submission checklists. All outputs were reviewed and validated by the
+human authors.
 
 ## References

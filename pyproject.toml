@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dissmodel"
-version = "0.3.0"
+version = "0.4.0"
 description = "Discrete Spatial Modeling framework for raster and vector simulations"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10"
@@ -53,9 +53,18 @@ dependencies = [
     "greenlet>=3.0.0",
     "salabim>=25.0.0",
     "streamlit>=1.40.0",
+    "ipywidgets>=8.0.0",   # Colab/Jupyter visualization — Output widget
 ]
 
 [project.optional-dependencies]
+
+xarray = [
+    "xarray>=2023.1.0",
+    "netCDF4>=1.6.0",       # backend for to_netcdf / open_dataset
+    "zarr>=2.16.0",         # backend for to_zarr / open_zarr (MinIO/S3)
+    "pyproj>=3.4.0",        # CRS → spatial_ref (CF convention)
+    "rasterio>=1.3.0",      # Affine transform recovery in from_xarray
+]
 
 dev = [
     "mypy",
@@ -64,6 +73,12 @@ dev = [
     "mkdocstrings[python]",
     "mkdocs-jupyter",
     "mkdocs-material",
+    # xarray extras useful during development
+    "xarray>=2023.1.0",
+    "netCDF4>=1.6.0",
+    "zarr>=2.16.0",
+    "pyproj>=3.4.0",
+    "rasterio>=1.3.0",
 ]
 
 docs = [
@@ -105,5 +120,10 @@ module = [
     "streamlit.*",
     "IPython.*",
     "affine.*",
+    "xarray.*",
+    "netCDF4.*",
+    "zarr.*",
+    "pyproj.*",
+    "rasterio.*",
 ]
 ignore_missing_imports = true
