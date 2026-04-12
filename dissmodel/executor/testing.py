@@ -56,6 +56,8 @@ class ExecutorTestHarness:
     def run_with_sample_data(self, record: ExperimentRecord | None = None) -> bool:
         """
         Run the full executor lifecycle with real or synthetic data.
+
+        Calls validate → load → run(data, record) → save in sequence.
         Returns True if the cycle completes without error.
         """
         if record is None:
@@ -68,8 +70,11 @@ class ExecutorTestHarness:
             print("  validate()...")
             self.executor.validate(record)
 
+            print("  load()...")
+            data = self.executor.load(record)
+
             print("  run()...")
-            result = self.executor.run(record)
+            result = self.executor.run(data, record)
 
             print("  save()...")
             completed = self.executor.save(result, record)
@@ -122,8 +127,11 @@ class ExecutorTestHarness:
     def _check_run_signature(self) -> None:
         sig    = inspect.signature(self.executor.run)
         params = [p for p in sig.parameters.values() if p.name != "self"]
-        assert len(params) == 1, \
-            f"run() must accept exactly one parameter (record), got {[p.name for p in params]}"
+        assert len(params) == 2, (
+            f"run() must accept exactly two parameters (data, record), "
+            f"got {[p.name for p in params]}. "
+            f"Did you update to the 0.4.0 signature?"
+        )
 
     def _check_save_signature(self) -> None:
         sig    = inspect.signature(self.executor.save)
