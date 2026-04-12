@@ -8,8 +8,9 @@ Supported render targets
 ------------------------
 1. **Streamlit**   — ``plot_area=st.empty()``
 2. **Jupyter**     — detected automatically
-3. **Interactive** — matplotlib window (TkAgg / Qt)
-4. **Headless**    — saves PNGs to ``map_frames/`` (default fallback)
+3. **Colab**       — detected automatically
+4. **Interactive** — matplotlib window (TkAgg / Qt)
+5. **Headless**    — saves PNGs to ``map_frames/`` (default fallback)
 """
 from __future__ import annotations
 
@@ -72,6 +73,18 @@ class Map(Model):
         self.plot_area   = plot_area
         self.save_frames = save_frames
 
+        # widget Output ancorado — elimina blink no Jupyter/Colab
+        # criado uma vez no setup; display() a seguir fixa a posição na célula
+        self._out = None
+        if is_notebook():
+            try:
+                import ipywidgets as widgets
+                from IPython.display import display
+                self._out = widgets.Output()
+                display(self._out)
+            except ImportError:
+                pass  # ipywidgets ausente — cai no fallback clear_output
+
         # always create fig so _render() can always call self.fig.clf()
         self.fig, self.ax = plt.subplots(1, 1, figsize=self.figsize)
 
@@ -120,10 +133,16 @@ class Map(Model):
             plt.close(fig)
 
         elif is_notebook():
-            # Jupyter
             from IPython.display import clear_output, display
-            clear_output(wait=True)
-            display(fig)
+            if self._out is not None:
+                # Output widget ancorado — sem blink
+                with self._out:
+                    clear_output(wait=True)
+                    display(fig)
+            else:
+                # fallback: ipywidgets ausente
+                clear_output(wait=True)
+                display(fig)
             plt.close(fig)
 
         elif self.save_frames or not is_interactive_backend():
