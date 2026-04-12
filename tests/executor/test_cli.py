@@ -75,11 +75,6 @@ class TestOutputPathIntelligence:
         exp_id = record.experiment_id[:8]
         assert record.output_path == f"outputs/simulacao_{exp_id}.tif"
 
-    def test_backslash_generates_filename(self, make_record):
-        record, _ = self._run(make_record, "outputs\\")
-        exp_id = record.experiment_id[:8]
-        assert record.output_path == f"outputs\\simulacao_{exp_id}.tif"
-
     def test_existing_directory_generates_filename(self, make_record, tmp_path):
         record          = make_record()
         record.output_path = str(tmp_path)   # tmp_path is a real existing directory

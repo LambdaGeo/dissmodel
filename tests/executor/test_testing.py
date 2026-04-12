@@ -4,7 +4,7 @@ import pytest
 
 from dissmodel.executor.testing        import ExecutorTestHarness
 from dissmodel.executor.model_executor import ModelExecutor
-from .conftest import MinimalExecutor
+from tests.executor.conftest import MinimalExecutor
 
 
 # ── Harness passes on a valid executor ───────────────────────────────────────

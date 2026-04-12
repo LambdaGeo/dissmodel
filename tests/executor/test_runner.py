@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 
 from dissmodel.executor.runner import execute_lifecycle
-from .conftest import (
+from tests.executor.conftest import (
     MinimalExecutor,
     OrderTrackingExecutor,
     FailingValidateExecutor,
