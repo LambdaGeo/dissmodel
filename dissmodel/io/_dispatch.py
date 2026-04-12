@@ -30,7 +30,7 @@ def load_dataset(uri: str, minio_client=None, fmt: str | None = None, **kwargs):
         return load_geotiff(uri, minio_client=minio_client, **kwargs)
 
     if resolved_fmt == "xarray":
-        from dissmodel.io.xarray_ import load_xarray
+        from dissmodel.io._xarray import load_xarray
         return load_xarray(uri, minio_client=minio_client, **kwargs)
 
     raise ValueError(f"Unsupported format: '{resolved_fmt}'")
@@ -57,7 +57,7 @@ def save_dataset(data, uri: str, minio_client=None, fmt: str | None = None, **kw
         return save_geotiff(data, uri, minio_client=minio_client, **kwargs)
 
     if resolved_fmt == "xarray":
-        from dissmodel.io.xarray_ import save_xarray
+        from dissmodel.io._xarray import save_xarray
         return save_xarray(data, uri, minio_client=minio_client, **kwargs)
 
     raise ValueError(f"Unsupported format: '{resolved_fmt}'")
