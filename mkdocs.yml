@@ -8,7 +8,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: ["."]  
+          paths: ["."]
           options:
             docstring_style: numpy
             show_source: true
@@ -38,26 +38,7 @@ extra_javascript:
 nav:
   - Home: index.md
   - Getting Started: getting_started.md
-  - Why DisSModel?: why_dissmodel.md   
-
-
-  - Models:
-    - Cellular Automata:
-      - Overview: models/ca/index.md
-      - Game of Life: models/ca/game_of_life.md
-      - Fire Model: models/ca/fire_model.md
-      - Fire Model Prob: models/ca/fire_model_prob.md
-      - Snow: models/ca/snow.md
-      - Growth: models/ca/growth.md
-      - Propagation: models/ca/propagation.md
-      - Anneal: models/ca/anneal.md
-    - System Dynamics:
-      - Overview:         models/sysdyn/index.md
-      - SIR: models/sysdyn/sir.md
-      - Predator Prey: models/sysdyn/predator_prey.md
-      - Population Growth: models/sysdyn/population_growth.md
-      - Lorenz: models/sysdyn/lorenz.md
-      - Coffee: models/sysdyn/coffee.md
+  - Why DisSModel?: why_dissmodel.md
 
   - Examples:
     - CLI: examples/cli.md
@@ -69,8 +50,13 @@ nav:
   - API Reference:
     - Core: api/core.md
     - Geo:
-      - Overview:  api/geo/index.md   
+      - Overview: api/geo/index.md
       - Vector: api/geo/vector.md
-      - Raster:  api/geo/raster.md
+      - Raster: api/geo/raster.md
+    - Executor:
+      - Overview: api/executor/index.md
+      - Schemas: api/executor/schemas.md
+      - CLI: api/executor/cli.md
+      - Testing: api/executor/testing.md
+    - IO: api/io/index.md
     - Visualization: api/visualization.md
-

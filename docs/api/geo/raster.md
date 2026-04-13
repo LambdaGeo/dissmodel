@@ -18,6 +18,13 @@ Raster substrate classes and utilities backed by NumPy arrays.
       members:
         - RasterModel
 
+::: dissmodel.geo.raster.sync_model
+    options:
+      show_source: true
+      show_root_heading: true
+      members:
+        - SyncRasterModel
+
 ::: dissmodel.geo.raster.cellular_automaton
     options:
       show_source: true
@@ -31,3 +38,8 @@ Raster substrate classes and utilities backed by NumPy arrays.
       show_root_heading: true
       members:
         - raster_grid
+
+::: dissmodel.geo.raster.band_spec
+    options:
+      show_source: true
+      show_root_heading: true
