@@ -89,10 +89,10 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/LambdaGeo/dissmodel"
-Repository = "https://github.com/LambdaGeo/dissmodel"
+Homepage = "https://github.com/DisSModel/dissmodel"
+Repository = "https://github.com/DisSModel/dissmodel"
 Documentation = "https://lambdageo.github.io/dissmodel"
-Issues = "https://github.com/LambdaGeo/dissmodel/issues"
+Issues = "https://github.com/DisSModel/dissmodel/issues"
 
 [tool.setuptools]
 include-package-data = true

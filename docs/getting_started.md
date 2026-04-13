@@ -9,7 +9,7 @@ pip install dissmodel
 For development mode (including examples and tests):
 
 ```bash
-git clone [https://github.com/lambdageo/dissmodel](https://github.com/lambdageo/dissmodel)
+git clone [https://github.com/DisSModel/dissmodel](https://github.com/DisSModel/dissmodel)
 cd dissmodel
 pip install -e .
 ```
