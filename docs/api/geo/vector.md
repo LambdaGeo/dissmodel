@@ -9,6 +9,13 @@ Vector substrate classes and utilities backed by GeoDataFrame.
       members:
         - SpatialModel
 
+::: dissmodel.geo.vector.sync_model
+    options:
+      show_source: true
+      show_root_heading: true
+      members:
+        - SyncSpatialModel
+
 ::: dissmodel.geo.vector.cellular_automaton
     options:
       show_source: true

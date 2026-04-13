@@ -8,7 +8,7 @@ attribute initialization — without imposing any domain logic.
 from dissmodel.geo import vector_grid, fill, FillStrategy
 from dissmodel.geo.vector.neighborhood import attach_neighbors
 from dissmodel.geo.raster.backend import RasterBackend
-from dissmodel.geo.raster.regular_grid import raster_grid
+from dissmodel.geo.raster.raster_grid import raster_grid
 ```
 
 ---
@@ -26,7 +26,7 @@ side by side in the same `env.run()`.
 | **Grid factory** | `vector_grid()` | `raster_grid()` |
 | **Neighbourhood** | Queen / Rook (libpysal) | Moore / Von Neumann (`shift2d`) |
 | **Rule pattern** | `rule(idx)` per cell | `rule(arrays) → dict` vectorized |
-| **GIS integration** | CRS, projections, spatial joins | rasterio I/O via `load_geotiff` |
+| **GIS integration** | CRS, projections, spatial joins | rasterio I/O, Xarray interop |
 | **Best for** | Irregular grids, real-world data | Large grids, performance-critical models |
 
 ---
@@ -40,7 +40,7 @@ no conversion step.
 ```python
 import geopandas as gpd
 from dissmodel.core import Model, Environment
-from dissmodel.visualization.map  import Map
+from dissmodel.visualization.map import Map
 
 gdf = gpd.read_file("area.shp")
 gdf.set_index("object_id", inplace=True)
@@ -77,6 +77,52 @@ gdf = vector_grid(gdf=base_gdf, resolution=50)
 
 ---
 
+## Sync models
+
+Both substrates provide a synchronised variant that manages `_past` snapshots
+automatically — equivalent to TerraME's `cs:synchronize()`.
+
+### `SyncSpatialModel`
+
+Declare `self.land_use_types` in `setup()` and `<col>_past` columns are
+created and updated before and after each step:
+
+```python
+from dissmodel.geo.vector.sync_model import SyncSpatialModel
+
+class LUCCModel(SyncSpatialModel):
+    def setup(self, gdf):
+        self.gdf             = gdf
+        self.land_use_types  = ["f", "d", "outros"]
+
+    def execute(self):
+        uso_past = self.gdf["f_past"]   # state at beginning of step
+        # ... update self.gdf["f"] ...
+```
+
+### `SyncRasterModel`
+
+Same semantics for the raster substrate. Copies each array in `land_use_types`
+to `<n>_past` in the `RasterBackend`:
+
+```python
+from dissmodel.geo.raster.sync_model import SyncRasterModel
+
+class LUCCRasterModel(SyncRasterModel):
+    def setup(self, backend):
+        self.backend         = backend
+        self.land_use_types  = ["f", "d", "outros"]
+
+    def execute(self):
+        f_past = self.backend.get("f_past")   # state at beginning of step
+        # ... update self.backend.arrays["f"] ...
+```
+
+Both expose `synchronize()` as a public method for manual use when the
+automatic pre/post-step timing is not sufficient.
+
+---
+
 ## Raster substrate
 
 The raster substrate stores named NumPy arrays in a `RasterBackend`. All
@@ -84,7 +130,7 @@ operations (`shift2d`, `focal_sum`, `neighbor_contact`) are fully vectorized —
 no Python loops over cells.
 
 ```python
-from dissmodel.geo.raster.regular_grid import raster_grid
+from dissmodel.geo.raster.raster_grid import raster_grid
 from dissmodel.geo.raster.backend import RasterBackend
 import numpy as np
 
@@ -99,6 +145,24 @@ shifted    = RasterBackend.shift2d(state, -1, 0)   # northern neighbour of each 
 n_active   = backend.focal_sum_mask(state == 1)    # count active Moore neighbours
 has_active = backend.neighbor_contact(state == 1)  # bool mask: any active neighbour?
 ```
+
+### Xarray interoperability
+
+`RasterBackend` can be converted to and from `xr.Dataset`, enabling integration
+with the Pangeo ecosystem (Zarr, Dask, JupyterHub):
+
+```python
+# export — each array becomes a DataVariable with (y, x) dimensions
+ds = backend.to_xarray(time=42)
+ds.to_zarr("output.zarr")
+
+# import — recovers arrays, transform, and CRS
+backend2 = RasterBackend.from_xarray(ds)
+```
+
+Spatial coordinates are derived from `backend.transform` (rasterio Affine) when
+available. CRS is stored as a `spatial_ref` coordinate following the CF-1.8
+convention.
 
 ---
 
@@ -117,8 +181,8 @@ from dissmodel.geo import fill, FillStrategy
 import rasterio
 
 with rasterio.open("altitude.tif") as src:
-    raster  = src.read(1)
-    affine  = src.transform
+    raster = src.read(1)
+    affine = src.transform
 
 fill(
     FillStrategy.ZONAL_STATS,
