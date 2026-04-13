@@ -59,10 +59,9 @@ while discrete-event simulation libraries exist, they lack native "glue code" to
 synchronise a simulation clock with the geographical state of a GeoDataFrame.
 DisSModel fulfils this need by providing a Pythonic implementation of the TerraME
 paradigm, democratising access to complex modeling for territorial planners and
-environmental scientists [@Verburg2006]. It offers native support for hybrid data
+environmental scientists. It offers native support for hybrid data
 types — Geo-fields and Geo-objects — allowing for simulations that remain
-interoperable with modern machine learning and GIS workflows
-[@Bezerra2022; @Varnier2025].
+interoperable with modern machine learning and GIS workflows.
 
 Beyond simulation execution, reproducibility is a first-class concern in DisSModel.
 The `executor` module provides a standardised lifecycle — `validate → load → run → save`
@@ -133,6 +132,14 @@ explicit `fmt` argument. For cloud deployments, the same API resolves
 interactive dashboards, and `RasterMap` for step-by-step raster rendering in both
 headless and interactive modes.
 
+The extensibility of DisSModel's class hierarchy has already produced two domain
+packages distributed independently on PyPI: `dissmodel-ca` [@DisSModelCA], which
+provides ready-to-use Cellular Automata patterns built on `RasterCellularAutomaton`,
+and `dissmodel-sysdyn` [@DisSModelSysDyn], which adds System Dynamics compartmental
+models as first-class DisSModel components. Both packages follow the same
+`ModelExecutor` contract and serve as reference implementations for researchers
+building their own domain extensions.
+
 ## Performance
 
 The dual-substrate design exposes a fundamental performance trade-off. The vector
@@ -180,7 +187,7 @@ providing a Pythonic interface for complex spatial dynamics, it lowers the barri
 for scientists to move from static GIS analysis to dynamic simulations. The
 framework has already been instrumental in academic research at the **LambdaGeo**
 group (UFMA), supporting studies on mangrove ecosystem dynamics and land-use change,
-building upon established spatial modeling practices [@Verburg2006; @SantosJunior2025].
+building upon established spatial modeling practices [@Verburg2004; @SantosJunior2025].
 
 The `executor` module and its companion `dissmodel-platform` [@LambdaGeoPlatform]
 extend DisSModel's reach from individual research scripts to institutional
