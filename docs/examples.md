@@ -101,21 +101,21 @@ env.run()
 
 The DisSModel ecosystem is organized into specialized libraries. Each repository contains advanced implementations and research-ready models:
 
-### 🔬 [DisSModel-CA](https://github.com/LambdaGeo/dissmodel-ca)
+### 🔬 [DisSModel-CA](https://github.com/DisSModel/dissmodel-ca)
 A collection of **Cellular Automata** models, including:
 * **Game of Life** (Vector and Raster backends)
 * **FireModel** (Forest fire propagation)
 * **Growth** (Stochastic radial expansion)
 * **Snow** (Accumulation and gravity dynamics)
 
-### 📈 [DisSModel-SysDyn](https://github.com/LambdaGeo/dissmodel-sysdyn)
+### 📈 [DisSModel-SysDyn](https://github.com/DisSModel/dissmodel-sysdyn)
 Implementations of classic **System Dynamics** models:
 * **SIR** (Epidemiological modeling)
 * **Predator-Prey** (Ecological population dynamics)
 * **Lorenz Attractor** (Deterministic chaos)
 * **Coffee Cooling** (Newton's Law of Cooling)
 
-### 🌊 [Coastal-Dynamics](https://github.com/LambdaGeo/coastal-dynamics)
+### 🌊 [Coastal-Dynamics](https://github.com/DisSModel/coastal-dynamics)
 Advanced research models focused on coastal processes, demonstrating model equivalence between vector and raster substrates for:
 * **Mangrove Succession**
 * **Coastal Flooding** (Flood models)

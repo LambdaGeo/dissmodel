@@ -84,7 +84,7 @@ from dissmodel.executor.schemas import JobRequest
 job = JobRequest(
     model = {
         "class":   "coastal_raster",
-        "package": "git+https://github.com/LambdaGeo/coastal-dynamics@main",
+        "package": "git+https://github.com/DisSModel/coastal-dynamics@main",
         "parameters": {"end_time": 88},
     },
     source = {"type": "s3", "uri": "s3://dissmodel-inputs/grid.zip"},

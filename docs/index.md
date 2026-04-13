@@ -3,7 +3,7 @@
 
 **Discrete Spatial Modeling framework for Python**
 
-DisSModel is a modular, production-ready Python framework for spatially explicit dynamic modeling. Developed by the [LambdaGeo](https://github.com/LambdaGeo) group at the Federal University of Maranhão (UFMA), it provides a unified environment for building **Cellular Automata (CA)** and **System Dynamics (SysDyn)** models.
+DisSModel is a modular, production-ready Python framework for spatially explicit dynamic modeling. Developed by the [LambdaGeo](https://github.com/DisSModel) group at the Federal University of Maranhão (UFMA), it provides a unified environment for building **Cellular Automata (CA)** and **System Dynamics (SysDyn)** models.
 
 Inspired by the [TerraME](http://www.terrame.org/) framework, DisSModel brings the same modeling expressiveness to Python — replacing the TerraLib/Lua stack with GeoPandas, NumPy, and Salabim, while remaining fully interoperable with the broader Python data science ecosystem.
 
@@ -61,12 +61,12 @@ env.run(30)
 
 To keep the core framework lean, we maintain specialized libraries containing ready-to-use models. These are excellent starting points for your own research:
 
-- [**DisSModel-CA**](https://github.com/LambdaGeo/dissmodel-ca): A collection of Cellular Automata models including Game of Life, Forest Fire, and Growth models.
-- [**DisSModel-SysDyn**](https://github.com/LambdaGeo/dissmodel-sysdyn): System Dynamics implementations such as SIR, Predator-Prey, and the Lorenz Attractor.
+- [**DisSModel-CA**](https://github.com/DisSModel/dissmodel-ca): A collection of Cellular Automata models including Game of Life, Forest Fire, and Growth models.
+- [**DisSModel-SysDyn**](https://github.com/DisSModel/dissmodel-sysdyn): System Dynamics implementations such as SIR, Predator-Prey, and the Lorenz Attractor.
 
 ---
 
 
 ## License
 
-MIT © 2026 Sérgio Costa & Nerval Santos Junior — [LambdaGeo/UFMA](https://github.com/LambdaGeo)
+MIT © 2026 Sérgio Costa & Nerval Santos Junior — [LambdaGeo/UFMA](https://github.com/DisSModel)

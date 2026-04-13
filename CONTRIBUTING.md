@@ -25,7 +25,7 @@ If you have an idea for a new feature or improvement, please open an issue and t
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/LambdaGeo/dissmodel.git
+    git clone https://github.com/DisSModel/dissmodel.git
     cd dissmodel
     ```
 

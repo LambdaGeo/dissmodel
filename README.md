@@ -3,13 +3,13 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/dissmodel.svg)](https://pypi.org/project/dissmodel/)
-[![LambdaGeo](https://img.shields.io/badge/LambdaGeo-Research-green.svg)](https://github.com/LambdaGeo)
+[![LambdaGeo](https://img.shields.io/badge/LambdaGeo-Research-green.svg)](https://github.com/DisSModel)
 
 ---
 
 ## 📖 About
 
-**DisSModel** is a modular Python framework for spatially explicit dynamic simulation models. Developed by the [LambdaGeo](https://github.com/LambdaGeo) group at the Federal University of Maranhão (UFMA), it provides the simulation layer that connects domain models (LUCC, coastal dynamics) to a reproducible, cloud-native execution platform.
+**DisSModel** is a modular Python framework for spatially explicit dynamic simulation models. Developed by the [LambdaGeo](https://github.com/DisSModel) group at the Federal University of Maranhão (UFMA), it provides the simulation layer that connects domain models (LUCC, coastal dynamics) to a reproducible, cloud-native execution platform.
 
 | INPE / TerraME Ecosystem | LambdaGeo Ecosystem | Role |
 |--------------------------|---------------------|------|
@@ -211,7 +211,7 @@ Documentation: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github
 pip install dissmodel
 
 # Latest development version
-pip install "git+https://github.com/LambdaGeo/dissmodel.git@main"
+pip install "git+https://github.com/DisSModel/dissmodel.git@main"
 ```
 
 ---
@@ -227,4 +227,4 @@ Framework for Python. LambdaGeo, Federal University of Maranhão (UFMA).
 
 ## ⚖️ License
 
-MIT © [LambdaGeo — UFMA](https://github.com/LambdaGeo)
+MIT © [LambdaGeo — UFMA](https://github.com/DisSModel)
