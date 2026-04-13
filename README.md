@@ -182,14 +182,24 @@ Every platform run generates a `profiling_{id}.md` alongside the output:
 
 ---
 
-## 📖 Examples
+## 📖 Examples & Ecosystem
+DisSModel is a core framework. To maintain a clean and specialized environment, all simulation models and implementation examples are hosted in separate repositories within the LambdaGeo ecosystem.
+### 🧩 Specialized Model Libraries
+Download and install these libraries to get ready-to-use models:
+ * **DisSModel-CA** — Classic Cellular Automata (Game of Life, Forest Fire, Growth, etc.).
+ * **DisSModel-SysDyn** — System Dynamics (SIR, Predator-Prey, Lorenz Attractor).
+ * **coastal-dynamics** — Specialized models for coastal flooding and mangrove succession.
 
-Full implementations in [`examples/`](examples/):
+### 🚀 Implementation Templates
+Since DisSModel uses the **Executor Pattern**, you can find implementation templates for CLI and API integration in the documentation or by exploring the repositories above. Each repository demonstrates how to:
+ 1. **Define a Model**: Using SpatialModel and Environment.
+ 2. **Wrap an Executor**: Using ModelExecutor for I/O and provenance.
+ 3. **Deploy**: Running via CLI or the DisSModel Platform.
+ 
 
-- **CA**: Game of Life, Forest Fire, Snowfall, Growth
-- **System Dynamics**: SIR, Predator-Prey, Lorenz Attractor
-- **LUCC**: [`DisSLUCC`](https://github.com/LambdaGeo/DisSLUCC) — C-CLUE on vector and raster
-- **Coastal**: [`coastal-dynamics`](https://github.com/LambdaGeo/coastal-dynamics) — Flood + Mangrove
+
+
+
 
 Documentation: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github.io/dissmodel/)
 
