@@ -57,6 +57,16 @@ env.run(30)
 
 ---
 
+## 📦 Model Ecosystem
+
+To keep the core framework lean, we maintain specialized libraries containing ready-to-use models. These are excellent starting points for your own research:
+
+- [**DisSModel-CA**](https://github.com/LambdaGeo/dissmodel-ca): A collection of Cellular Automata models including Game of Life, Forest Fire, and Growth models.
+- [**DisSModel-SysDyn**](https://github.com/LambdaGeo/dissmodel-sysdyn): System Dynamics implementations such as SIR, Predator-Prey, and the Lorenz Attractor.
+
+---
+
+
 ## License
 
 MIT © 2026 Sérgio Costa & Nerval Santos Junior — [LambdaGeo/UFMA](https://github.com/LambdaGeo)
