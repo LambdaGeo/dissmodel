@@ -17,6 +17,11 @@ authors:
   - name: Felipe Martins Sousa
     affiliation: "1"
     orcid: 0009-0009-0505-4845
+  - name: Denilson da Silva Bezerra
+    affiliation: "1"
+    orcid: 0000-0002-9567-7828
+
+
 affiliations:
   - name: Universidade Federal do Maranhão (UFMA)
     index: "1"
