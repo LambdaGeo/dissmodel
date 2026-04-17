@@ -9,7 +9,7 @@
 
 ## 📖 About
 
-**DisSModel** is a modular Python framework for spatially explicit dynamic simulation models. Developed by the [LambdaGeo](https://github.com/DisSModel) group at the Federal University of Maranhão (UFMA), it provides the simulation layer that connects domain models (LUCC, coastal dynamics) to a reproducible, cloud-native execution platform.
+**DisSModel** is a modular Python framework for spatially explicit dynamic simulation models. Developed by the [LambdaGeo](https://github.com/DisSModel) group at the Federal University of Maranhão (UFMA), it provides the simulation layer that connects domain models (LUCC, coastal dynamics) to a reproducible simulation environment.
 
 | INPE / TerraME Ecosystem | LambdaGeo Ecosystem | Role |
 |--------------------------|---------------------|------|
@@ -24,10 +24,9 @@
 
 - **Dual substrate** — same model logic runs on vector (`GeoDataFrame`) and raster (`RasterBackend`/NumPy).
 - **Discrete Event Simulation** — built on [Salabim](https://salabim.org/); time advances to the next relevant event, not millisecond by millisecond.
-- **Executor pattern** — strict separation between science (models) and infrastructure (I/O, cloud, queues).
+- **Executor pattern** — strict separation between science (models) and infrastructure (I/O, CLI, reproducible execution).
 - **Experiment tracking** — every run generates an immutable `ExperimentRecord` with SHA-256 checksums, TOML snapshot, and full provenance.
 - **Storage-agnostic I/O** — `dissmodel.io` handles local paths and `s3://` URIs transparently.
-- **CLI + Platform** — the same executor runs locally via CLI and on the DisSModel Platform via API.
 
 ---
 
@@ -41,7 +40,7 @@
 ├──────────────────────────────────────────────────────────┤
 │  Infrastructure Layer  (ModelExecutor)                   │
 │  CoastalRasterExecutor, LUCCVectorExecutor, ...          │
-│  → only knows URIs, MinIO, column_map, parameters        │
+│  → only knows URIs, local/S3, column_map, parameters     │
 ├──────────────────────────────────────────────────────────┤
 │  Core modules                                            │
 │  dissmodel.core      — Environment, SpatialModel         │
@@ -59,12 +58,13 @@
 ## 🚀 Quick Start
 
 ### Writing a model
+...
+---
 
-```python
-# my_model.py
-from dissmodel.core import SpatialModel, Environment
+## 📊 Performance Telemetry
 
-class ForestFireModel(SpatialModel):
+Every run via the executor lifecycle generates a `profiling_{id}.md` alongside the output:
+
 
     def setup(self, prob_spread=0.3):
         self.prob_spread = prob_spread
@@ -132,15 +132,6 @@ python my_executor.py validate --input data/forest.gpkg
 python my_executor.py show --toml model.toml
 ```
 
-### Running via Platform API
-
-```bash
-curl -X POST http://localhost:8000/submit_job \
-  -H "X-API-Key: chave-sergio" \
-  -H "Content-Type: application/json" \
-  -d '{"model_name": "forest_fire", "input_dataset": "s3://inputs/forest.gpkg"}'
-```
-
 ---
 
 ## 📦 ExperimentRecord
@@ -151,7 +142,7 @@ Every run produces an immutable provenance record:
 {
   "experiment_id":  "abc123",
   "model_commit":   "a3f9c12",
-  "code_version":   "0.1.5",
+  "code_version":   "0.4.0",
   "resolved_spec":  { "...TOML snapshot..." },
   "source":         { "uri": "s3://...", "checksum": "e3b0c44..." },
   "artifacts":      { "output": "sha256...", "profiling": "sha256..." },
@@ -171,7 +162,7 @@ curl -X POST http://localhost:8000/experiments/abc123/reproduce \
 
 ## 📊 Performance Telemetry
 
-Every platform run generates a `profiling_{id}.md` alongside the output:
+Every run via the executor lifecycle generates a `profiling_{id}.md` alongside the output:
 
 | Phase | Time (s) | % |
 |-------|----------|---|
@@ -191,10 +182,10 @@ Download and install these libraries to get ready-to-use models:
  * **coastal-dynamics** — Specialized models for coastal flooding and mangrove succession.
 
 ### 🚀 Implementation Templates
-Since DisSModel uses the **Executor Pattern**, you can find implementation templates for CLI and API integration in the documentation or by exploring the repositories above. Each repository demonstrates how to:
+Since DisSModel uses the **Executor Pattern**, you can find implementation templates for CLI integration in the documentation or by exploring the repositories above. Each repository demonstrates how to:
  1. **Define a Model**: Using SpatialModel and Environment.
  2. **Wrap an Executor**: Using ModelExecutor for I/O and provenance.
- 3. **Deploy**: Running via CLI or the DisSModel Platform.
+ 3. **Deploy**: Running via CLI.
  
 
 

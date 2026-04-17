@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Costa"
+    given-names: "Sérgio Souza"
+    orcid: "https://orcid.org/0000-0002-0232-4549"
+  - family-names: "Santos Junior"
+    given-names: "Nerval de Jesus"
+    orcid: "https://orcid.org/0009-0000-2339-3191"
+  - family-names: "Sousa"
+    given-names: "Felipe Martins"
+    orcid: "https://orcid.org/0009-0009-0505-4845"
+  - family-names: "Alves"
+    given-names: "José Magno Pinheiro"
+    orcid: "https://orcid.org/0009-0003-7212-4870"
+  - family-names: "Bezerra"
+    given-names: "Denilson da Silva"
+    orcid: "https://orcid.org/0000-0002-9567-7828"
+title: "DisSModel: A Python Framework for Spatially Explicit Dynamic Modeling"
+version: 0.4.0
+date-released: 2026-04-12
+url: "https://github.com/DisSModel/dissmodel"
+repository-code: "https://github.com/DisSModel/dissmodel"
+license: MIT
+keywords:
+  - "spatial modeling"
+  - "geospatial simulation"
+  - "cellular automata"
+  - "gis"
+  - "raster modeling"
+  - "vector modeling"
