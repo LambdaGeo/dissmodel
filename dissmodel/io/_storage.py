@@ -23,7 +23,7 @@ def get_default_client():
     except ImportError:
         raise ImportError(
             "s3:// URIs require the 'minio' package.\n"
-            "Install with: pip install dissmodel[platform]"
+            "Install with: pip install minio"
         )
 
     _default_client = Minio(

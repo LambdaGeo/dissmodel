@@ -75,9 +75,7 @@ Beyond simulation execution, reproducibility is a first-class concern in DisSMod
 The `executor` module provides a standardised lifecycle — `validate → load → run → save`
 — that captures provenance metadata (input checksums, parameters, timing, output
 paths) in an `ExperimentRecord` object automatically generated for every run. This
-design ensures that results produced locally, via CLI, or through the cloud-native
-`dissmodel-platform` [@LambdaGeoPlatform] are fully traceable without additional
-instrumentation by the modeller.
+design ensures that results produced locally or via CLI are fully traceable without additional instrumentation by the modeller.
 
 ## State of the Field
 
@@ -120,7 +118,7 @@ cell-by-cell iteration loops.
 
 **Executor** provides the standardised interface for packaging, deploying, and
 reproducing simulations. The `ModelExecutor` abstract base class defines a four-phase
-lifecycle — `validate`, `load`, `run`, `save` — that the platform orchestrates via
+lifecycle — `validate`, `load`, `run`, `save` — that the framework orchestrates via
 `execute_lifecycle`. Subclasses register themselves automatically in
 `ExecutorRegistry` through Python's `__init_subclass__` mechanism, requiring no
 boilerplate. Every execution produces an `ExperimentRecord` Pydantic object capturing
@@ -201,11 +199,6 @@ framework has already been instrumental in academic research at the **LambdaGeo*
 group (UFMA), supporting studies on mangrove ecosystem dynamics and land-use change,
 building upon established spatial modeling practices [@Verburg2004; @SantosJunior2025].
 
-The `executor` module and its companion `dissmodel-platform` [@LambdaGeoPlatform]
-extend DisSModel's reach from individual research scripts to institutional
-simulation infrastructure: models are packaged as versioned Python packages,
-registered in a governed TOML registry, and executed through a FastAPI gateway with
-automatic provenance capture, MinIO artifact storage, and JupyterLab integration.
 This architecture positions DisSModel as the simulation layer in the Brazilian Earth
 Observation stack — complementary to SITS [@Simoes2021] for present-state land
 classification and the Brazil Data Cube [@Ferreira2020] for satellite data
