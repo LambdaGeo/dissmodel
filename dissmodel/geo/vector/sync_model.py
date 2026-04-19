@@ -1,78 +1,89 @@
 """
 dissmodel/geo/vector/sync_model.py
 =====================================
-SyncSpatialModel — SpatialModel with automatic _past snapshot semantics.
+SyncSpatialModel and StepSyncSpatialModel.
 
-This module provides the snapshot mechanism equivalent to TerraME's
-``cs:synchronize()``, as a reusable base class for any vector model that
-needs per-step state history (LUCC, fire spread, epidemic models, etc.).
+SyncSpatialModel
+----------------
+SpatialModel with automatic _past snapshot semantics, equivalent to
+TerraME's cs:synchronize() for a single vector model.
 
-How it works
-------------
-At the start of each step, ``synchronize()`` copies the current value of
-every column in ``land_use_types`` to a ``<col>_past`` column in the
-GeoDataFrame. Models can read ``gdf["f_past"]`` to access the state at the
-beginning of the current step, regardless of changes made during execution.
-
-Usage
------
-Subclass ``SyncSpatialModel`` instead of ``SpatialModel`` and declare
-``self.land_use_types`` in ``setup()``:
-
-    class MyModel(SyncSpatialModel):
-        def setup(self, gdf, ...):
-            super().setup(gdf)                 # SpatialModel setup
-            self.land_use_types = ["f", "d"]   # columns to snapshot
-
-        def execute(self):
-            past_f = self.gdf["f_past"]        # state at step start
-            ...
-
-The ``synchronize()`` method is called automatically:
-  - once before the first ``execute()``   → snapshot of the initial state
-  - once after each ``execute()``         → snapshot for the next step
-
-It can also be called manually when needed (e.g. mid-step resets).
+StepSyncSpatialModel
+--------------------
+Shared synchronizer for multiple SyncSpatialModel instances that share the
+same GeoDataFrame. Must be created before the models it synchronizes.
 
 Relationship to domain libraries
 ----------------------------------
-``dissluc`` uses this class as the base for its LUCC components,
-exposing it under the domain-specific alias ``LUCSpatialModel``:
+dissluc uses SyncSpatialModel as the base for its LUCC components,
+exposing it under the domain-specific alias LUCSpatialModel:
 
     # dissluc/core.py
     from dissmodel.geo.vector.sync_model import SyncSpatialModel as LUCSpatialModel
 """
 from __future__ import annotations
 
+from dissmodel.core import Model
 from dissmodel.geo.vector.spatial_model import SpatialModel
 
 
 class SyncSpatialModel(SpatialModel):
     """
-    ``SpatialModel`` with automatic ``_past`` snapshot semantics.
+    SpatialModel with automatic _past snapshot semantics.
 
-    Extends :class:`~dissmodel.geo.vector.spatial_model.SpatialModel` with
-    a ``synchronize()`` method that copies each column listed in
-    ``self.land_use_types`` to a ``<col>_past`` column before and after
-    every simulation step.
+    Extends SpatialModel with a synchronize() method that copies each column
+    listed in self.land_use_types to a <col>_past column in the GeoDataFrame
+    before and after every simulation step.
 
-    This is the Python equivalent of TerraME's ``cs:synchronize()`` — it
+    This is the Python equivalent of TerraME's cs:synchronize() -- it
     ensures that every model reads a consistent snapshot of the state at
     the beginning of the current step, even when multiple models share the
     same GeoDataFrame.
 
     Subclass contract
     -----------------
-    Declare ``self.land_use_types`` (list of column names) in ``setup()``.
-    ``SyncSpatialModel`` will manage all ``<col>_past`` columns automatically.
-    Subclasses must **not** create or update ``_past`` columns manually.
+    Declare self.land_use_types (list of column names) in setup().
+    SyncSpatialModel will manage all <col>_past columns automatically.
+    Subclasses must not create or update _past columns manually.
 
-    Parameters
+    Attributes
     ----------
-    gdf : geopandas.GeoDataFrame
-        Passed through to :class:`~dissmodel.geo.vector.spatial_model.SpatialModel`.
-    **kwargs
-        Any additional keyword arguments accepted by the parent class.
+    auto_sync : bool
+        If True (default), synchronize() is called automatically before
+        the first step and after each execute(). Set to False when a
+        StepSyncSpatialModel handles synchronization for multiple models
+        sharing the same GeoDataFrame.
+
+    Usage -- single model (default, auto_sync=True)
+    ------------------------------------------------
+    class MyModel(SyncSpatialModel):
+        def setup(self, gdf, ...):
+            super().setup(gdf)
+            self.land_use_types = ["f", "d"]
+
+        def execute(self):
+            past_f = self.gdf["f_past"]   # state at step start
+            ...
+
+    Usage -- multiple models sharing a GeoDataFrame (auto_sync=False)
+    ------------------------------------------------------------------
+    class FloodVector(SyncSpatialModel):
+        def setup(self, gdf, taxa_elevacao=0.011):
+            super().setup(gdf)
+            self.land_use_types = ["uso", "alt"]
+            self.auto_sync      = False
+
+        def execute(self):
+            uso_past = self.gdf["uso_past"]   # frozen by StepSyncSpatialModel
+            alt_past = self.gdf["alt_past"]
+            ...
+
+    # In the executor -- StepSyncSpatialModel created BEFORE the models:
+    env = Environment(end_time=88)
+    StepSyncSpatialModel(gdf=gdf, cols=["uso", "alt", "solo"])
+    FloodVector(gdf=gdf, taxa_elevacao=0.011)
+    MangroveVector(gdf=gdf)
+    env.run()
 
     Examples
     --------
@@ -83,41 +94,106 @@ class SyncSpatialModel(SpatialModel):
     ...         self.rate = rate
     ...
     ...     def execute(self):
-    ...         # forest_past holds the state at the start of this step
     ...         gain = self.gdf["forest_past"] * self.rate
     ...         self.gdf["forest"] = self.gdf["forest_past"] + gain
     """
+
+    def setup(self, gdf, **kwargs) -> None:
+        super().setup(gdf)
+        self.auto_sync = True   # default: self-managed synchronization
 
     def process(self) -> None:
         """
         Simulation loop with automatic snapshot management.
 
-        Overrides :meth:`~dissmodel.core.Model.process` to insert
-        :meth:`synchronize` calls before the first step and after each step.
+        Overrides Model.process() to insert synchronize() calls before
+        the first step and after each execute(), when auto_sync is True.
         """
         if self.env.now() < self.start_time:
             self.hold(self.start_time - self.env.now())
 
-        # initial snapshot — captures state at t=0 before any execution
-        self.synchronize()
+        if self.auto_sync:
+            self.synchronize()   # initial snapshot -- state at t=0
 
         while self.env.now() < self.end_time:
             self.execute()
-            self.synchronize()   # update snapshot for the next step
+            if self.auto_sync:
+                self.synchronize()   # snapshot for next step
             self.hold(self._step)
 
     def synchronize(self) -> None:
         """
-        Copy each column in ``land_use_types`` to ``<col>_past``.
+        Copy each column in land_use_types to <col>_past in the GeoDataFrame.
 
-        Equivalent to ``cs:synchronize()`` in TerraME. Called automatically
-        before the first step and after each ``execute()``. Can also be
-        called manually when an explicit mid-step snapshot is needed.
+        Equivalent to cs:synchronize() in TerraME. Called automatically
+        when auto_sync=True, or by StepSyncSpatialModel when auto_sync=False.
+        Can also be called manually when an explicit mid-step snapshot is
+        needed.
 
-        Does nothing if ``land_use_types`` has not been set yet (safe to
-        call before ``setup()`` completes).
+        Does nothing if land_use_types has not been set yet (safe to
+        call before setup() completes).
         """
         if not hasattr(self, "land_use_types"):
             return
         for col in self.land_use_types:
             self.gdf[col + "_past"] = self.gdf[col].copy()
+
+
+class StepSyncSpatialModel(Model):
+    """
+    Shared synchronizer for multiple SyncSpatialModel instances.
+
+    Freezes a declared set of columns in "<col>_past" on the shared
+    GeoDataFrame once per step, before any other model runs. This is the
+    shared equivalent of TerraME's cs:synchronize() when multiple models
+    share a GeoDataFrame and both need to read the state at the beginning
+    of the step.
+
+    Must be created BEFORE the models it synchronizes -- the salabim
+    scheduler executes components in creation order within the same timestep.
+
+    Parameters
+    ----------
+    gdf : geopandas.GeoDataFrame
+        The shared GeoDataFrame. All models in the group must use the same
+        instance.
+    cols : list[str]
+        Column names to freeze each step. Typically the union of all models'
+        land_use_types. Duplicates are ignored.
+
+    Examples
+    --------
+    >>> env = Environment(end_time=88)
+
+    >>> # 1. StepSyncSpatialModel first -- runs first in every timestep
+    >>> StepSyncSpatialModel(gdf=gdf, cols=["uso", "alt", "solo"])
+
+    >>> # 2. Models after -- read from _past frozen above
+    >>> FloodVector(gdf=gdf, taxa_elevacao=0.011)   # auto_sync=False
+    >>> MangroveVector(gdf=gdf)                     # auto_sync=False
+
+    >>> env.run()
+    """
+
+    def setup(self, gdf, cols: list[str]) -> None:
+        if not cols:
+            raise ValueError("StepSyncSpatialModel requires at least one column name.")
+        self.gdf = gdf
+        # deduplicate preserving insertion order
+        seen:      set[str]  = set()
+        self._cols: list[str] = []
+        for col in cols:
+            if col not in seen:
+                seen.add(col)
+                self._cols.append(col)
+
+    def execute(self) -> None:
+        """
+        Freeze all registered columns in "<col>_past" on the shared GeoDataFrame.
+
+        Called once per timestep before any registered model runs
+        (salabim creation-order guarantee).
+        """
+        for col in self._cols:
+            if col in self.gdf.columns:
+                self.gdf[col + "_past"] = self.gdf[col].copy()
