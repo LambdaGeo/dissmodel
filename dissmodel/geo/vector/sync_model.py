@@ -54,11 +54,13 @@ class SyncSpatialModel(SpatialModel):
         StepSyncSpatialModel handles synchronization for multiple models
         sharing the same GeoDataFrame.
 
+        Defined in __init__ (not setup) so subclasses that override setup()
+        without calling super() still have the attribute.
+
     Usage -- single model (default, auto_sync=True)
     ------------------------------------------------
     class MyModel(SyncSpatialModel):
-        def setup(self, gdf, ...):
-            super().setup(gdf)
+        def setup(self, ...):
             self.land_use_types = ["f", "d"]
 
         def execute(self):
@@ -68,8 +70,7 @@ class SyncSpatialModel(SpatialModel):
     Usage -- multiple models sharing a GeoDataFrame (auto_sync=False)
     ------------------------------------------------------------------
     class FloodVector(SyncSpatialModel):
-        def setup(self, gdf, taxa_elevacao=0.011):
-            super().setup(gdf)
+        def setup(self, taxa_elevacao=0.011):
             self.land_use_types = ["uso", "alt"]
             self.auto_sync      = False
 
@@ -88,8 +89,7 @@ class SyncSpatialModel(SpatialModel):
     Examples
     --------
     >>> class ForestCA(SyncSpatialModel):
-    ...     def setup(self, gdf, rate=0.01):
-    ...         super().setup(gdf)
+    ...     def setup(self, rate=0.01):
     ...         self.land_use_types = ["forest", "defor"]
     ...         self.rate = rate
     ...
@@ -98,9 +98,9 @@ class SyncSpatialModel(SpatialModel):
     ...         self.gdf["forest"] = self.gdf["forest_past"] + gain
     """
 
-    def setup(self, gdf, **kwargs) -> None:
-        super().setup(gdf)
-        self.auto_sync = True   # default: self-managed synchronization
+    def __init__(self, gdf, **kwargs) -> None:
+        self.auto_sync = True   # defined here so setup() override never breaks it
+        super().__init__(gdf, **kwargs)
 
     def process(self) -> None:
         """
