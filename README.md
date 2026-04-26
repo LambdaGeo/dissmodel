@@ -23,7 +23,7 @@
 | **2001–2002** | Terra Translator (XML, ontologies) | Foundation: geographic data needs semantics and open standards |
 | **2005** | TerraHS (Haskell + GIS) | Vision: scientific models as verifiable, executable artifacts |
 | **2007–2010** | TerraME / LuccME (INPE) | Maturity: spatially explicit dynamic models as scientific objects |
-| **2015–2020** | DbCells, Linked Data, QGIS plugins | Infrastructure: reproducibility demands rich metadata and federated access |
+| **2015–2024** | DbCells, Linked Data, QGIS plugins | Infrastructure: reproducibility demands rich metadata and federated access |
 | **2024–2026** | **DisSModel** (Python, FAIR, cloud-native) | Synthesis: same code runs from Jupyter to distributed cluster |
 
 Three principles unite this trajectory:
