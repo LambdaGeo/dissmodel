@@ -1,15 +1,43 @@
+
 # DisSModel 🌍
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 [![PyPI version](https://badge.fury.io/py/dissmodel.svg)](https://pypi.org/project/dissmodel/)
 [![LambdaGeo](https://img.shields.io/badge/LambdaGeo-Research-green.svg)](https://github.com/DisSModel)
+[![JOSS Status](https://joss.theoj.org/papers/placeholder/status.svg)](https://joss.theoj.org)
+
+> *"Science should not need to be rewritten to go into production."*  
+> *(A ciência não deve ser reescrita para ir para a produção.)*
 
 ---
 
-## 📖 About
+## 📖 Research Trajectory
 
-**DisSModel** is a modular Python framework for spatially explicit dynamic simulation models. Developed by the [LambdaGeo](https://github.com/DisSModel) group at the Federal University of Maranhão (UFMA), it provides the simulation layer that connects domain models (LUCC, coastal dynamics) to a reproducible simulation environment.
+**DisSModel did not emerge from a blank slate.** It is the current expression of a research agenda that began in 2001 with an undergraduate thesis on geographic data interoperability using XML and open standards — a time when the central question was already forming:
+
+> *How can geospatial models be built so that others can understand, reuse, and trust them?*
+
+| Period | Project | Contribution to the Agenda |
+|--------|---------|---------------------------|
+| **2001–2002** | Terra Translator (XML, ontologies) | Foundation: geographic data needs semantics and open standards |
+| **2005** | TerraHS (Haskell + GIS) | Vision: scientific models as verifiable, executable artifacts |
+| **2007–2010** | TerraME / LuccME (INPE) | Maturity: spatially explicit dynamic models as scientific objects |
+| **2015–2020** | DbCells, Linked Data, QGIS plugins | Infrastructure: reproducibility demands rich metadata and federated access |
+| **2024–2026** | **DisSModel** (Python, FAIR, cloud-native) | Synthesis: same code runs from Jupyter to distributed cluster |
+
+Three principles unite this trajectory:
+1. 🔓 **Openness as method** — open source and open data as conditions for scientific validation.
+2. 🧩 **Interoperability as architecture** — systems designed to communicate, avoiding silos.
+3. ♻️ **Reproducibility as requirement** — publishing conditions for re-execution, not just results.
+
+DisSModel is the synthesis: a Python-native, FAIR-aligned, cloud-ready simulation framework where the same scientific code runs unchanged from a Jupyter notebook to a distributed production cluster.
+
+---
+
+## 🎯 About
+
+**DisSModel** is a modular Python framework for spatially explicit dynamic simulation models. Developed by the [LambdaGeo](https://github.com/DisSModel) group at the Federal University of Maranhão (UFMA), it provides the simulation layer that connects domain models (LUCC, coastal dynamics) to a reproducible execution environment.
 
 | INPE / TerraME Ecosystem | LambdaGeo Ecosystem | Role |
 |--------------------------|---------------------|------|
@@ -27,6 +55,7 @@
 - **Executor pattern** — strict separation between science (models) and infrastructure (I/O, CLI, reproducible execution).
 - **Experiment tracking** — every run generates an immutable `ExperimentRecord` with SHA-256 checksums, TOML snapshot, and full provenance.
 - **Storage-agnostic I/O** — `dissmodel.io` handles local paths and `s3://` URIs transparently.
+- **Cloud-ready** — deploy via Docker, FastAPI, and Redis without changing model code.
 
 ---
 
@@ -35,7 +64,7 @@
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  Science Layer  (Model / Salabim)                        │
-│  FloodModel, AllocationCClueLike, MangroveModel, ...     │
+│  FloodModel, AllocationClueLike, MangroveModel, ...      │
 │  → only knows math, geometry and time                    │
 ├──────────────────────────────────────────────────────────┤
 │  Infrastructure Layer  (ModelExecutor)                   │
@@ -51,41 +80,47 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
-"A ciência não deve ser reescrita para ir para a produção."
-
 ---
 
 ## 🚀 Quick Start
 
-### Writing a model
-...
----
+### 1. Install
 
-## 📊 Performance Telemetry
+```bash
+pip install dissmodel
 
-Every run via the executor lifecycle generates a `profiling_{id}.md` alongside the output:
+# Or latest development version
+pip install "git+https://github.com/DisSModel/dissmodel.git@main"
+```
 
+### 2. Write a Model
 
+```python
+# forest_fire_model.py
+from dissmodel.core import Environment, SpatialModel
+
+class ForestFireModel(SpatialModel):
     def setup(self, prob_spread=0.3):
         self.prob_spread = prob_spread
 
     def execute(self):
         # Called every step by Salabim — only math here, no I/O
         burning = self.gdf["state"] == "burning"
-        ...
+        # ... apply spread logic ...
+        return self.gdf
 
 env = Environment(end_time=50)
 ForestFireModel(gdf=gdf, prob_spread=0.4)
 env.run()
 ```
 
-### Writing an executor
+### 3. Wrap an Executor (for CLI + Provenance)
 
 ```python
 # my_executor.py
-from dissmodel.executor     import ExperimentRecord, ModelExecutor
+from dissmodel.executor import ExperimentRecord, ModelExecutor
 from dissmodel.executor.cli import run_cli
-from dissmodel.io           import load_dataset, save_dataset
+from dissmodel.io import load_dataset, save_dataset
 
 class ForestFireExecutor(ModelExecutor):
     name = "forest_fire"
@@ -97,33 +132,33 @@ class ForestFireExecutor(ModelExecutor):
 
     def run(self, record: ExperimentRecord):
         from dissmodel.core import Environment
-        gdf     = self.load(record)
-        env     = Environment(end_time=record.parameters.get("end_time", 50))
+        gdf = self.load(record)
+        env = Environment(end_time=record.parameters.get("end_time", 50))
         ForestFireModel(gdf=gdf, **record.parameters)
         env.run()
         return gdf
 
     def save(self, result, record: ExperimentRecord) -> ExperimentRecord:
-        uri      = record.output_path or "output.gpkg"
+        uri = record.output_path or "output.gpkg"
         checksum = save_dataset(result, uri)
-        record.output_path   = uri
+        record.output_path = uri
         record.output_sha256 = checksum
-        record.status        = "completed"
+        record.status = "completed"
         return record
 
 if __name__ == "__main__":
     run_cli(ForestFireExecutor)
 ```
 
-### Running via CLI
+### 4. Run via CLI
 
 ```bash
-# Run
+# Execute a simulation
 python my_executor.py run \
-  --input  data/forest.gpkg \
+  --input data/forest.gpkg \
   --output data/result.gpkg \
-  --param  end_time=50 \
-  --toml   model.toml
+  --param end_time=50 \
+  --toml model.toml
 
 # Validate data contract without running
 python my_executor.py validate --input data/forest.gpkg
@@ -134,20 +169,20 @@ python my_executor.py show --toml model.toml
 
 ---
 
-## 📦 ExperimentRecord
+## 📦 ExperimentRecord: Reproducibility by Design
 
 Every run produces an immutable provenance record:
 
 ```json
 {
-  "experiment_id":  "abc123",
-  "model_commit":   "a3f9c12",
-  "code_version":   "0.4.0",
-  "resolved_spec":  { "...TOML snapshot..." },
-  "source":         { "uri": "s3://...", "checksum": "e3b0c44..." },
-  "artifacts":      { "output": "sha256...", "profiling": "sha256..." },
-  "metrics":        { "time_run_sec": 2.15, "time_total_sec": 2.34 },
-  "status":         "completed"
+  "experiment_id": "abc123",
+  "model_commit": "a3f9c12",
+  "code_version": "0.4.0",
+  "resolved_spec": { "...TOML snapshot..." },
+  "source": { "uri": "s3://...", "checksum": "e3b0c44..." },
+  "artifacts": { "output": "sha256...", "profiling": "sha256..." },
+  "metrics": { "time_run_sec": 2.15, "time_total_sec": 2.34 },
+  "status": "completed"
 }
 ```
 
@@ -164,58 +199,77 @@ curl -X POST http://localhost:8000/experiments/abc123/reproduce \
 
 Every run via the executor lifecycle generates a `profiling_{id}.md` alongside the output:
 
-| Phase | Time (s) | % |
-|-------|----------|---|
-| Validate | 0.005 | 0.2% |
-| Run | 2.150 | 92.1% |
-| Save | 0.180 | 7.7% |
-| **Total** | **2.335** | **100%** |
+| Phase | Time (s) | % Total | Memory Peak (MB) | I/O Ops |
+|-------|----------|---------|-----------------|---------|
+| **Validate** | 0.000 | 0.0% | 142 | 0 |
+| **Load** | 0.306 | 14.7% | 387 | 12 (read) |
+| **Run** | 1.025 | 49.4% | 521 | 0 |
+| **Save** | 0.746 | 35.9% | 498 | 8 (write) |
+| **Total** | **2.077** | **100%** | **521** | **20** |
+
 
 ---
 
-## 📖 Examples & Ecosystem
+## 🧩 Ecosystem: Models & Examples
+
 DisSModel is a core framework. To maintain a clean and specialized environment, all simulation models and implementation examples are hosted in separate repositories within the LambdaGeo ecosystem.
-### 🧩 Specialized Model Libraries
-Download and install these libraries to get ready-to-use models:
- * **DisSModel-CA** — Classic Cellular Automata (Game of Life, Forest Fire, Growth, etc.).
- * **DisSModel-SysDyn** — System Dynamics (SIR, Predator-Prey, Lorenz Attractor).
- * **coastal-dynamics** — Specialized models for coastal flooding and mangrove succession.
 
-### 🚀 Implementation Templates
-Since DisSModel uses the **Executor Pattern**, you can find implementation templates for CLI integration in the documentation or by exploring the repositories above. Each repository demonstrates how to:
- 1. **Define a Model**: Using SpatialModel and Environment.
- 2. **Wrap an Executor**: Using ModelExecutor for I/O and provenance.
- 3. **Deploy**: Running via CLI.
- 
+### 🔬 Specialized Model Libraries
 
+| Repository | Description | Install |
+|------------|-------------|---------|
+| [`DisSModel-CA`](https://github.com/DisSModel/dissmodel-ca) | Classic Cellular Automata (Game of Life, Forest Fire, Growth) | `pip install dissmodel-ca` |
+| [`DisSModel-SysDyn`](https://github.com/DisSModel/dissmodel-sysdyn) | System Dynamics (SIR, Predator-Prey, Lorenz) | `pip install dissmodel-sysdyn` |
+| [`coastal-dynamics`](https://github.com/DisSModel/coastal-dynamics) | Coastal flooding and mangrove succession models | `pip install coastal-dynamics` |
+| [`DisSLUCC`](https://github.com/DisSModel/DisSLUCC) | Land Use and Cover Change models (CLUE-inspired) | `pip install disslucc` |
 
+### 🛠 Implementation Templates
 
-
-
-Documentation: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github.io/dissmodel/)
+Each repository demonstrates how to:
+1. **Define a Model**: Using `SpatialModel` and `Environment`.
+2. **Wrap an Executor**: Using `ModelExecutor` for I/O and provenance.
+3. **Deploy**: Running via CLI or API.
 
 ---
 
-## 📦 Installation
+## 📚 Documentation
 
-```bash
-pip install dissmodel
+- 📘 **User Guide**: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github.io/dissmodel/)
+- 🧪 **API Reference**: [https://lambdageo.github.io/dissmodel/api/](https://lambdageo.github.io/dissmodel/api/)
+- 🎓 **Tutorials**: [https://lambdageo.github.io/dissmodel/tutorials/](https://lambdageo.github.io/dissmodel/tutorials/)
 
-# Latest development version
-pip install "git+https://github.com/DisSModel/dissmodel.git@main"
-```
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request.
+
+- 🐛 Report bugs → [GitHub Issues](https://github.com/DisSModel/dissmodel/issues)
+- 💡 Request features → [GitHub Discussions](https://github.com/DisSModel/dissmodel/discussions)
+- 📝 Improve docs → Fork, edit, and submit a PR
 
 ---
 
 ## 🎓 Citation
 
-```
-Costa, S. & Santos Junior, N. (2026). DisSModel: A Discrete Spatial Modeling
-Framework for Python. LambdaGeo, Federal University of Maranhão (UFMA).
+```bibtex
+@software{dissmodel2026,
+  author = {Costa, Sérgio and Santos Junior, Nerval},
+  title = {DisSModel: A Discrete Spatial Modeling Framework for Python},
+  year = {2026},
+  publisher = {LambdaGeo, Federal University of Maranhão (UFMA)},
+  url = {https://github.com/DisSModel/dissmodel},
+  version = {0.4.0}
+}
 ```
 
 ---
 
 ## ⚖️ License
 
-MIT © [LambdaGeo — UFMA](https://github.com/DisSModel)
+MIT © [LambdaGeo — UFMA](https://github.com/DisSModel)  
+See [LICENSE](LICENSE) for details.
+
+
+---
+
