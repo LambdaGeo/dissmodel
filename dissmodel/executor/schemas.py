@@ -96,6 +96,7 @@ class JobResponse(BaseModel):
     created_at:    datetime
     output_path:   str | None = None
     output_sha256: str | None = None
+    input_sha256:  str | None = None 
     logs:          list[str]  = []
 
 
