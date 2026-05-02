@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] — 2026-05-02
+
+### Breaking Changes
+- Removed `salabim` and `greenlet` dependencies entirely
+- `Model.process()` no longer exists — replace with `pre_execute()` / `post_execute()` hooks
+
+### Added
+- `Environment`: lightweight pure-Python time-stepped scheduler
+- `Model.setup(**kwargs)`: called automatically at instantiation, mirrors salabim `Component.setup()` contract
+- `Model.pre_execute()`: hook called before each `execute()`
+- `Model.post_execute()`: hook called after each `execute()`
+
+### Changed
+- `SyncRasterModel`: replaced `process()` with `pre_execute()` / `post_execute()`
+- `SyncSpatialModel`: replaced `process()` with `pre_execute()` / `post_execute()`
+- `Environment.run()`: loop now calls `pre_execute → execute → post_execute` per model per tick
+
+### Removed
+- `salabim>=25.0.0` from dependencies
+- `greenlet>=3.0.0` from dependencies
+- `salabim.*` from mypy overrides
+
+### Internal
+- Public API unchanged — existing models implementing only `execute()` require no modification
+---
+
 ## [0.3.0] - 2026-04
 
 ### Added

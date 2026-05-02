@@ -9,10 +9,14 @@ needs per-step state history (LUCC, fire spread, epidemic models, etc.).
 
 How it works
 ------------
-At the start of each step, ``synchronize()`` copies the current value of
-every column in ``land_use_types`` to a ``<col>_past`` column in the
-GeoDataFrame. Models can read ``gdf["f_past"]`` to access the state at the
-beginning of the current step, regardless of changes made during execution.
+Before the first ``execute()``, ``pre_execute()`` calls ``synchronize()``
+once to capture the initial state. After each ``execute()``,
+``post_execute()`` calls ``synchronize()`` again to freeze the current
+state as ``<col>_past`` for the next step.
+
+Models can read ``gdf["f_past"]`` inside ``execute()`` to access the state
+at the beginning of the current step — equivalent to TerraME's
+``cell.past[attr]``.
 
 Usage
 -----
@@ -27,12 +31,6 @@ Subclass ``SyncSpatialModel`` instead of ``SpatialModel`` and declare
         def execute(self):
             past_f = self.gdf["f_past"]        # state at step start
             ...
-
-The ``synchronize()`` method is called automatically:
-  - once before the first ``execute()``   → snapshot of the initial state
-  - once after each ``execute()``         → snapshot for the next step
-
-It can also be called manually when needed (e.g. mid-step resets).
 
 Relationship to domain libraries
 ----------------------------------
@@ -52,9 +50,9 @@ class SyncSpatialModel(SpatialModel):
     ``SpatialModel`` with automatic ``_past`` snapshot semantics.
 
     Extends :class:`~dissmodel.geo.vector.spatial_model.SpatialModel` with
-    a ``synchronize()`` method that copies each column listed in
-    ``self.land_use_types`` to a ``<col>_past`` column before and after
-    every simulation step.
+    ``pre_execute()`` / ``post_execute()`` hooks that copy each column
+    listed in ``self.land_use_types`` to a ``<col>_past`` column before
+    and after every simulation step.
 
     This is the Python equivalent of TerraME's ``cs:synchronize()`` — it
     ensures that every model reads a consistent snapshot of the state at
@@ -88,31 +86,36 @@ class SyncSpatialModel(SpatialModel):
     ...         self.gdf["forest"] = self.gdf["forest_past"] + gain
     """
 
-    def process(self) -> None:
+    def pre_execute(self) -> None:
         """
-        Simulation loop with automatic snapshot management.
+        Snapshot columns before the first step.
 
-        Overrides :meth:`~dissmodel.core.Model.process` to insert
-        :meth:`synchronize` calls before the first step and after each step.
+        On the first call, freezes the initial state into ``<col>_past``
+        columns so that ``execute()`` can read them. Subsequent calls are
+        no-ops — post_execute() handles ongoing snapshots.
         """
-        if self.env.now() < self.start_time:
-            self.hold(self.start_time - self.env.now())
+        if not getattr(self, "_first_sync_done", False):
+            self.synchronize()
+            self._first_sync_done = True
 
-        # initial snapshot — captures state at t=0 before any execution
+    def post_execute(self) -> None:
+        """
+        Snapshot columns after each step.
+
+        Freezes the current state into ``<col>_past`` columns so that
+        the next ``execute()`` call reads the state at step start —
+        equivalent to TerraME's ``cs:synchronize()``.
+        """
         self.synchronize()
-
-        while self.env.now() < self.end_time:
-            self.execute()
-            self.synchronize()   # update snapshot for the next step
-            self.hold(self._step)
 
     def synchronize(self) -> None:
         """
         Copy each column in ``land_use_types`` to ``<col>_past``.
 
         Equivalent to ``cs:synchronize()`` in TerraME. Called automatically
-        before the first step and after each ``execute()``. Can also be
-        called manually when an explicit mid-step snapshot is needed.
+        via ``pre_execute()`` before the first step and via ``post_execute()``
+        after each ``execute()``. Can also be called manually when an explicit
+        mid-step snapshot is needed.
 
         Does nothing if ``land_use_types`` has not been set yet (safe to
         call before ``setup()`` completes).

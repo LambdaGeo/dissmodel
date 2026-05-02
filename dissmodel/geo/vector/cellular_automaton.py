@@ -76,6 +76,7 @@ class CellularAutomaton(SpatialModel, ABC):
             name=name,
             **kwargs,
         )
+        
 
     def initialize(self) -> None:
         """

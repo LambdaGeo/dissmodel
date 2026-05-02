@@ -51,7 +51,7 @@ DisSModel is the synthesis: a Python-native, FAIR-aligned, cloud-ready simulatio
 ## 🌟 Key Features
 
 - **Dual substrate** — same model logic runs on vector (`GeoDataFrame`) and raster (`RasterBackend`/NumPy).
-- **Discrete Event Simulation** — built on [Salabim](https://salabim.org/); time advances to the next relevant event, not millisecond by millisecond.
+- **Lightweight scheduler** — pure-Python time-stepped engine; models auto-register at instantiation and receive clock ticks via `setup / pre_execute / execute / post_execute` lifecycle hooks.
 - **Executor pattern** — strict separation between science (models) and infrastructure (I/O, CLI, reproducible execution).
 - **Experiment tracking** — every run generates an immutable `ExperimentRecord` with SHA-256 checksums, TOML snapshot, and full provenance.
 - **Storage-agnostic I/O** — `dissmodel.io` handles local paths and `s3://` URIs transparently.
@@ -63,7 +63,7 @@ DisSModel is the synthesis: a Python-native, FAIR-aligned, cloud-ready simulatio
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  Science Layer  (Model / Salabim)                        │
+│  Science Layer  (Model)                                  │
 │  FloodModel, AllocationClueLike, MangroveModel, ...      │
 │  → only knows math, geometry and time                    │
 ├──────────────────────────────────────────────────────────┤
@@ -72,7 +72,7 @@ DisSModel is the synthesis: a Python-native, FAIR-aligned, cloud-ready simulatio
 │  → only knows URIs, local/S3, column_map, parameters     │
 ├──────────────────────────────────────────────────────────┤
 │  Core modules                                            │
-│  dissmodel.core      — Environment, SpatialModel         │
+│  dissmodel.core      — Environment, Model, SpatialModel  │
 │  dissmodel.geo       — RasterBackend, neighborhoods      │
 │  dissmodel.executor  — ModelExecutor ABC, ExperimentRecord│
 │  dissmodel.io        — load_dataset / save_dataset       │
@@ -104,10 +104,9 @@ class ForestFireModel(SpatialModel):
         self.prob_spread = prob_spread
 
     def execute(self):
-        # Called every step by Salabim — only math here, no I/O
+        # Called every step — only math here, no I/O
         burning = self.gdf["state"] == "burning"
         # ... apply spread logic ...
-        return self.gdf
 
 env = Environment(end_time=50)
 ForestFireModel(gdf=gdf, prob_spread=0.4)
@@ -130,13 +129,12 @@ class ForestFireExecutor(ModelExecutor):
         record.source.checksum = checksum
         return gdf
 
-    def run(self, record: ExperimentRecord):
+    def run(self, data, record: ExperimentRecord):
         from dissmodel.core import Environment
-        gdf = self.load(record)
         env = Environment(end_time=record.parameters.get("end_time", 50))
-        ForestFireModel(gdf=gdf, **record.parameters)
+        ForestFireModel(gdf=data, **record.parameters)
         env.run()
-        return gdf
+        return data
 
     def save(self, result, record: ExperimentRecord) -> ExperimentRecord:
         uri = record.output_path or "output.gpkg"
@@ -177,7 +175,7 @@ Every run produces an immutable provenance record:
 {
   "experiment_id": "abc123",
   "model_commit": "a3f9c12",
-  "code_version": "0.4.0",
+  "code_version": "0.5.0",
   "resolved_spec": { "...TOML snapshot..." },
   "source": { "uri": "s3://...", "checksum": "e3b0c44..." },
   "artifacts": { "output": "sha256...", "profiling": "sha256..." },
@@ -212,7 +210,7 @@ Every run via the executor lifecycle generates a `profiling_{id}.md` alongside t
 
 ## 🧩 Ecosystem: Models & Examples
 
-DisSModel is a core framework. To maintain a clean and specialized environment, all simulation models and implementation examples are hosted in separate repositories within the LambdaGeo ecosystem.
+DisSModel is a core framework. To maintain a clean and specialized environment, all simulation models and implementation examples are hosted in separate repositories within the DisSModel ecosystem.
 
 ### 🔬 Specialized Model Libraries
 
@@ -234,9 +232,9 @@ Each repository demonstrates how to:
 
 ## 📚 Documentation
 
-- 📘 **User Guide**: [https://lambdageo.github.io/dissmodel/](https://lambdageo.github.io/dissmodel/)
-- 🧪 **API Reference**: [https://lambdageo.github.io/dissmodel/api/](https://lambdageo.github.io/dissmodel/api/)
-- 🎓 **Tutorials**: [https://lambdageo.github.io/dissmodel/tutorials/](https://lambdageo.github.io/dissmodel/tutorials/)
+- 📘 **User Guide**: [https://dissmodel.github.io/dissmodel/](https://dissmodel.github.io/dissmodel/)
+- 🧪 **API Reference**: [https://dissmodel.github.io/dissmodel/api/](https://dissmodel.github.io/dissmodel/api/)
+- 🎓 **Tutorials**: [https://dissmodel.github.io/dissmodel/tutorials/](https://dissmodel.github.io/dissmodel/tutorials/)
 
 ---
 
@@ -259,7 +257,7 @@ Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTIN
   year = {2026},
   publisher = {LambdaGeo, Federal University of Maranhão (UFMA)},
   url = {https://github.com/DisSModel/dissmodel},
-  version = {0.4.0}
+  version = {0.5.0}
 }
 ```
 
@@ -267,9 +265,5 @@ Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTIN
 
 ## ⚖️ License
 
-MIT © [LambdaGeo — UFMA](https://github.com/DisSModel)  
+MIT © [DisSModel — UFMA](https://github.com/DisSModel)  
 See [LICENSE](LICENSE) for details.
-
-
----
-

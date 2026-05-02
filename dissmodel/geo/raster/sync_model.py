@@ -9,11 +9,14 @@ needs per-step state history (LUCC, fire spread, epidemic models, etc.).
 
 How it works
 ------------
-At the start of each step, ``synchronize()`` copies the current NumPy array
-for every name in ``land_use_types`` to a ``<name>_past`` array in the
-RasterBackend. Models can call ``self.backend.get("f_past")`` to access the
-state at the beginning of the current step, regardless of changes made
-during execution.
+Before the first ``execute()``, ``pre_execute()`` calls ``synchronize()``
+once to capture the initial state. After each ``execute()``,
+``post_execute()`` calls ``synchronize()`` again to freeze the current
+state as ``<name>_past`` for the next step.
+
+Models can call ``self.backend.get("f_past")`` inside ``execute()`` to
+access the state at the beginning of the current step — equivalent to
+TerraME's ``cell.past[attr]``.
 
 Usage
 -----
@@ -21,19 +24,15 @@ Subclass ``SyncRasterModel`` instead of ``RasterModel`` and declare
 ``self.land_use_types`` in ``setup()``:
 
     class MyRasterModel(SyncRasterModel):
-        def setup(self, backend, ...):
-            super().setup(backend)               # RasterModel setup
-            self.land_use_types = ["f", "d"]     # arrays to snapshot
+        def setup(self, backend, rate=0.01):
+            super().setup(backend)
+            self.land_use_types = ["forest", "defor"]
+            self.rate = rate
 
         def execute(self):
-            f_past = self.backend.get("f_past")  # state at step start
-            ...
-
-The ``synchronize()`` method is called automatically:
-  - once before the first ``execute()``   → snapshot of the initial state
-  - once after each ``execute()``         → snapshot for the next step
-
-It can also be called manually when needed.
+            forest_past = self.backend.get("forest_past")
+            gain = forest_past * self.rate
+            self.backend.arrays["forest"] = forest_past + gain
 
 Relationship to domain libraries
 ----------------------------------
@@ -45,8 +44,6 @@ exposing it under the domain-specific alias ``LUCRasterModel``:
 """
 from __future__ import annotations
 
-import numpy as np
-
 from dissmodel.geo import RasterModel
 
 
@@ -54,9 +51,9 @@ class SyncRasterModel(RasterModel):
     """
     ``RasterModel`` with automatic ``_past`` snapshot semantics.
 
-    Extends :class:`~dissmodel.geo.raster.model.RasterModel` with a
-    ``synchronize()`` method that copies each array listed in
-    ``self.land_use_types`` to a ``<name>_past`` array in the
+    Extends :class:`~dissmodel.geo.raster.model.RasterModel` with
+    ``pre_execute()`` / ``post_execute()`` hooks that copy each array
+    listed in ``self.land_use_types`` to a ``<name>_past`` array in the
     :class:`~dissmodel.geo.raster.backend.RasterBackend` before and after
     every simulation step.
 
@@ -91,31 +88,36 @@ class SyncRasterModel(RasterModel):
     ...         self.backend.arrays["forest"] = forest_past + gain
     """
 
-    def process(self) -> None:
+    def pre_execute(self) -> None:
         """
-        Simulation loop with automatic snapshot management.
+        Snapshot arrays before the first step.
 
-        Overrides :meth:`~dissmodel.core.Model.process` to insert
-        :meth:`synchronize` calls before the first step and after each step.
+        On the first call, freezes the initial state into ``<name>_past``
+        arrays so that ``execute()`` can read them. Subsequent calls are
+        no-ops — post_execute() handles ongoing snapshots.
         """
-        if self.env.now() < self.start_time:
-            self.hold(self.start_time - self.env.now())
+        if not getattr(self, "_first_sync_done", False):
+            self.synchronize()
+            self._first_sync_done = True
 
-        # initial snapshot — captures state at t=0 before any execution
+    def post_execute(self) -> None:
+        """
+        Snapshot arrays after each step.
+
+        Freezes the current state into ``<name>_past`` arrays so that
+        the next ``execute()`` call reads the state at step start —
+        equivalent to TerraME's ``cs:synchronize()``.
+        """
         self.synchronize()
-
-        while self.env.now() < self.end_time:
-            self.execute()
-            self.synchronize()   # update snapshot for the next step
-            self.hold(self._step)
 
     def synchronize(self) -> None:
         """
         Copy each array in ``land_use_types`` to ``<name>_past`` in the backend.
 
         Equivalent to ``cs:synchronize()`` in TerraME. Called automatically
-        before the first step and after each ``execute()``. Can also be
-        called manually when an explicit mid-step snapshot is needed.
+        via ``pre_execute()`` before the first step and via ``post_execute()``
+        after each ``execute()``. Can also be called manually when an explicit
+        mid-step snapshot is needed.
 
         Does nothing if ``land_use_types`` has not been set yet (safe to
         call before ``setup()`` completes).
