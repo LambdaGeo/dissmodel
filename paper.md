@@ -44,13 +44,13 @@ geospatial analysis and high-level dynamic simulations, DisSModel translates the
 modeling paradigms of the TerraME framework [@Carneiro2013] into the Python
 ecosystem. It enables researchers to simulate complex socio-environmental
 systems — including forest fires, epidemiological spreads, and coastal dynamics —
-by integrating the simulation clock of discrete-event engines with the spatial
-data structures of GeoPandas [@Jordahl2021].
+by coupling a time-stepped simulation clock with the spatial data structures of
+GeoPandas [@Jordahl2021].
 
 The framework provides a **dual-substrate architecture**: a vector substrate backed
 by GeoDataFrame for flexibility and spatial expressiveness, and a raster substrate
 backed by NumPy 2D arrays for high-performance vectorised computation. DisSModel is
-available through the LambdaGeo GitHub repository and on PyPI.
+available through the DisSModel GitHub organisation and on PyPI.
 
 ## Statement of Need
 
@@ -87,7 +87,7 @@ its positioning:
 | Aspect | TerraME | Dinamica EGO | DisSModel |
 |--------|---------|--------------|-----------|
 | Language | Lua | Visual/Internal | Python |
-| Simulation Engine | Discrete Event | Cellular Automata | Integrated Salabim (DES) |
+| Simulation Engine | Discrete Event | Cellular Automata | Time-stepped scheduler |
 | Spatial Structure | CellularSpace (Fixed) | Cellular Grid | GeoDataFrame + NumPy (Dual) |
 | GIS Integration | TerraLib | Native Raster | GeoPandas / Rasterio |
 | Extensibility | Script-based | Block-based | Class Inheritance |
@@ -104,10 +104,10 @@ spatial modeling approach proposed by @SantosJunior2025.
 DisSModel is organised into five modules, following a strict separation of concerns
 that allows researchers to extend the framework through class inheritance.
 
-**Core** manages the simulation clock and discrete-event execution via Salabim
-integration. The `Environment` class orchestrates time progression, and all spatial
-models register themselves as Salabim components, receiving clock ticks
-automatically.
+**Core** manages the simulation clock and time-stepped execution. The `Environment`
+class orchestrates time progression via a lightweight pure-Python scheduler, and all
+spatial models auto-register at instantiation, receiving clock ticks automatically
+through `setup / pre_execute / execute / post_execute` lifecycle hooks.
 
 **Geo** manages spatial representations through a dual-substrate design. The vector
 substrate (`vector_grid`, `SpatialModel`, `CellularAutomaton`) operates on
