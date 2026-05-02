@@ -91,11 +91,29 @@ class Model:
         """
         pass
 
+    def pre_execute(self) -> None:
+        """
+        Called once before each :meth:`execute`.
+
+        Override in subclasses to perform per-step setup, such as
+        snapshotting state arrays before the transition rule runs.
+        """
+        pass
+
     def execute(self) -> None:
         """
         Called once per time step.
 
         Override in subclasses to define model behaviour.
+        """
+        pass
+
+    def post_execute(self) -> None:
+        """
+        Called once after each :meth:`execute`.
+
+        Override in subclasses to perform per-step cleanup or snapshotting
+        after the transition rule runs.
         """
         pass
 

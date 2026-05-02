@@ -137,7 +137,9 @@ class Environment:
                     model._next_time <= self._now
                     and self._now < model.end_time
                 ):
+                    model.pre_execute()
                     model.execute()
+                    model.post_execute()
                     model._next_time = self._now + model._step
 
             # Advance clock to the nearest pending event
