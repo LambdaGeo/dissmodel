@@ -3,16 +3,20 @@ from __future__ import annotations
 import math
 from typing import Any
 
-import salabim as sim
+from .environment import Environment
 
 
-class Model(sim.Component):
+class Model:
     """
-    Base class for simulation models backed by a salabim Component.
+    Base class for simulation models.
 
     Provides a time-stepped execution loop and automatic tracking of
-    attributes marked for plotting via the :func:`~dissmodel.visualization.track_plot`
-    decorator.
+    attributes marked for plotting via the
+    :func:`~dissmodel.visualization.track_plot` decorator.
+
+    Every ``Model`` instance auto-registers with the currently active
+    :class:`~dissmodel.core.Environment` at construction time. An active
+    environment must exist before instantiating any model.
 
     Parameters
     ----------
@@ -23,26 +27,30 @@ class Model(sim.Component):
     end_time : float, optional
         Time at which the model stops executing, by default ``math.inf``.
     name : str, optional
-        Component name, by default ``""``.
-    *args :
-        Extra positional arguments forwarded to :class:`salabim.Component`.
+        Human-readable model name, by default ``""``.
     **kwargs :
-        Extra keyword arguments forwarded to :class:`salabim.Component`.
+        Extra keyword arguments (ignored; kept for subclass compatibility).
+
+    Raises
+    ------
+    RuntimeError
+        If no active :class:`~dissmodel.core.Environment` exists when the
+        model is instantiated.
 
     Examples
     --------
     >>> class MyModel(Model):
     ...     def execute(self):
-    ...         print (self.env.now())
-    >>> env = Environment()
-    >>> model = MyModel(step=1, start_time=0, end_time=5)
-    >>> env.run(5)
+    ...         print(self.env.now())
+    >>> env = Environment(start_time=0, end_time=5)
+    >>> model = MyModel(step=1)
+    >>> env.run()
     Running from 0 to 5 (duration: 5)
-    0.0
-    1.0
-    2.0
-    3.0
-    4.0
+    0
+    1
+    2
+    3
+    4
     """
 
     def __init__(
@@ -51,27 +59,37 @@ class Model(sim.Component):
         start_time: float = 0,
         end_time: float = math.inf,
         name: str = "",
-        *args: Any,
         **kwargs: Any,
     ) -> None:
-        super().__init__(*args, **kwargs)
-        self._step = step
-        self.start_time = start_time
-        self.end_time = end_time
+        env = Environment._current
+        if env is None:
+            raise RuntimeError(
+                "No active Environment found. "
+                "Create an Environment before instantiating a Model."
+            )
 
-    def process(self) -> None:
+        # Set internal attributes directly to avoid triggering __setattr__
+        # plot-tracking logic before _plot_info is available.
+        object.__setattr__(self, "name", name)
+        object.__setattr__(self, "_step", step)
+        object.__setattr__(self, "start_time", start_time)
+        object.__setattr__(self, "end_time", end_time)
+        object.__setattr__(self, "_next_time", start_time)
+        object.__setattr__(self, "env", env)
+
+        env._register(self)
+        self.setup(**kwargs)
+
+    def setup(self, **kwargs: Any) -> None:
         """
-        salabim process loop.
+        Called once after instantiation, receiving any extra keyword
+        arguments not consumed by ``__init__``.
 
-        Waits until ``start_time``, then calls :meth:`execute` every
-        ``step`` time units until ``end_time``.
+        Override in subclasses to perform one-time setup such as building
+        neighborhoods or initializing visualization state. Mirrors the
+        salabim ``Component.setup()`` contract.
         """
-        if self.env.now() < self.start_time:
-            self.hold(self.start_time - self.env.now())
-
-        while self.env.now() < self.end_time:
-            self.execute()
-            self.hold(self._step)
+        pass
 
     def execute(self) -> None:
         """
@@ -81,11 +99,15 @@ class Model(sim.Component):
         """
         pass
 
+    # ------------------------------------------------------------------
+    # Plot tracking
+    # ------------------------------------------------------------------
+
     def __setattr__(self, name: str, value: Any) -> None:
         """
         Intercept attribute assignment to record values marked for plotting.
 
-        If the class defines ``_plot_info`` (via the
+        If the class defines ``_plot_info`` (populated by the
         :func:`~dissmodel.visualization.track_plot` decorator) and ``name``
         matches a tracked attribute, the value is appended to the plot data
         buffer and registered in ``env._plot_metadata``.
@@ -103,10 +125,8 @@ class Model(sim.Component):
             plot_info: dict[str, Any] = cls._plot_info[name.lower()]
             plot_info["data"].append(value)
 
-            if not hasattr(self.env, "_plot_metadata"):
-                self.env._plot_metadata = {}
-
-            if plot_info["label"] not in self.env._plot_metadata:
-                self.env._plot_metadata[plot_info["label"]] = plot_info
+            env = Environment._current
+            if env is not None and plot_info["label"] not in env._plot_metadata:
+                env._plot_metadata[plot_info["label"]] = plot_info
 
         super().__setattr__(name, value)

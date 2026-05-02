@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-from typing import Any, Optional
-
-import salabim as sim
+from typing import Any, ClassVar, Optional
 
 
-class Environment(sim.Environment):
+class Environment:
     """
     Simulation environment with support for a custom time window.
 
-    Extends :class:`salabim.Environment` with ``start_time`` and ``end_time``
-    to define the simulation boundaries explicitly.
+    Manages the simulation clock and coordinates the execution of all
+    registered :class:`~dissmodel.core.Model` instances.
 
     Parameters
     ----------
@@ -18,10 +16,6 @@ class Environment(sim.Environment):
         Simulation start time, by default 0.
     end_time : float, optional
         Simulation end time. Can also be set via ``till`` in :meth:`run`.
-    *args :
-        Extra positional arguments forwarded to :class:`salabim.Environment`.
-    **kwargs :
-        Extra keyword arguments forwarded to :class:`salabim.Environment`.
 
     Examples
     --------
@@ -32,22 +26,70 @@ class Environment(sim.Environment):
     10
     """
 
+    _current: ClassVar[Optional[Environment]] = None
+
     def __init__(
         self,
         start_time: float = 0,
         end_time: Optional[float] = None,
-        *args: Any,
-        **kwargs: Any,
     ) -> None:
-        kwargs.pop("animation", None)
-        kwargs.pop("trace", False)
-        super().__init__(*args, trace=False, **kwargs)
         self.start_time = start_time
         self.end_time = end_time
+        self._now: float = start_time
+        self._models: list[Any] = []
+        self._plot_metadata: dict[str, Any] = {}
+        Environment._current = self
+
+    # ------------------------------------------------------------------
+    # Clock
+    # ------------------------------------------------------------------
+
+    def now(self) -> float:
+        """
+        Return the current simulation time.
+
+        Returns
+        -------
+        float
+            Current simulation time.
+
+        Examples
+        --------
+        >>> env = Environment(start_time=5)
+        >>> env.now()
+        5
+        """
+        return self._now
+
+    # ------------------------------------------------------------------
+    # Model registration
+    # ------------------------------------------------------------------
+
+    def _register(self, model: Any) -> None:
+        """
+        Register a model to be executed during the simulation.
+
+        Called automatically by :class:`~dissmodel.core.Model.__init__`.
+
+        Parameters
+        ----------
+        model : Model
+            The model instance to register.
+        """
+        self._models.append(model)
+
+    # ------------------------------------------------------------------
+    # Lifecycle
+    # ------------------------------------------------------------------
 
     def run(self, till: Optional[float] = None) -> None:
         """
         Run the simulation over the configured time window.
+
+        Executes all registered models in time-step order. On each tick,
+        every model whose next scheduled time is less than or equal to the
+        current simulation time has its :meth:`~dissmodel.core.Model.execute`
+        method called. The clock then advances to the nearest pending event.
 
         Parameters
         ----------
@@ -71,45 +113,58 @@ class Environment(sim.Environment):
         if till is not None:
             self.end_time = self.start_time + till
         elif self.end_time is not None:
-            till = self.end_time - self.start_time
+            pass
         else:
-            raise ValueError("Provide 'till' or set 'end_time' before calling run().")
+            raise ValueError(
+                "Provide 'till' or set 'end_time' before calling run()."
+            )
 
-        print(f"Running from {self.start_time} to {self.end_time} (duration: {till})")
-        super().run(till=till)
+        duration = self.end_time - self.start_time
+        print(
+            f"Running from {self.start_time} to {self.end_time} "
+            f"(duration: {duration})"
+        )
+
+        # Initialise next-execution time for every registered model
+        for model in self._models:
+            model._next_time = model.start_time
+
+        self._now = self.start_time
+
+        while self._now < self.end_time:
+            for model in self._models:
+                if (
+                    model._next_time <= self._now
+                    and self._now < model.end_time
+                ):
+                    model.execute()
+                    model._next_time = self._now + model._step
+
+            # Advance clock to the nearest pending event
+            pending = [
+                m._next_time
+                for m in self._models
+                if m._next_time < self.end_time
+            ]
+            if not pending:
+                break
+            self._now = min(pending)
 
     def reset(self) -> None:
         """
-        Clear accumulated plot data.
+        Reset the clock and clear accumulated plot data.
 
-        This method is called automatically at the start of :meth:`run` to
-        ensure charts start fresh on each simulation run.
+        Called automatically at the start of :meth:`run` to ensure the
+        environment starts fresh on each simulation run.
 
         Examples
         --------
-        >>> env = Environment()
+        >>> env = Environment(start_time=0, end_time=10)
         >>> env._plot_metadata = {"x": {"data": [1, 2, 3]}}
         >>> env.reset()
         >>> env._plot_metadata["x"]["data"]
         []
         """
-        if hasattr(self, "_plot_metadata"):
-            for item in self._plot_metadata.values():
-                item["data"].clear()
-
-    def now(self) -> float:
-        """
-        Return the current simulation time adjusted by ``start_time``.
-
-        Returns
-        -------
-        float
-            Current time as ``salabim.now() + start_time``.
-
-        Examples
-        --------
-        >>> env = Environment(start_time=5)
-        >>> env.now()
-        5.0
-        """
-        return super().now() + self.start_time
+        self._now = self.start_time
+        for item in self._plot_metadata.values():
+            item["data"].clear()
