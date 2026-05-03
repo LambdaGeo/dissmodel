@@ -147,6 +147,7 @@ class Environment:
                 m._next_time
                 for m in self._models
                 if m._next_time < self.end_time
+                and m._next_time < m.end_time
             ]
             if not pending:
                 break
