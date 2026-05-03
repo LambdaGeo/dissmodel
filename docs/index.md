@@ -5,7 +5,7 @@
 
 DisSModel is a modular, production-ready Python framework for spatially explicit dynamic modeling. Developed by the [LambdaGeo](https://github.com/DisSModel) group at the Federal University of Maranhão (UFMA), it provides a unified environment for building **Cellular Automata (CA)** and **System Dynamics (SysDyn)** models.
 
-Inspired by the [TerraME](http://www.terrame.org/) framework, DisSModel brings the same modeling expressiveness to Python — replacing the TerraLib/Lua stack with GeoPandas, NumPy, and Salabim, while remaining fully interoperable with the broader Python data science ecosystem.
+Inspired by the [TerraME](http://www.terrame.org/) framework, DisSModel brings the same modeling expressiveness to Python — replacing the TerraLib/Lua stack with GeoPandas and NumPy, while remaining fully interoperable with the broader Python data science ecosystem.
 
 ```bash
 pip install dissmodel
@@ -19,7 +19,7 @@ DisSModel is organized into five core modules designed for reproducibility and s
 
 | Module | Description |
 |:---|:---|
-| `dissmodel.core` | Simulation clock and execution lifecycle powered by [Salabim](https://www.salabim.org/). |
+| `dissmodel.core` | Simulation clock and execution lifecycle. |
 | `dissmodel.geo` | Spatial substrates — Dual-design (Vector + Raster) for flexible modeling. |
 | `dissmodel.executor` | **(New)** Standardized execution layer for CLI and Remote Workers. |
 | `dissmodel.io` | **(New)** Storage-agnostic I/O handling local files and MinIO/S3. |

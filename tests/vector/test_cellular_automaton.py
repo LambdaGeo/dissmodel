@@ -41,8 +41,8 @@ def default_env():
     """
     Create a default Environment for every test.
 
-    Required by salabim — any Model instantiation fails without an active
-    Environment. Tests that need a different end_time create their own
+    An active environment must exist before instantiating any Model.
+    Tests that need a different end_time create their own
     Environment locally, which replaces this default.
     """
     return Environment(start_time=1, end_time=1)

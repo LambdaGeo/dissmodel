@@ -16,7 +16,7 @@ from dissmodel.geo.raster.raster_grid import raster_grid
 ## Dual-substrate design
 
 The module provides two independent spatial substrates. Both share the same
-salabim `Environment` and clock — a vector model and a raster model can run
+`Environment` and clock — a vector model and a raster model can run
 side by side in the same `env.run()`.
 
 | | Vector | Raster |

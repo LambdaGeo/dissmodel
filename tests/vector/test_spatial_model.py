@@ -221,7 +221,7 @@ class TestExecute:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# SpatialModel in salabim environment
+# Environment integration
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestEnvironmentIntegration:
