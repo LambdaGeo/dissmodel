@@ -1,7 +1,6 @@
 # Core
 
-The `dissmodel.core` module provides the simulation clock and execution lifecycle,
-built on top of [Salabim](https://www.salabim.org/)'s discrete event engine.
+The `dissmodel.core` module provides the simulation clock and execution lifecycle.
 
 All models and visualization components must be instantiated **after** the
 `Environment` — they register themselves automatically on creation.
