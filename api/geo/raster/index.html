@@ -180,7 +180,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/lambdageo/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/DisSModel/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -226,7 +226,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/lambdageo/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/DisSModel/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -869,10 +869,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dissmodel.geo.raster.sync_model.SyncRasterModel.process" class="md-nav__link">
+  <a href="#dissmodel.geo.raster.sync_model.SyncRasterModel.post_execute" class="md-nav__link">
     <span class="md-ellipsis">
       
-        process
+        post_execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dissmodel.geo.raster.sync_model.SyncRasterModel.pre_execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pre_execute
       
     </span>
   </a>
@@ -1581,10 +1592,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#dissmodel.geo.raster.sync_model.SyncRasterModel.process" class="md-nav__link">
+  <a href="#dissmodel.geo.raster.sync_model.SyncRasterModel.post_execute" class="md-nav__link">
     <span class="md-ellipsis">
       
-        process
+        post_execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dissmodel.geo.raster.sync_model.SyncRasterModel.pre_execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pre_execute
       
     </span>
   </a>
@@ -4798,11 +4820,13 @@ needs per-step state history (LUCC, fire spread, epidemic models, etc.).</p>
 
 <details class="how-it-works" open>
   <summary>How it works</summary>
-  <p>At the start of each step, <code>synchronize()</code> copies the current NumPy array
-for every name in <code>land_use_types</code> to a <code>&lt;name&gt;_past</code> array in the
-RasterBackend. Models can call <code>self.backend.get("f_past")</code> to access the
-state at the beginning of the current step, regardless of changes made
-during execution.</p>
+  <p>Before the first <code>execute()</code>, <code>pre_execute()</code> calls <code>synchronize()</code>
+once to capture the initial state. After each <code>execute()</code>,
+<code>post_execute()</code> calls <code>synchronize()</code> again to freeze the current
+state as <code>&lt;name&gt;_past</code> for the next step.</p>
+<p>Models can call <code>self.backend.get("f_past")</code> inside <code>execute()</code> to
+access the state at the beginning of the current step — equivalent to
+TerraME's <code>cell.past[attr]</code>.</p>
 </details>
 
 <details class="usage" open>
@@ -4810,19 +4834,16 @@ during execution.</p>
   <p>Subclass <code>SyncRasterModel</code> instead of <code>RasterModel</code> and declare
 <code>self.land_use_types</code> in <code>setup()</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nx">MyRasterModel</span><span class="p">(</span><span class="nx">SyncRasterModel</span><span class="p">):</span>
-<span class="w">    </span><span class="nx">def</span><span class="w"> </span><span class="nx">setup</span><span class="p">(</span><span class="kp">self</span><span class="p">,</span><span class="w"> </span><span class="nx">backend</span><span class="p">,</span><span class="w"> </span><span class="o">...</span><span class="p">):</span>
-<span class="w">        </span><span class="nx">super</span><span class="p">().</span><span class="nx">setup</span><span class="p">(</span><span class="nx">backend</span><span class="p">)</span><span class="w">               </span><span class="err">#</span><span class="w"> </span><span class="nx">RasterModel</span><span class="w"> </span><span class="nx">setup</span>
-<span class="w">        </span><span class="kp">self</span><span class="p">.</span><span class="nx">land_use_types</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;f&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;d&quot;</span><span class="p">]</span><span class="w">     </span><span class="err">#</span><span class="w"> </span><span class="nx">arrays</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">snapshot</span>
+<span class="w">    </span><span class="nx">def</span><span class="w"> </span><span class="nx">setup</span><span class="p">(</span><span class="kp">self</span><span class="p">,</span><span class="w"> </span><span class="nx">backend</span><span class="p">,</span><span class="w"> </span><span class="nx">rate</span><span class="p">=</span><span class="m m-Double">0.01</span><span class="p">):</span>
+<span class="w">        </span><span class="nx">super</span><span class="p">().</span><span class="nx">setup</span><span class="p">(</span><span class="nx">backend</span><span class="p">)</span>
+<span class="w">        </span><span class="kp">self</span><span class="p">.</span><span class="nx">land_use_types</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;forest&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;defor&quot;</span><span class="p">]</span>
+<span class="w">        </span><span class="kp">self</span><span class="p">.</span><span class="nx">rate</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">rate</span>
 
 <span class="w">    </span><span class="nx">def</span><span class="w"> </span><span class="nx">execute</span><span class="p">(</span><span class="kp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="nx">f_past</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kp">self</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&quot;f_past&quot;</span><span class="p">)</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="nx">state</span><span class="w"> </span><span class="nx">at</span><span class="w"> </span><span class="nx">step</span><span class="w"> </span><span class="nx">start</span>
-<span class="w">        </span><span class="o">...</span>
+<span class="w">        </span><span class="nx">forest_past</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kp">self</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s">&quot;forest_past&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="nx">gain</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">forest_past</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kp">self</span><span class="p">.</span><span class="nx">rate</span>
+<span class="w">        </span><span class="kp">self</span><span class="p">.</span><span class="nx">backend</span><span class="p">.</span><span class="nx">arrays</span><span class="p">[</span><span class="s">&quot;forest&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">forest_past</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">gain</span>
 </code></pre></div>
-
-<p>The <code>synchronize()</code> method is called automatically:
-  - once before the first <code>execute()</code>   → snapshot of the initial state
-  - once after each <code>execute()</code>         → snapshot for the next step</p>
-<p>It can also be called manually when needed.</p>
 </details>
 
 <details class="relationship-to-domain-libraries" open>
@@ -4870,9 +4891,9 @@ exposing it under the domain-specific alias <code>LUCRasterModel</code>:</p>
 
 
         <p><code>RasterModel</code> with automatic <code>_past</code> snapshot semantics.</p>
-<p>Extends :class:<code>~dissmodel.geo.raster.model.RasterModel</code> with a
-<code>synchronize()</code> method that copies each array listed in
-<code>self.land_use_types</code> to a <code>&lt;name&gt;_past</code> array in the
+<p>Extends :class:<code>~dissmodel.geo.raster.model.RasterModel</code> with
+<code>pre_execute()</code> / <code>post_execute()</code> hooks that copy each array
+listed in <code>self.land_use_types</code> to a <code>&lt;name&gt;_past</code> array in the
 :class:<code>~dissmodel.geo.raster.backend.RasterBackend</code> before and after
 every simulation step.</p>
 <p>This is the raster analogue of
@@ -4956,7 +4977,10 @@ Subclasses must <strong>not</strong> create or update <code>_past</code> arrays 
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>dissmodel/geo/raster/sync_model.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 53</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
 <span class="normal"> 54</span>
 <span class="normal"> 55</span>
 <span class="normal"> 56</span>
@@ -5029,13 +5053,15 @@ Subclasses must <strong>not</strong> create or update <code>_past</code> arrays 
 <span class="normal">123</span>
 <span class="normal">124</span>
 <span class="normal">125</span>
-<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SyncRasterModel</span><span class="p">(</span><span class="n">RasterModel</span><span class="p">):</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SyncRasterModel</span><span class="p">(</span><span class="n">RasterModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ``RasterModel`` with automatic ``_past`` snapshot semantics.</span>
 
-<span class="sd">    Extends :class:`~dissmodel.geo.raster.model.RasterModel` with a</span>
-<span class="sd">    ``synchronize()`` method that copies each array listed in</span>
-<span class="sd">    ``self.land_use_types`` to a ``&lt;name&gt;_past`` array in the</span>
+<span class="sd">    Extends :class:`~dissmodel.geo.raster.model.RasterModel` with</span>
+<span class="sd">    ``pre_execute()`` / ``post_execute()`` hooks that copy each array</span>
+<span class="sd">    listed in ``self.land_use_types`` to a ``&lt;name&gt;_past`` array in the</span>
 <span class="sd">    :class:`~dissmodel.geo.raster.backend.RasterBackend` before and after</span>
 <span class="sd">    every simulation step.</span>
 
@@ -5070,31 +5096,36 @@ Subclasses must <strong>not</strong> create or update <code>_past</code> arrays 
 <span class="sd">    ...         self.backend.arrays[&quot;forest&quot;] = forest_past + gain</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Simulation loop with automatic snapshot management.</span>
+<span class="sd">        Snapshot arrays before the first step.</span>
 
-<span class="sd">        Overrides :meth:`~dissmodel.core.Model.process` to insert</span>
-<span class="sd">        :meth:`synchronize` calls before the first step and after each step.</span>
+<span class="sd">        On the first call, freezes the initial state into ``&lt;name&gt;_past``</span>
+<span class="sd">        arrays so that ``execute()`` can read them. Subsequent calls are</span>
+<span class="sd">        no-ops — post_execute() handles ongoing snapshots.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_first_sync_done&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_first_sync_done</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="c1"># initial snapshot — captures state at t=0 before any execution</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Snapshot arrays after each step.</span>
+
+<span class="sd">        Freezes the current state into ``&lt;name&gt;_past`` arrays so that</span>
+<span class="sd">        the next ``execute()`` call reads the state at step start —</span>
+<span class="sd">        equivalent to TerraME&#39;s ``cs:synchronize()``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
-
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>   <span class="c1"># update snapshot for the next step</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">synchronize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Copy each array in ``land_use_types`` to ``&lt;name&gt;_past`` in the backend.</span>
 
 <span class="sd">        Equivalent to ``cs:synchronize()`` in TerraME. Called automatically</span>
-<span class="sd">        before the first step and after each ``execute()``. Can also be</span>
-<span class="sd">        called manually when an explicit mid-step snapshot is needed.</span>
+<span class="sd">        via ``pre_execute()`` before the first step and via ``post_execute()``</span>
+<span class="sd">        after each ``execute()``. Can also be called manually when an explicit</span>
+<span class="sd">        mid-step snapshot is needed.</span>
 
 <span class="sd">        Does nothing if ``land_use_types`` has not been set yet (safe to</span>
 <span class="sd">        call before ``setup()`` completes).</span>
@@ -5122,54 +5153,85 @@ Subclasses must <strong>not</strong> create or update <code>_past</code> arrays 
 <div class="doc doc-object doc-function">
 
 
-<h4 id="dissmodel.geo.raster.sync_model.SyncRasterModel.process" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">process</span><span class="p">()</span></code>
+<h4 id="dissmodel.geo.raster.sync_model.SyncRasterModel.post_execute" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">post_execute</span><span class="p">()</span></code>
 
 </h4>
 
 
     <div class="doc doc-contents ">
 
-        <p>Simulation loop with automatic snapshot management.</p>
-<p>Overrides :meth:<code>~dissmodel.core.Model.process</code> to insert
-:meth:<code>synchronize</code> calls before the first step and after each step.</p>
+        <p>Snapshot arrays after each step.</p>
+<p>Freezes the current state into <code>&lt;name&gt;_past</code> arrays so that
+the next <code>execute()</code> call reads the state at step start —
+equivalent to TerraME's <code>cs:synchronize()</code>.</p>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/geo/raster/sync_model.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
-<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">110</span>
+<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">post_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Simulation loop with automatic snapshot management.</span>
+<span class="sd">    Snapshot arrays after each step.</span>
 
-<span class="sd">    Overrides :meth:`~dissmodel.core.Model.process` to insert</span>
-<span class="sd">    :meth:`synchronize` calls before the first step and after each step.</span>
+<span class="sd">    Freezes the current state into ``&lt;name&gt;_past`` arrays so that</span>
+<span class="sd">    the next ``execute()`` call reads the state at step start —</span>
+<span class="sd">    equivalent to TerraME&#39;s ``cs:synchronize()``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-
-    <span class="c1"># initial snapshot — captures state at t=0 before any execution</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>   <span class="c1"># update snapshot for the next step</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span>
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="dissmodel.geo.raster.sync_model.SyncRasterModel.pre_execute" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">pre_execute</span><span class="p">()</span></code>
+
+</h4>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Snapshot arrays before the first step.</p>
+<p>On the first call, freezes the initial state into <code>&lt;name&gt;_past</code>
+arrays so that <code>execute()</code> can read them. Subsequent calls are
+no-ops — post_execute() handles ongoing snapshots.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>dissmodel/geo/raster/sync_model.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pre_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Snapshot arrays before the first step.</span>
+
+<span class="sd">    On the first call, freezes the initial state into ``&lt;name&gt;_past``</span>
+<span class="sd">    arrays so that ``execute()`` can read them. Subsequent calls are</span>
+<span class="sd">    no-ops — post_execute() handles ongoing snapshots.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_first_sync_done&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">synchronize</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_sync_done</span> <span class="o">=</span> <span class="kc">True</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -5189,16 +5251,16 @@ Subclasses must <strong>not</strong> create or update <code>_past</code> arrays 
 
         <p>Copy each array in <code>land_use_types</code> to <code>&lt;name&gt;_past</code> in the backend.</p>
 <p>Equivalent to <code>cs:synchronize()</code> in TerraME. Called automatically
-before the first step and after each <code>execute()</code>. Can also be
-called manually when an explicit mid-step snapshot is needed.</p>
+via <code>pre_execute()</code> before the first step and via <code>post_execute()</code>
+after each <code>execute()</code>. Can also be called manually when an explicit
+mid-step snapshot is needed.</p>
 <p>Does nothing if <code>land_use_types</code> has not been set yet (safe to
 call before <code>setup()</code> completes).</p>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/geo/raster/sync_model.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
-<span class="normal">113</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
@@ -5211,13 +5273,16 @@ call before <code>setup()</code> completes).</p>
 <span class="normal">123</span>
 <span class="normal">124</span>
 <span class="normal">125</span>
-<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">synchronize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">synchronize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Copy each array in ``land_use_types`` to ``&lt;name&gt;_past`` in the backend.</span>
 
 <span class="sd">    Equivalent to ``cs:synchronize()`` in TerraME. Called automatically</span>
-<span class="sd">    before the first step and after each ``execute()``. Can also be</span>
-<span class="sd">    called manually when an explicit mid-step snapshot is needed.</span>
+<span class="sd">    via ``pre_execute()`` before the first step and via ``post_execute()``</span>
+<span class="sd">    after each ``execute()``. Can also be called manually when an explicit</span>
+<span class="sd">    mid-step snapshot is needed.</span>
 
 <span class="sd">    Does nothing if ``land_use_types`` has not been set yet (safe to</span>
 <span class="sd">    call before ``setup()`` completes).</span>

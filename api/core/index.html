@@ -180,7 +180,7 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/lambdageo/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/DisSModel/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -226,7 +226,7 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/lambdageo/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/DisSModel/dissmodel" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
@@ -580,10 +580,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#dissmodel.core.Model.process" class="md-nav__link">
+  <a href="#dissmodel.core.Model.post_execute" class="md-nav__link">
     <span class="md-ellipsis">
       
-        process
+        post_execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dissmodel.core.Model.pre_execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pre_execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dissmodel.core.Model.setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup
       
     </span>
   </a>
@@ -1117,10 +1139,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#dissmodel.core.Model.process" class="md-nav__link">
+  <a href="#dissmodel.core.Model.post_execute" class="md-nav__link">
     <span class="md-ellipsis">
       
-        process
+        post_execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dissmodel.core.Model.pre_execute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pre_execute
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dissmodel.core.Model.setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        setup
       
     </span>
   </a>
@@ -1153,8 +1197,7 @@
 
 
 <h1 id="core">Core</h1>
-<p>The <code>dissmodel.core</code> module provides the simulation clock and execution lifecycle,
-built on top of <a href="https://www.salabim.org/">Salabim</a>'s discrete event engine.</p>
+<p>The <code>dissmodel.core</code> module provides the simulation clock and execution lifecycle.</p>
 <p>All models and visualization components must be instantiated <strong>after</strong> the
 <code>Environment</code> — they register themselves automatically on creation.</p>
 <div class="highlight"><pre><span></span><code>Environment  →  Model  →  Visualization  →  env.run()
@@ -1280,14 +1323,12 @@ at different periods within the same run.</p>
 
 
     <div class="doc doc-contents first">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="salabim.Environment">Environment</span></code></p>
 
 
 
         <p>Simulation environment with support for a custom time window.</p>
-<p>Extends :class:<code>salabim.Environment</code> with <code>start_time</code> and <code>end_time</code>
-to define the simulation boundaries explicitly.</p>
+<p>Manages the simulation clock and coordinates the execution of all
+registered :class:<code>~dissmodel.core.Model</code> instances.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1333,38 +1374,6 @@ to define the simulation boundaries explicitly.</p>
                   <code>None</code>
             </td>
           </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>*args</code>
-            </td>
-            <td>
-                  <code><span title="typing.Any">Any</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Extra positional arguments forwarded to :class:<code>salabim.Environment</code>.</p>
-              </div>
-            </td>
-            <td>
-                  <code>()</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>**kwargs</code>
-            </td>
-            <td>
-                  <code><span title="typing.Any">Any</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Extra keyword arguments forwarded to :class:<code>salabim.Environment</code>.</p>
-              </div>
-            </td>
-            <td>
-                  <code>{}</code>
-            </td>
-          </tr>
       </tbody>
     </table>
 
@@ -1386,7 +1395,9 @@ to define the simulation boundaries explicitly.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>dissmodel/core/environment.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  8</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
 <span class="normal">  9</span>
 <span class="normal"> 10</span>
 <span class="normal"> 11</span>
@@ -1493,12 +1504,69 @@ to define the simulation boundaries explicitly.</p>
 <span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
-<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Environment</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">Environment</span><span class="p">):</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Environment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simulation environment with support for a custom time window.</span>
 
-<span class="sd">    Extends :class:`salabim.Environment` with ``start_time`` and ``end_time``</span>
-<span class="sd">    to define the simulation boundaries explicitly.</span>
+<span class="sd">    Manages the simulation clock and coordinates the execution of all</span>
+<span class="sd">    registered :class:`~dissmodel.core.Model` instances.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1506,10 +1574,6 @@ to define the simulation boundaries explicitly.</p>
 <span class="sd">        Simulation start time, by default 0.</span>
 <span class="sd">    end_time : float, optional</span>
 <span class="sd">        Simulation end time. Can also be set via ``till`` in :meth:`run`.</span>
-<span class="sd">    *args :</span>
-<span class="sd">        Extra positional arguments forwarded to :class:`salabim.Environment`.</span>
-<span class="sd">    **kwargs :</span>
-<span class="sd">        Extra keyword arguments forwarded to :class:`salabim.Environment`.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1520,22 +1584,70 @@ to define the simulation boundaries explicitly.</p>
 <span class="sd">    10</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">_current</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Environment</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;animation&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_now</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">start_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_models</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">Environment</span><span class="o">.</span><span class="n">_current</span> <span class="o">=</span> <span class="bp">self</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Clock</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">now</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the current simulation time.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Current simulation time.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; env = Environment(start_time=5)</span>
+<span class="sd">        &gt;&gt;&gt; env.now()</span>
+<span class="sd">        5</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Model registration</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a model to be executed during the simulation.</span>
+
+<span class="sd">        Called automatically by :class:`~dissmodel.core.Model.__init__`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model : Model</span>
+<span class="sd">            The model instance to register.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Lifecycle</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">till</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the simulation over the configured time window.</span>
+
+<span class="sd">        Executes all registered models in time-step order. On each tick,</span>
+<span class="sd">        every model whose next scheduled time is less than or equal to the</span>
+<span class="sd">        current simulation time has its :meth:`~dissmodel.core.Model.execute`</span>
+<span class="sd">        method called. The clock then advances to the nearest pending event.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1559,48 +1671,63 @@ to define the simulation boundaries explicitly.</p>
         <span class="k">if</span> <span class="n">till</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">+</span> <span class="n">till</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">till</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+            <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provide &#39;till&#39; or set &#39;end_time&#39; before calling run().&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Provide &#39;till&#39; or set &#39;end_time&#39; before calling run().&quot;</span>
+            <span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="si">}</span><span class="s2"> (duration: </span><span class="si">{</span><span class="n">till</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">till</span><span class="o">=</span><span class="n">till</span><span class="p">)</span>
+        <span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Running from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(duration: </span><span class="si">{</span><span class="n">duration</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Initialise next-execution time for every registered model</span>
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_models</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">start_time</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_models</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">&lt;</span> <span class="n">model</span><span class="o">.</span><span class="n">end_time</span>
+                <span class="p">):</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">pre_execute</span><span class="p">()</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">post_execute</span><span class="p">()</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="n">_step</span>
+
+            <span class="c1"># Advance clock to the nearest pending event</span>
+            <span class="n">pending</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_next_time</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_models</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pending</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Clear accumulated plot data.</span>
+<span class="sd">        Reset the clock and clear accumulated plot data.</span>
 
-<span class="sd">        This method is called automatically at the start of :meth:`run` to</span>
-<span class="sd">        ensure charts start fresh on each simulation run.</span>
+<span class="sd">        Called automatically at the start of :meth:`run` to ensure the</span>
+<span class="sd">        environment starts fresh on each simulation run.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; env = Environment()</span>
+<span class="sd">        &gt;&gt;&gt; env = Environment(start_time=0, end_time=10)</span>
 <span class="sd">        &gt;&gt;&gt; env._plot_metadata = {&quot;x&quot;: {&quot;data&quot;: [1, 2, 3]}}</span>
 <span class="sd">        &gt;&gt;&gt; env.reset()</span>
 <span class="sd">        &gt;&gt;&gt; env._plot_metadata[&quot;x&quot;][&quot;data&quot;]</span>
 <span class="sd">        []</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_plot_metadata&quot;</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="n">item</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">now</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the current simulation time adjusted by ``start_time``.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        float</span>
-<span class="sd">            Current time as ``salabim.now() + start_time``.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; env = Environment(start_time=5)</span>
-<span class="sd">        &gt;&gt;&gt; env.now()</span>
-<span class="sd">        5.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">item</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -1628,7 +1755,7 @@ to define the simulation boundaries explicitly.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Return the current simulation time adjusted by <code>start_time</code>.</p>
+        <p>Return the current simulation time.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1646,7 +1773,7 @@ to define the simulation boundaries explicitly.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Current time as <code>salabim.now() + start_time</code>.</p>
+                <p>Current simulation time.</p>
               </div>
             </td>
           </tr>
@@ -1657,43 +1784,43 @@ to define the simulation boundaries explicitly.</p>
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-<span class="go">5.0</span>
+<span class="go">5</span>
 </code></pre></div>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/core/environment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">now</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">now</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return the current simulation time adjusted by ``start_time``.</span>
+<span class="sd">    Return the current simulation time.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float</span>
-<span class="sd">        Current time as ``salabim.now() + start_time``.</span>
+<span class="sd">        Current simulation time.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; env = Environment(start_time=5)</span>
 <span class="sd">    &gt;&gt;&gt; env.now()</span>
-<span class="sd">    5.0</span>
+<span class="sd">    5</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1711,13 +1838,13 @@ to define the simulation boundaries explicitly.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Clear accumulated plot data.</p>
-<p>This method is called automatically at the start of :meth:<code>run</code> to
-ensure charts start fresh on each simulation run.</p>
+        <p>Reset the clock and clear accumulated plot data.</p>
+<p>Called automatically at the start of :meth:<code>run</code> to ensure the
+environment starts fresh on each simulation run.</p>
 
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">()</span>
+    <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]}}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">][</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
@@ -1727,41 +1854,41 @@ ensure charts start fresh on each simulation run.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/core/environment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span>
-<span class="normal">95</span>
-<span class="normal">96</span>
-<span class="normal">97</span>
-<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Clear accumulated plot data.</span>
+<span class="sd">    Reset the clock and clear accumulated plot data.</span>
 
-<span class="sd">    This method is called automatically at the start of :meth:`run` to</span>
-<span class="sd">    ensure charts start fresh on each simulation run.</span>
+<span class="sd">    Called automatically at the start of :meth:`run` to ensure the</span>
+<span class="sd">    environment starts fresh on each simulation run.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; env = Environment()</span>
+<span class="sd">    &gt;&gt;&gt; env = Environment(start_time=0, end_time=10)</span>
 <span class="sd">    &gt;&gt;&gt; env._plot_metadata = {&quot;x&quot;: {&quot;data&quot;: [1, 2, 3]}}</span>
 <span class="sd">    &gt;&gt;&gt; env.reset()</span>
 <span class="sd">    &gt;&gt;&gt; env._plot_metadata[&quot;x&quot;][&quot;data&quot;]</span>
 <span class="sd">    []</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_plot_metadata&quot;</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">item</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">item</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1780,6 +1907,10 @@ ensure charts start fresh on each simulation run.</p>
     <div class="doc doc-contents ">
 
         <p>Run the simulation over the configured time window.</p>
+<p>Executes all registered models in time-step order. On each tick,
+every model whose next scheduled time is less than or equal to the
+current simulation time has its :meth:<code>~dissmodel.core.Model.execute</code>
+method called. The clock then advances to the nearest pending event.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1846,40 +1977,82 @@ ensure charts start fresh on each simulation run.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/core/environment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">till</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">till</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run the simulation over the configured time window.</span>
+
+<span class="sd">    Executes all registered models in time-step order. On each tick,</span>
+<span class="sd">    every model whose next scheduled time is less than or equal to the</span>
+<span class="sd">    current simulation time has its :meth:`~dissmodel.core.Model.execute`</span>
+<span class="sd">    method called. The clock then advances to the nearest pending event.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1903,12 +2076,44 @@ ensure charts start fresh on each simulation run.</p>
     <span class="k">if</span> <span class="n">till</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">+</span> <span class="n">till</span>
     <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">till</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+        <span class="k">pass</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provide &#39;till&#39; or set &#39;end_time&#39; before calling run().&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Provide &#39;till&#39; or set &#39;end_time&#39; before calling run().&quot;</span>
+        <span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="si">}</span><span class="s2"> (duration: </span><span class="si">{</span><span class="n">till</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">till</span><span class="o">=</span><span class="n">till</span><span class="p">)</span>
+    <span class="n">duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Running from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="si">}</span><span class="s2"> &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;(duration: </span><span class="si">{</span><span class="n">duration</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Initialise next-execution time for every registered model</span>
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_models</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">start_time</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span>
+
+    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_models</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">&lt;</span> <span class="n">model</span><span class="o">.</span><span class="n">end_time</span>
+            <span class="p">):</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">pre_execute</span><span class="p">()</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">post_execute</span><span class="p">()</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="n">_step</span>
+
+        <span class="c1"># Advance clock to the nearest pending event</span>
+        <span class="n">pending</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_next_time</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_models</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_next_time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pending</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_now</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pending</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -1935,15 +2140,16 @@ ensure charts start fresh on each simulation run.</p>
 
 
     <div class="doc doc-contents first">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="salabim.Component">Component</span></code></p>
 
 
 
-        <p>Base class for simulation models backed by a salabim Component.</p>
+        <p>Base class for simulation models.</p>
 <p>Provides a time-stepped execution loop and automatic tracking of
-attributes marked for plotting via the :func:<code>~dissmodel.visualization.track_plot</code>
-decorator.</p>
+attributes marked for plotting via the
+:func:<code>~dissmodel.visualization.track_plot</code> decorator.</p>
+<p>Every <code>Model</code> instance auto-registers with the currently active
+:class:<code>~dissmodel.core.Environment</code> at construction time. An active
+environment must exist before instantiating any model.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2014,27 +2220,11 @@ decorator.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Component name, by default <code>""</code>.</p>
+                <p>Human-readable model name, by default <code>""</code>.</p>
               </div>
             </td>
             <td>
                   <code>&#39;&#39;</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>*args</code>
-            </td>
-            <td>
-                  <code><span title="typing.Any">Any</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Extra positional arguments forwarded to :class:<code>salabim.Component</code>.</p>
-              </div>
-            </td>
-            <td>
-                  <code>()</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -2046,7 +2236,7 @@ decorator.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Extra keyword arguments forwarded to :class:<code>salabim.Component</code>.</p>
+                <p>Extra keyword arguments (ignored; kept for subclass compatibility).</p>
               </div>
             </td>
             <td>
@@ -2057,19 +2247,43 @@ decorator.</p>
     </table>
 
 
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If no active :class:<code>~dissmodel.core.Environment</code> exists when the
+model is instantiated.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
 <p><span class="doc-section-title">Examples:</span></p>
     <div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">... </span>        <span class="nb">print</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">env</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="go">Running from 0 to 5 (duration: 5)</span>
-<span class="go">0.0</span>
-<span class="go">1.0</span>
-<span class="go">2.0</span>
-<span class="go">3.0</span>
-<span class="go">4.0</span>
+<span class="go">0</span>
+<span class="go">1</span>
+<span class="go">2</span>
+<span class="go">3</span>
+<span class="go">4</span>
 </code></pre></div>
 
 
@@ -2184,13 +2398,54 @@ decorator.</p>
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">Component</span><span class="p">):</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for simulation models backed by a salabim Component.</span>
+<span class="sd">    Base class for simulation models.</span>
 
 <span class="sd">    Provides a time-stepped execution loop and automatic tracking of</span>
-<span class="sd">    attributes marked for plotting via the :func:`~dissmodel.visualization.track_plot`</span>
-<span class="sd">    decorator.</span>
+<span class="sd">    attributes marked for plotting via the</span>
+<span class="sd">    :func:`~dissmodel.visualization.track_plot` decorator.</span>
+
+<span class="sd">    Every ``Model`` instance auto-registers with the currently active</span>
+<span class="sd">    :class:`~dissmodel.core.Environment` at construction time. An active</span>
+<span class="sd">    environment must exist before instantiating any model.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2201,26 +2456,30 @@ decorator.</p>
 <span class="sd">    end_time : float, optional</span>
 <span class="sd">        Time at which the model stops executing, by default ``math.inf``.</span>
 <span class="sd">    name : str, optional</span>
-<span class="sd">        Component name, by default ``&quot;&quot;``.</span>
-<span class="sd">    *args :</span>
-<span class="sd">        Extra positional arguments forwarded to :class:`salabim.Component`.</span>
+<span class="sd">        Human-readable model name, by default ``&quot;&quot;``.</span>
 <span class="sd">    **kwargs :</span>
-<span class="sd">        Extra keyword arguments forwarded to :class:`salabim.Component`.</span>
+<span class="sd">        Extra keyword arguments (ignored; kept for subclass compatibility).</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        If no active :class:`~dissmodel.core.Environment` exists when the</span>
+<span class="sd">        model is instantiated.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; class MyModel(Model):</span>
 <span class="sd">    ...     def execute(self):</span>
-<span class="sd">    ...         print (self.env.now())</span>
-<span class="sd">    &gt;&gt;&gt; env = Environment()</span>
-<span class="sd">    &gt;&gt;&gt; model = MyModel(step=1, start_time=0, end_time=5)</span>
-<span class="sd">    &gt;&gt;&gt; env.run(5)</span>
+<span class="sd">    ...         print(self.env.now())</span>
+<span class="sd">    &gt;&gt;&gt; env = Environment(start_time=0, end_time=5)</span>
+<span class="sd">    &gt;&gt;&gt; model = MyModel(step=1)</span>
+<span class="sd">    &gt;&gt;&gt; env.run()</span>
 <span class="sd">    Running from 0 to 5 (duration: 5)</span>
-<span class="sd">    0.0</span>
-<span class="sd">    1.0</span>
-<span class="sd">    2.0</span>
-<span class="sd">    3.0</span>
-<span class="sd">    4.0</span>
+<span class="sd">    0</span>
+<span class="sd">    1</span>
+<span class="sd">    2</span>
+<span class="sd">    3</span>
+<span class="sd">    4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -2229,27 +2488,45 @@ decorator.</p>
         <span class="n">start_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">step</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="n">_current</span>
+        <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;No active Environment found. &quot;</span>
+                <span class="s2">&quot;Create an Environment before instantiating a Model.&quot;</span>
+            <span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Set internal attributes directly to avoid triggering __setattr__</span>
+        <span class="c1"># plot-tracking logic before _plot_info is available.</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_step&quot;</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;start_time&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_next_time&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">)</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;env&quot;</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
+
+        <span class="n">env</span><span class="o">.</span><span class="n">_register</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        salabim process loop.</span>
+<span class="sd">        Called once after instantiation, receiving any extra keyword</span>
+<span class="sd">        arguments not consumed by ``__init__``.</span>
 
-<span class="sd">        Waits until ``start_time``, then calls :meth:`execute` every</span>
-<span class="sd">        ``step`` time units until ``end_time``.</span>
+<span class="sd">        Override in subclasses to perform one-time setup such as building</span>
+<span class="sd">        neighborhoods or initializing visualization state.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="k">pass</span>
 
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pre_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called once before each :meth:`execute`.</span>
+
+<span class="sd">        Override in subclasses to perform per-step setup, such as</span>
+<span class="sd">        snapshotting state arrays before the transition rule runs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -2259,11 +2536,24 @@ decorator.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">post_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Called once after each :meth:`execute`.</span>
+
+<span class="sd">        Override in subclasses to perform per-step cleanup or snapshotting</span>
+<span class="sd">        after the transition rule runs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># ------------------------------------------------------------------</span>
+    <span class="c1"># Plot tracking</span>
+    <span class="c1"># ------------------------------------------------------------------</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Intercept attribute assignment to record values marked for plotting.</span>
 
-<span class="sd">        If the class defines ``_plot_info`` (via the</span>
+<span class="sd">        If the class defines ``_plot_info`` (populated by the</span>
 <span class="sd">        :func:`~dissmodel.visualization.track_plot` decorator) and ``name``</span>
 <span class="sd">        matches a tracked attribute, the value is appended to the plot data</span>
 <span class="sd">        buffer and registered in ``env._plot_metadata``.</span>
@@ -2281,11 +2571,9 @@ decorator.</p>
             <span class="n">plot_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_plot_info</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
             <span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span> <span class="s2">&quot;_plot_metadata&quot;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span> <span class="o">=</span> <span class="p">{}</span>
-
-            <span class="k">if</span> <span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">[</span><span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">plot_info</span>
+            <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="n">_current</span>
+            <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">:</span>
+                <span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">[</span><span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">plot_info</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2316,7 +2604,7 @@ decorator.</p>
     <div class="doc doc-contents ">
 
         <p>Intercept attribute assignment to record values marked for plotting.</p>
-<p>If the class defines <code>_plot_info</code> (via the
+<p>If the class defines <code>_plot_info</code> (populated by the
 :func:<code>~dissmodel.visualization.track_plot</code> decorator) and <code>name</code>
 matches a tracked attribute, the value is appended to the plot data
 buffer and registered in <code>env._plot_metadata</code>.</p>
@@ -2371,39 +2659,37 @@ buffer and registered in <code>env._plot_metadata</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/core/model.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Intercept attribute assignment to record values marked for plotting.</span>
 
-<span class="sd">    If the class defines ``_plot_info`` (via the</span>
+<span class="sd">    If the class defines ``_plot_info`` (populated by the</span>
 <span class="sd">    :func:`~dissmodel.visualization.track_plot` decorator) and ``name``</span>
 <span class="sd">    matches a tracked attribute, the value is appended to the plot data</span>
 <span class="sd">    buffer and registered in ``env._plot_metadata``.</span>
@@ -2421,11 +2707,9 @@ buffer and registered in <code>env._plot_metadata</code>.</p>
         <span class="n">plot_info</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_plot_info</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
         <span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span> <span class="s2">&quot;_plot_metadata&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">if</span> <span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">[</span><span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">plot_info</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="n">_current</span>
+        <span class="k">if</span> <span class="n">env</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">:</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">_plot_metadata</span><span class="p">[</span><span class="n">plot_info</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">plot_info</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2451,13 +2735,13 @@ buffer and registered in <code>env._plot_metadata</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/core/model.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Called once per time step.</span>
 
@@ -2473,46 +2757,117 @@ buffer and registered in <code>env._plot_metadata</code>.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="dissmodel.core.Model.process" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">process</span><span class="p">()</span></code>
+<h3 id="dissmodel.core.Model.post_execute" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">post_execute</span><span class="p">()</span></code>
 
 </h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>salabim process loop.</p>
-<p>Waits until <code>start_time</code>, then calls :meth:<code>execute</code> every
-<code>step</code> time units until <code>end_time</code>.</p>
+        <p>Called once after each :meth:<code>execute</code>.</p>
+<p>Override in subclasses to perform per-step cleanup or snapshotting
+after the transition rule runs.</p>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>dissmodel/core/model.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">post_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    salabim process loop.</span>
+<span class="sd">    Called once after each :meth:`execute`.</span>
 
-<span class="sd">    Waits until ``start_time``, then calls :meth:`execute` every</span>
-<span class="sd">    ``step`` time units until ``end_time``.</span>
+<span class="sd">    Override in subclasses to perform per-step cleanup or snapshotting</span>
+<span class="sd">    after the transition rule runs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+    <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
 
-    <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span>
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="dissmodel.core.Model.pre_execute" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">pre_execute</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Called once before each :meth:<code>execute</code>.</p>
+<p>Override in subclasses to perform per-step setup, such as
+snapshotting state arrays before the transition rule runs.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>dissmodel/core/model.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pre_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Called once before each :meth:`execute`.</span>
+
+<span class="sd">    Override in subclasses to perform per-step setup, such as</span>
+<span class="sd">    snapshotting state arrays before the transition rule runs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="dissmodel.core.Model.setup" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">setup</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Called once after instantiation, receiving any extra keyword
+arguments not consumed by <code>__init__</code>.</p>
+<p>Override in subclasses to perform one-time setup such as building
+neighborhoods or initializing visualization state.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>dissmodel/core/model.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Called once after instantiation, receiving any extra keyword</span>
+<span class="sd">    arguments not consumed by ``__init__``.</span>
+
+<span class="sd">    Override in subclasses to perform one-time setup such as building</span>
+<span class="sd">    neighborhoods or initializing visualization state.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
