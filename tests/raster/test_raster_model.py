@@ -119,7 +119,7 @@ class TestExecute:
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Multiple models — salabim environment
+# Multiple models — environment integration
 # ══════════════════════════════════════════════════════════════════════════════
 
 class TestEnvironmentIntegration:

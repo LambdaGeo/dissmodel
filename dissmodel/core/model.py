@@ -86,8 +86,7 @@ class Model:
         arguments not consumed by ``__init__``.
 
         Override in subclasses to perform one-time setup such as building
-        neighborhoods or initializing visualization state. Mirrors the
-        salabim ``Component.setup()`` contract.
+        neighborhoods or initializing visualization state.
         """
         pass
 

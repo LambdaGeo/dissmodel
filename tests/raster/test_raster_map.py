@@ -3,7 +3,7 @@ tests/raster/test_raster_map.py
 =================================
 Tests for RasterMap — raster visualization component.
 
-RasterMap is a salabim Component that renders at each step.
+RasterMap renders at each step.
 Tests cover: instantiation, mode detection (categorical/continuous),
 headless rendering (no display required), and environment integration.
 """
